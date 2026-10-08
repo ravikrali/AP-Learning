@@ -44,22 +44,20 @@ Sign-in only identifies whose progress to open on the device. No data is sent an
 1. Go to https://console.cloud.google.com/ and create a project (e.g. "AP Learning").
 2. **APIs & Services → OAuth consent screen**: choose **External**, fill in the app name and your email, and keep the default scopes (no extra scopes needed). Publish it ("In production"). Basic sign-in (name/email) needs no Google review.
 3. **APIs & Services → Credentials → Create credentials → OAuth client ID**, type **Web application**.
-   - *Authorized JavaScript origins*: add `http://localhost:5173` and your live site URL (e.g. `https://ap-learning.pages.dev`).
+   - *Authorized JavaScript origins*: add `http://localhost:5173` and the live site: `https://www.aplearning.app` and `https://aplearning.app`.
 4. Copy the **Client ID** into `app/.env` (copy `app/.env.example` to `.env`):
    `VITE_GOOGLE_CLIENT_ID=1234-abc.apps.googleusercontent.com`
 5. Rebuild (`npm run build`) and redeploy.
 
-## Put it online (free, Cloudflare Pages)
+## Put it online (free, Cloudflare)
+
+Live at **https://www.aplearning.app** (also https://aplearning.app). It is served as a static-assets Cloudflare Worker named `ap-learning`; `app/wrangler.jsonc` attaches both custom domains.
 
 ```bash
 cd app
-npm run build
-npx wrangler login
-npx wrangler pages deploy dist --project-name ap-learning
+npx wrangler login     # once per computer
+npm run deploy         # tests, build, upload
 ```
-
-Or, in the Cloudflare dashboard, go to **Workers & Pages → Create → Pages → Upload assets** and drag in the `app/dist` folder.
-
 ## Install on the phone
 
 - **Android (Chrome):** open the site → menu ⋮ → **Install app** (or "Add to Home screen").

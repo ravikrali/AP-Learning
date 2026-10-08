@@ -1,0 +1,13 @@
+// Cloudflare Workers static-assets deploy: `npm run build` then `npx wrangler deploy` (from app/).
+{
+  "name": "ap-learning",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    { "pattern": "www.aplearning.app", "custom_domain": true },
+    { "pattern": "aplearning.app", "custom_domain": true }
+  ]
+}
