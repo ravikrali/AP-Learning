@@ -1,0 +1,4 @@
+{
+  "_help": "Optional lesson videos. Key = lesson id (shown in the app's URL, e.g. chem-1.1). Use \"url\" for a YouTube/Vimeo link or \"src\" for a file placed in public/videos/. Example entry below; remove the leading underscore to activate it.",
+  "_chem-1.1": { "url": "https://www.youtube.com/watch?v=VIDEO_ID", "title": "Moles in 90 seconds" }
+}

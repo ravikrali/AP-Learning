@@ -1,0 +1,715 @@
+import type { Unit } from '../types'
+import { molarMass } from '../../lib/chem'
+
+export const unit6: Unit = {
+  id: 'chem-u6',
+  number: 6,
+  title: 'Thermochemistry',
+  weight: '7–9%',
+  blurb: 'Energy in chemistry: heat flow, calorimetry, phase changes, and three ways to find ΔH (bond enthalpies, enthalpies of formation, Hess\'s law).',
+  badge: { name: 'Heat Hero', emoji: '🔥' },
+  lessons: [
+    // ---------------- FOUNDATION ----------------
+    {
+      id: 'chem-6.1',
+      ced: ['6.1', '6.2'],
+      title: 'Endothermic vs. Exothermic',
+      level: 'foundation',
+      minutes: 7,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Snap a hand warmer and it gets hot. Squeeze an instant cold pack and it gets icy. One process **releases** energy and the other **absorbs** it. Chemists call these **exothermic** and **endothermic**.',
+        },
+        {
+          kind: 'concept',
+          title: 'System vs. surroundings',
+          body: '- **System** = the reaction or process you\'re studying (the chemicals)\n- **Surroundings** = everything else (the water, the beaker, your hand)\n\n**Exothermic:** the system **loses** energy → the surroundings **gain** it and warm up. ΔH < 0.\n**Endothermic:** the system **gains** energy from the surroundings, which cool down. ΔH > 0.',
+          diagram: 'energy-levels',
+        },
+        {
+          kind: 'hack',
+          title: 'Follow the thermometer',
+          body: 'The thermometer is in the **surroundings** (the water), not in the reaction itself:\n\n- Thermometer goes **up** → heat flowed **out** of the system → **exothermic** 🔥\n- Thermometer goes **down** → heat flowed **into** the system → **endothermic** 🧊\n\n"**Ex**it = **ex**othermic": heat exits the system.',
+        },
+        {
+          kind: 'concept',
+          title: 'Dissolving can go either way',
+          body: 'Whether dissolving is exo- or endothermic depends on the **balance of interactions**:\n\n- Energy is **absorbed** to separate the solute particles (break the solute–solute attractions) and to make room in the solvent.\n- Energy is **released** when new solute–solvent attractions form (like ion–dipole).\n\nStronger new attractions → exothermic (CaCl₂ in water heats up). Weaker → endothermic (NH₄NO₃ in water cools down, which is how cold packs work).',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.1-t1',
+            type: 'mcq',
+            prompt: 'A salt dissolves in water and the temperature of the solution **drops**. The dissolving process is…',
+            choices: ['exothermic, ΔH < 0', 'endothermic, ΔH > 0', 'neither', 'a physical change with no energy'],
+            answer: 1,
+            explain: 'The water (surroundings) got colder because it gave energy to the dissolving process → **endothermic**, ΔH > 0.',
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'Exothermic: the system releases heat, the surroundings warm, ΔH < 0.',
+            'Endothermic: the system absorbs heat, the surroundings cool, ΔH > 0.',
+            'Dissolving is exo or endo depending on the attractions broken vs. formed.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.1-q1',
+          type: 'mcq',
+          prompt: 'Which process is **endothermic**?',
+          choices: ['Water freezing', 'Steam condensing', 'Ice melting', 'Wood burning'],
+          answer: 2,
+          explain: 'Melting requires energy **input** to overcome attractions between molecules → **endothermic**. Freezing, condensing and burning release energy.',
+        },
+        {
+          id: 'c6.1-q2',
+          type: 'mcq',
+          prompt: 'On an energy diagram, the products are lower in energy than the reactants. Which is true?',
+          choices: ['ΔH > 0, endothermic', 'ΔH < 0, exothermic', 'ΔH = 0', 'The reaction needs no activation energy'],
+          answer: 1,
+          explain: 'Products lower than reactants → energy was released → **ΔH < 0, exothermic**.',
+        },
+      ],
+      flashcards: [
+        { front: 'Exothermic: sign of ΔH and what the surroundings do', back: 'ΔH < 0. The surroundings **warm up**.' },
+        { front: 'Endothermic: sign of ΔH and what the surroundings do', back: 'ΔH > 0. The surroundings **cool down**.' },
+      ],
+    },
+    {
+      id: 'chem-6.3',
+      ced: ['6.3'],
+      title: 'Heat Transfer & Thermal Equilibrium',
+      level: 'foundation',
+      minutes: 5,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Drop an ice cube into lemonade: the drink cools and the ice warms, until they reach the same temperature. What\'s actually happening between the particles?',
+        },
+        {
+          kind: 'concept',
+          title: 'Heat is passed along by collisions',
+          body: '- Particles in a **warmer** object have a **greater average kinetic energy**.\n- When objects are in thermal contact, their particles **collide**, and energy passes from faster to slower particles. That\'s **heat transfer**.\n- This continues until **thermal equilibrium**: the **average KE is the same** in both, so their **temperatures are equal**.\n\nHeat always flows **from hot to cold**, never the other way on its own.',
+        },
+        {
+          kind: 'trap',
+          body: 'Temperature and heat are different things! **Temperature** measures the *average* kinetic energy of the particles. **Heat (q)** is the *energy transferred*. A bathtub of warm water can hold more thermal energy than a cup of boiling water, even though the cup is hotter.',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.3-t1',
+            type: 'mcq',
+            prompt: 'A hot metal block is placed in cool water. At thermal equilibrium…',
+            choices: [
+              'the metal is still hotter than the water',
+              'the metal and water have the same temperature',
+              'the metal and water have the same total energy',
+              'heat flows from the water to the metal forever',
+            ],
+            answer: 1,
+            explain: 'At thermal equilibrium the **average KE (and temperature)** of both is the same. Their total energies need not be equal.',
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'Warmer = higher average KE of the particles.',
+            'Collisions transfer energy from hot to cold.',
+            'Thermal equilibrium = equal temperatures (equal average KE).',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.3-q1',
+          type: 'mcq',
+          prompt: 'At the particle level, how is thermal energy transferred between two objects in contact?',
+          choices: ['By photons only', 'By collisions between particles', 'By the transfer of atoms', 'It can\'t be transferred'],
+          answer: 1,
+          explain: '**Collisions** between particles of the two objects pass kinetic energy from the faster (hotter) particles to the slower (cooler) ones.',
+        },
+        {
+          id: 'c6.3-q2',
+          type: 'mcq',
+          prompt: 'Which statement about temperature is correct?',
+          choices: [
+            'It measures the total energy of a sample',
+            'It is proportional to the average kinetic energy of the particles',
+            'It is the same as heat',
+            'It depends on the mass of the sample',
+          ],
+          answer: 1,
+          explain: 'Temperature reflects the **average kinetic energy** of the particles. Heat is energy transferred.',
+        },
+      ],
+      flashcards: [
+        { front: 'Thermal equilibrium', back: 'Two objects in contact reach the same temperature (the same average KE of their particles).' },
+        { front: 'Heat vs. temperature', back: 'Heat = energy transferred. Temperature = average kinetic energy of the particles.' },
+      ],
+    },
+    // ---------------- CORE ----------------
+    {
+      id: 'chem-6.4',
+      ced: ['6.4'],
+      title: 'Heat Capacity & Calorimetry',
+      level: 'core',
+      minutes: 10,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'At the beach, the sand burns your feet while the water stays cool, even though both get the same sunshine. Water simply needs **much more energy** to warm up. That property is **specific heat capacity**.',
+        },
+        {
+          kind: 'concept',
+          title: 'q = mcΔT',
+          body: '- **q** = heat (J)\n- **m** = mass (g)\n- **c** = specific heat capacity, the energy to raise 1 g by 1 °C (J/(g·°C)). Water: **4.18 J/(g·°C)**.\n- **ΔT** = T_{final} − T_{initial} (a change in °C equals a change in K)\n\nThe same heat produces a **smaller** temperature change in a substance with a **larger** c. **Molar** heat capacity (J/(mol·°C)) works the same way, just with moles instead of grams.',
+        },
+        {
+          kind: 'concept',
+          title: 'Calorimetry: energy is conserved',
+          body: 'First law of thermodynamics: **energy is conserved**. In an insulated calorimeter:\n\n**heat lost by one thing = heat gained by the other**\nq_{system} = −q_{surroundings}\n\nIf the water in the calorimeter warms up, the reaction or dissolving process released that energy (exothermic). If the water cools, the process absorbed it (endothermic).',
+        },
+        {
+          kind: 'example',
+          title: 'Find a metal\'s specific heat',
+          problem: 'A **25.0 g** metal at **95.0 °C** is dropped into **50.0 g** of water at **22.0 °C**. The final temperature is **25.0 °C**. Find c of the metal.',
+          steps: [
+            'Heat gained by the water: q = (50.0)(4.18)(25.0 − 22.0) = **627 J**',
+            'Heat lost by the metal = −627 J. Its ΔT = 25.0 − 95.0 = −70.0 °C',
+            'c = q/(mΔT) = (−627)/[(25.0)(−70.0)] = **0.358 J/(g·°C)**',
+          ],
+          answer: 'c(metal) ≈ 0.358 J/(g·°C)',
+          verify: [
+            { stated: 627, compute: () => 50.0 * 4.18 * 3.0 },
+            { stated: 0.358, compute: () => (50.0 * 4.18 * 3.0) / (25.0 * 70.0) },
+          ],
+        },
+        {
+          kind: 'hack',
+          title: 'Signs without stress',
+          body: 'Do the math with **sizes** (positive numbers) first. Then decide the sign with logic: did the system lose heat (−, exothermic) or gain it (+, endothermic)?\n\nThe water\'s thermometer tells you the direction. The equation tells you the size.',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.4-t1',
+            type: 'num',
+            prompt: 'How much heat is needed to warm **50.0 g of water** from **20.0 °C** to **30.0 °C**? (c = 4.18 J/(g·°C))',
+            answer: 2090,
+            unit: 'J',
+            explain: 'q = (50.0)(4.18)(10.0) = **2090 J** (2.09 kJ)',
+            compute: () => 50.0 * 4.18 * 10.0,
+          },
+        },
+        {
+          kind: 'frq',
+          body: 'Classic calorimetry error: "**Heat was exchanged with the surroundings (the cup, the air).**" For an exothermic reaction, some heat escapes. Either way, the measured temperature change is **smaller** than it should be, so the calculated |q| and |ΔH| come out **too small**. State the direction and the reason!',
+        },
+        {
+          kind: 'summary',
+          points: [
+            'q = mcΔT. Water: c = 4.18 J/(g·°C).',
+            'Calorimetry: heat lost by one = heat gained by the other.',
+            'Calorimeter water warms → exothermic process. Water cools → endothermic.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.4-q1',
+          type: 'num',
+          prompt: '**2.00 kJ** of heat is added to **100. g** of water. By how many °C does its temperature rise?',
+          answer: 4.785,
+          unit: '°C',
+          tolerance: 0.01,
+          hint: 'Convert kJ to J. ΔT = q/(mc).',
+          explain: 'ΔT = 2000 J ÷ (100. g × 4.18) = **4.78 °C**',
+          compute: () => 2000 / (100 * 4.18),
+        },
+        {
+          id: 'c6.4-q2',
+          type: 'mcq',
+          prompt: 'Equal masses of aluminum (c = 0.90 J/(g·°C)) and iron (c = 0.45 J/(g·°C)) absorb the same heat. Which has the **larger** temperature increase?',
+          choices: ['Aluminum', 'Iron', 'They are equal', 'It depends on the shape'],
+          answer: 1,
+          explain: 'ΔT = q/(mc). The smaller c (**iron**) gives the larger ΔT.',
+        },
+        {
+          id: 'c6.4-q3',
+          type: 'num',
+          prompt: '**50.0 mL of 1.0 M HCl** and **50.0 mL of 1.0 M NaOH** are mixed (total mass 100. g, c = 4.18 J/(g·°C)). The temperature rises **6.7 °C**. How many **kJ** were released per **mole of water** formed?',
+          answer: 56.0,
+          unit: 'kJ/mol',
+          hint: 'q = mcΔT, and mol H₂O = mol HCl = 0.050 mol.',
+          explain: 'q = (100.)(4.18)(6.7) = 2800 J = 2.80 kJ. Moles = 1.0 × 0.0500 = 0.0500 mol. 2.80 ÷ 0.0500 = **56 kJ/mol** released (ΔH ≈ −56 kJ/mol).',
+          compute: () => (100 * 4.18 * 6.7) / 1000 / 0.05,
+        },
+      ],
+      flashcards: [
+        { front: 'Heat transfer equation', back: 'q = mcΔT' },
+        { front: 'Specific heat of water', back: '4.18 J/(g·°C)' },
+        { front: 'First law of thermodynamics', back: 'Energy is conserved: heat lost by one part = heat gained by another.' },
+      ],
+    },
+    {
+      id: 'chem-6.5',
+      ced: ['6.5'],
+      title: 'Energy of Phase Changes',
+      level: 'core',
+      minutes: 7,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Keep heating a pot of boiling water and the temperature stays stuck at 100 °C. Where is all that energy going? It\'s pulling molecules apart into the gas phase, not making them faster.',
+        },
+        {
+          kind: 'concept',
+          title: 'Constant temperature during a phase change',
+          body: 'During melting or boiling, the added energy overcomes **intermolecular attractions** instead of raising the average kinetic energy, so the **temperature stays constant** for a pure substance.\n\n- Melting (s→l) and boiling (l→g): energy **absorbed**, endothermic\n- Freezing (l→s) and condensing (g→l): energy **released**, exothermic',
+          diagram: 'heating-curve',
+        },
+        {
+          kind: 'concept',
+          title: 'q = n × ΔH',
+          body: 'For a phase change: **q = (moles) × (molar enthalpy of the phase change)**\n\nWater: ΔH_{fus} = **6.01 kJ/mol** and ΔH_{vap} = **40.7 kJ/mol**.\n\nOpposite processes have equal size and opposite sign:\nΔH_{condensation} = −ΔH_{vaporization}\nΔH_{freezing} = −ΔH_{fusion}',
+        },
+        {
+          kind: 'example',
+          title: 'Melting ice',
+          problem: 'How much energy is needed to melt **36.0 g of ice** at 0 °C? (ΔH_{fus} = 6.01 kJ/mol)',
+          steps: ['Moles: 36.0 g ÷ 18.02 g/mol = **2.00 mol**', 'q = 2.00 mol × 6.01 kJ/mol = **12.0 kJ** absorbed'],
+          answer: '12.0 kJ',
+          verify: [
+            { stated: 2.0, compute: () => 36.0 / molarMass('H2O') },
+            { stated: 12.0, compute: () => (36.0 / molarMass('H2O')) * 6.01 },
+          ],
+        },
+        {
+          kind: 'hack',
+          title: 'Multi-step heating problems',
+          body: 'Heating ice at −10 °C all the way to steam? Break it into segments:\n\n1. warm the ice (mcΔT)\n2. melt it (nΔH_{fus})\n3. warm the water (mcΔT)\n4. boil it (nΔH_{vap})\n5. warm the steam (mcΔT)\n\nUse **mcΔT on slopes** and **nΔH on plateaus**, then add them up. Watch your units: J vs. kJ!',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.5-t1',
+            type: 'num',
+            prompt: 'How much heat is **released** when **0.500 mol** of steam condenses at 100 °C? (ΔH_{vap} = 40.7 kJ/mol)',
+            answer: 20.35,
+            unit: 'kJ',
+            explain: 'q = 0.500 × 40.7 = **20.4 kJ** released (ΔH_{cond} = −40.7 kJ/mol).',
+            compute: () => 0.5 * 40.7,
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'Temperature stays constant during a phase change.',
+            'q = n × ΔH_phase. Melting and boiling absorb energy. Freezing and condensing release it.',
+            'Opposite phase changes: same size, opposite sign.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.5-q1',
+          type: 'mcq',
+          prompt: 'On a heating curve, why is the boiling plateau for water **longer** than the melting plateau?',
+          choices: [
+            'Boiling happens at a higher temperature',
+            'Vaporization requires much more energy per mole (all IMFs overcome) than melting',
+            'Water has a high specific heat',
+            'Steam is lighter than ice',
+          ],
+          answer: 1,
+          explain: 'Boiling must **completely** separate the molecules (ΔH_vap = 40.7 kJ/mol), while melting only loosens them (ΔH_fus = 6.01 kJ/mol).',
+        },
+        {
+          id: 'c6.5-q2',
+          type: 'mcq',
+          prompt: 'If ΔH_{fus} of a substance is +10.0 kJ/mol, its ΔH for **freezing** is…',
+          choices: ['+10.0 kJ/mol', '−10.0 kJ/mol', '0', '+20.0 kJ/mol'],
+          answer: 1,
+          explain: 'Freezing is the reverse of melting: same size, opposite sign → **−10.0 kJ/mol**.',
+        },
+      ],
+      flashcards: [
+        { front: 'What happens to temperature during a phase change?', back: 'It stays **constant** (for a pure substance).' },
+        { front: 'Heat for a phase change', back: 'q = n × ΔH (molar enthalpy of fusion or vaporization)' },
+        { front: 'ΔH_condensation vs. ΔH_vaporization', back: 'ΔH_cond = −ΔH_vap' },
+      ],
+    },
+    {
+      id: 'chem-6.6',
+      ced: ['6.6'],
+      title: 'Enthalpy of Reaction',
+      level: 'core',
+      minutes: 7,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Burning natural gas (methane) releases **890 kJ** for every mole burned. That number lets engineers calculate exactly how much fuel heats a house for a winter.',
+        },
+        {
+          kind: 'concept',
+          title: 'ΔH is per "mole of reaction"',
+          body: '[[eq: CH4(g) + 2O2(g) -> CO2(g) + 2H2O(l)]] ΔH = −890 kJ/mol_{rxn}\n\nThis means: when **1 mol CH₄** reacts with **2 mol O₂** (as written), **890 kJ** is released.\n\nAt constant pressure, ΔH = the heat of the reaction. **Negative = released** (exothermic). **Positive = absorbed** (endothermic).',
+        },
+        {
+          kind: 'concept',
+          title: 'Why the temperature changes',
+          body: 'The **chemical potential energy** of the products differs from the reactants, because bonds broke and formed. That energy difference shows up as a change in the **kinetic energy** of the particles, which we see as a **temperature change**. Then heat flows between the products and the surroundings until thermal equilibrium.',
+        },
+        {
+          kind: 'example',
+          title: 'Scale ΔH with stoichiometry',
+          problem: 'How much heat is released when **4.00 g of CH₄** burns? (ΔH = −890 kJ/mol CH₄)',
+          steps: ['mol CH₄ = 4.00 ÷ 16.04 = **0.249 mol**', 'q = 0.249 mol × 890 kJ/mol = **222 kJ** released'],
+          answer: '222 kJ released',
+          verify: [
+            { stated: 0.249, compute: () => 4.0 / molarMass('CH4') },
+            { stated: 222, compute: () => (4.0 / molarMass('CH4')) * 890 },
+          ],
+        },
+        {
+          kind: 'hack',
+          title: 'Treat ΔH like a product in the equation',
+          body: 'Write the heat into the equation and use it in mole ratios:\n\nCH₄ + 2O₂ → CO₂ + 2H₂O + **890 kJ**\n\nSo 1 mol CH₄ ↔ 890 kJ, and 2 mol O₂ ↔ 890 kJ. Now it\'s just stoichiometry!',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.6-t1',
+            type: 'num',
+            prompt: '[[eq: 2H2(g) + O2(g) -> 2H2O(l)]] ΔH = −572 kJ. How much heat is released when **1.00 mol H₂** reacts?',
+            answer: 286,
+            unit: 'kJ',
+            hint: '572 kJ is for 2 mol H₂.',
+            explain: '572 kJ per 2 mol H₂ → 1.00 mol releases **286 kJ**.',
+            compute: () => 572 / 2,
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'ΔH applies to the reaction as written (per mole of reaction).',
+            'Scale it with moles: heat = n × |ΔH| per mole of that substance.',
+            'Bond energy changes → particle KE changes → temperature change.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.6-q1',
+          type: 'num',
+          prompt: '[[eq: N2(g) + 3H2(g) -> 2NH3(g)]] ΔH = −92 kJ. How much heat is released when **4.0 mol NH₃** forms?',
+          answer: 184,
+          unit: 'kJ',
+          explain: '92 kJ per 2 mol NH₃ → 4.0 mol NH₃ releases 2 × 92 = **184 kJ**.',
+          compute: () => (4.0 / 2) * 92,
+        },
+        {
+          id: 'c6.6-q2',
+          type: 'mcq',
+          prompt: 'A reaction has ΔH = +50 kJ/mol. During the reaction, the solution\'s temperature will…',
+          choices: ['rise', 'fall', 'stay the same', 'rise, then stay constant'],
+          answer: 1,
+          explain: 'ΔH > 0 → endothermic → the system absorbs heat from the solution, which **cools**.',
+        },
+      ],
+      flashcards: [
+        { front: 'Meaning of ΔH = −890 kJ/mol for CH₄ combustion', back: '890 kJ is **released** per mole of CH₄ burned (as written).' },
+        { front: 'If ΔH is for 2 mol of a reactant, what\'s the heat for 1 mol?', back: 'Half of it. ΔH scales with the amount.' },
+      ],
+    },
+    {
+      id: 'chem-6.7',
+      ced: ['6.7'],
+      title: 'Bond Enthalpies',
+      level: 'core',
+      minutes: 8,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Here\'s the big truth from Unit 2: **breaking bonds costs energy, forming bonds releases energy.** Add up both and you can predict whether a reaction will release heat.',
+        },
+        {
+          kind: 'concept',
+          title: 'Broken minus formed',
+          body: '**ΔH ≈ Σ(bonds broken) − Σ(bonds formed)**\n\n- Bonds broken (reactants) → energy **in** (+)\n- Bonds formed (products) → energy **out** (−)\n\nIf more energy is released forming bonds than is used breaking them → **exothermic**. If more is needed to break → **endothermic**.\n\nThese are **average** bond enthalpies, so the result is an estimate.',
+        },
+        {
+          kind: 'hack',
+          title: '"BREAK minus MAKE"',
+          body: '**ΔH = BREAK − MAKE**\n\nThe opposite order is used with enthalpies of formation (products − reactants), so this one trips people up. Bond energies are always **reactants first**.\n\nAnd draw the Lewis structures to count every bond, including double and triple bonds!',
+        },
+        {
+          kind: 'example',
+          title: 'Hydrogen + chlorine',
+          problem: '[[eq: H2(g) + Cl2(g) -> 2HCl(g)]]\nBond enthalpies: H–H 436, Cl–Cl 242, H–Cl 431 kJ/mol',
+          steps: [
+            'BREAK: 1 H–H + 1 Cl–Cl = 436 + 242 = **678 kJ**',
+            'MAKE: 2 H–Cl = 2 × 431 = **862 kJ**',
+            'ΔH = 678 − 862 = **−184 kJ** (exothermic)',
+          ],
+          answer: 'ΔH ≈ −184 kJ',
+          verify: [{ stated: -184, compute: () => 436 + 242 - 2 * 431 }],
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.7-t1',
+            type: 'num',
+            prompt: 'Estimate ΔH for [[eq: H2(g) + F2(g) -> 2HF(g)]] using H–H 436, F–F 155, H–F 567 kJ/mol.',
+            answer: -543,
+            unit: 'kJ',
+            explain: 'BREAK = 436 + 155 = 591. MAKE = 2 × 567 = 1134. ΔH = 591 − 1134 = **−543 kJ**.',
+            compute: () => 436 + 155 - 2 * 567,
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'Breaking bonds absorbs energy. Forming bonds releases it.',
+            'ΔH ≈ Σ broken − Σ formed (BREAK − MAKE).',
+            'Average bond enthalpies give an estimate.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.7-q1',
+          type: 'mcq',
+          prompt: 'A reaction breaks bonds totaling **1500 kJ** and forms bonds totaling **1200 kJ**. The reaction is…',
+          choices: ['exothermic, ΔH = −300 kJ', 'endothermic, ΔH = +300 kJ', 'exothermic, ΔH = −2700 kJ', 'endothermic, ΔH = +2700 kJ'],
+          answer: 1,
+          explain: 'ΔH = 1500 − 1200 = **+300 kJ** → more energy in than out → **endothermic**.',
+        },
+        {
+          id: 'c6.7-q2',
+          type: 'num',
+          prompt: 'Estimate ΔH for [[eq: CH4(g) + Cl2(g) -> CH3Cl(g) + HCl(g)]] using C–H 413, Cl–Cl 242, C–Cl 328, H–Cl 431 kJ/mol. (Only one C–H bond breaks.)',
+          answer: -104,
+          unit: 'kJ',
+          hint: 'BREAK one C–H and one Cl–Cl. MAKE one C–Cl and one H–Cl.',
+          explain: 'BREAK = 413 + 242 = 655. MAKE = 328 + 431 = 759. ΔH = 655 − 759 = **−104 kJ**.',
+          compute: () => 413 + 242 - (328 + 431),
+        },
+      ],
+      flashcards: [
+        { front: 'ΔH from bond enthalpies', back: 'ΔH ≈ Σ(bonds broken) − Σ(bonds formed)' },
+        { front: 'Is breaking a bond endothermic or exothermic?', back: '**Endothermic** (it always requires energy).' },
+      ],
+    },
+    {
+      id: 'chem-6.8',
+      ced: ['6.8'],
+      title: 'Enthalpy of Formation',
+      level: 'core',
+      minutes: 8,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Chemists have measured the energy to make thousands of compounds from their elements, and tabulated them. With that table, you can find ΔH for millions of reactions with simple subtraction.',
+        },
+        {
+          kind: 'concept',
+          title: 'Standard enthalpy of formation, ΔH°_f',
+          body: 'ΔH°_{f} = the enthalpy change to make **1 mol** of a compound from its **elements in their standard states**.\n\nExample: [[eq: C(s) + O2(g) -> CO2(g)]] ΔH°_{f} = −393.5 kJ/mol\n\n**Elements in their standard state have ΔH°_f = 0**: O₂(g), H₂(g), C(graphite), Fe(s), Br₂(l)…',
+        },
+        {
+          kind: 'concept',
+          title: 'The equation (on your sheet)',
+          body: '**ΔH°_{rxn} = ΣΔH°_{f}(products) − ΣΔH°_{f}(reactants)**\n\nMultiply each ΔH°_{f} by its **coefficient**!',
+        },
+        {
+          kind: 'example',
+          title: 'Combustion of methane',
+          problem: '[[eq: CH4(g) + 2O2(g) -> CO2(g) + 2H2O(l)]]\nΔH°_{f}: CH₄ −74.8, CO₂ −393.5, H₂O(l) −285.8 kJ/mol, O₂ 0',
+          steps: [
+            'Products: (−393.5) + 2(−285.8) = **−965.1 kJ**',
+            'Reactants: (−74.8) + 2(0) = **−74.8 kJ**',
+            'ΔH° = −965.1 − (−74.8) = **−890.3 kJ**',
+          ],
+          answer: 'ΔH°_rxn = −890.3 kJ/mol',
+          verify: [
+            { stated: -965.1, compute: () => -393.5 + 2 * -285.8 },
+            { stated: -890.3, compute: () => -393.5 + 2 * -285.8 - -74.8 },
+          ],
+        },
+        {
+          kind: 'hack',
+          title: '"Products minus reactants" + coefficients + zeros',
+          body: 'Three things to check every time:\n1. **Products − reactants** (the opposite order from bond enthalpies!)\n2. Multiply by the **coefficients**\n3. Elements like O₂ = **0**\n\nAlso watch the phase: H₂O(l) (−285.8) and H₂O(g) (−241.8) have different values.',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.8-t1',
+            type: 'num',
+            prompt: 'Find ΔH° for [[eq: CaCO3(s) -> CaO(s) + CO2(g)]]. ΔH°_{f}: CaCO₃ −1207, CaO −635, CO₂ −394 kJ/mol.',
+            answer: 178,
+            unit: 'kJ',
+            explain: '[(−635) + (−394)] − (−1207) = −1029 + 1207 = **+178 kJ** (endothermic).',
+            compute: () => -635 + -394 - -1207,
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'ΔH°_f = make 1 mol of a compound from its elements in their standard states.',
+            'ΔH°_rxn = Σ products − Σ reactants (× coefficients).',
+            'Elements in their standard state = 0.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.8-q1',
+          type: 'mcq',
+          prompt: 'Which has **ΔH°_f = 0**?',
+          choices: ['H₂O(l)', 'O₃(g)', 'N₂(g)', 'CO₂(g)'],
+          answer: 2,
+          explain: '**N₂(g)** is an element in its standard state. O₃ is not oxygen\'s standard state (O₂ is).',
+        },
+        {
+          id: 'c6.8-q2',
+          type: 'num',
+          prompt: 'Find ΔH° for [[eq: 2CO(g) + O2(g) -> 2CO2(g)]]. ΔH°_{f}: CO −110.5, CO₂ −393.5 kJ/mol.',
+          answer: -566,
+          unit: 'kJ',
+          explain: '2(−393.5) − [2(−110.5) + 0] = −787.0 + 221.0 = **−566.0 kJ**',
+          compute: () => 2 * -393.5 - 2 * -110.5,
+        },
+      ],
+      flashcards: [
+        { front: 'ΔH°_rxn from enthalpies of formation', back: 'Σ ΔH°_f(products) − Σ ΔH°_f(reactants)' },
+        { front: 'ΔH°_f of an element in its standard state', back: '**0** (e.g., O₂(g), C(graphite), Na(s))' },
+      ],
+    },
+    // ---------------- ADVANCED ----------------
+    {
+      id: 'chem-6.9',
+      ced: ['6.9'],
+      title: 'Hess\'s Law',
+      level: 'advanced',
+      minutes: 9,
+      cards: [
+        {
+          kind: 'hook',
+          body: 'Some reactions can\'t be measured directly. Try burning carbon to make only CO, and you always get some CO₂ too. Hess\'s law lets you calculate ΔH anyway, by adding up reactions you *can* measure.',
+        },
+        {
+          kind: 'concept',
+          title: 'The idea',
+          body: 'Energy is conserved, so if a process can be written as a **series of steps**, its overall ΔH = the **sum of the ΔH values of the steps**.\n\nThree rules:\n1. **Reverse** a reaction → **flip the sign** of ΔH.\n2. **Multiply** a reaction by a factor → **multiply ΔH** by the same factor.\n3. **Add** reactions → **add** their ΔH values.',
+        },
+        {
+          kind: 'example',
+          title: 'Making carbon monoxide',
+          problem: 'Find ΔH for [[eq: C(s) + 1/2O2(g) -> CO(g)]] given:\n(1) [[eq: C(s) + O2(g) -> CO2(g)]] ΔH = −393.5 kJ\n(2) [[eq: CO(g) + 1/2O2(g) -> CO2(g)]] ΔH = −283.0 kJ',
+          steps: [
+            'We need C on the left (equation 1 is already right) and CO on the right, so **reverse (2)**: CO₂ → CO + ½O₂, ΔH = **+283.0 kJ**.',
+            'Add them: C + O₂ + CO₂ → CO₂ + CO + ½O₂',
+            'Cancel CO₂ and ½O₂ → C + ½O₂ → CO',
+            'ΔH = −393.5 + 283.0 = **−110.5 kJ**',
+          ],
+          answer: 'ΔH = −110.5 kJ',
+          verify: [{ stated: -110.5, compute: () => -393.5 + 283.0 }],
+        },
+        {
+          kind: 'hack',
+          title: 'Target-first strategy',
+          body: '1. Look at the **target** equation.\n2. Find a species that appears in **only one** given equation.\n3. Flip and/or multiply that equation so the species is on the correct side with the correct coefficient.\n4. Repeat, then add everything up and check that the result matches the target.\n\nKeep a little table of each modified ΔH so the signs don\'t get lost.',
+        },
+        {
+          kind: 'try',
+          question: {
+            id: 'c6.9-t1',
+            type: 'num',
+            prompt: 'Given {{A(g) -> B(g)}} ΔH = +40 kJ. What is ΔH for {{2B(g) -> 2A(g)}}?',
+            answer: -80,
+            unit: 'kJ',
+            hint: 'Reverse (flip the sign) AND multiply by 2.',
+            explain: 'Reverse: −40 kJ. Multiply by 2: **−80 kJ**.',
+            compute: () => -40 * 2,
+          },
+        },
+        {
+          kind: 'summary',
+          points: [
+            'Overall ΔH = sum of the ΔH values of the steps.',
+            'Reverse → flip the sign. ×c → ΔH × c. Add equations → add ΔH values.',
+            'Start with species that appear in only one given equation.',
+          ],
+        },
+      ],
+      check: [
+        {
+          id: 'c6.9-q1',
+          type: 'num',
+          prompt: 'Given (1) [[eq: S(s) + O2(g) -> SO2(g)]] ΔH = −297 kJ and (2) [[eq: 2SO3(g) -> 2SO2(g) + O2(g)]] ΔH = +198 kJ, find ΔH for [[eq: 2S(s) + 3O2(g) -> 2SO3(g)]].',
+          answer: -792,
+          unit: 'kJ',
+          hint: 'Double (1), and reverse (2).',
+          explain: '2 × (1): 2S + 2O₂ → 2SO₂, ΔH = −594. Reverse (2): 2SO₂ + O₂ → 2SO₃, ΔH = −198. Sum: **−792 kJ**.',
+          compute: () => 2 * -297 + -198,
+        },
+        {
+          id: 'c6.9-q2',
+          type: 'mcq',
+          prompt: 'If a reaction\'s ΔH = −50 kJ, what is ΔH for the reaction **reversed and tripled**?',
+          choices: ['−150 kJ', '+150 kJ', '+50 kJ', '−50 kJ'],
+          answer: 1,
+          explain: 'Reverse → +50. Triple → **+150 kJ**.',
+        },
+      ],
+      flashcards: [
+        { front: 'Hess\'s law: reversing a reaction does what to ΔH?', back: 'Flips its **sign** (same size).' },
+        { front: 'Hess\'s law: multiplying a reaction by 2 does what to ΔH?', back: 'Multiplies ΔH by **2**.' },
+      ],
+    },
+  ],
+  checkpoint: [
+    {
+      id: 'c6-cp1',
+      type: 'num',
+      prompt: 'A 10.0 g sample of water cools from **80.0 °C** to **30.0 °C**. How much heat does it release? (c = 4.18 J/(g·°C))',
+      answer: 2090,
+      unit: 'J',
+      explain: 'q = (10.0)(4.18)(50.0) = **2090 J** released.',
+      compute: () => 10.0 * 4.18 * 50.0,
+    },
+    {
+      id: 'c6-cp2',
+      type: 'mcq',
+      prompt: 'Which statement about a catalyst and ΔH is correct?',
+      choices: ['A catalyst makes ΔH more negative', 'A catalyst doesn\'t change ΔH', 'A catalyst makes ΔH positive', 'A catalyst doubles ΔH'],
+      answer: 1,
+      explain: 'A catalyst lowers Ea only. The reactant and product energies, and so **ΔH**, are unchanged.',
+    },
+    {
+      id: 'c6-cp3',
+      type: 'mcq',
+      prompt: 'In a coffee-cup calorimeter, a reaction makes the water temperature rise from 21.0 °C to 27.5 °C. The reaction is…',
+      choices: ['endothermic', 'exothermic', 'at equilibrium', 'a phase change'],
+      answer: 1,
+      explain: 'The surroundings (water) warmed → the reaction **released** heat → **exothermic**.',
+    },
+    {
+      id: 'c6-cp4',
+      type: 'num',
+      prompt: 'How much heat is needed to vaporize **9.01 g of water** at 100 °C? (ΔH_vap = 40.7 kJ/mol)',
+      answer: 20.35,
+      unit: 'kJ',
+      explain: '9.01 g ÷ 18.02 = 0.500 mol × 40.7 = **20.4 kJ**',
+      compute: () => (9.01 / molarMass('H2O')) * 40.7,
+    },
+  ],
+}
