@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { GOOGLE_CLIENT_ID, renderGoogleButton, saveSession, type User } from '../lib/auth'
-import { COURSES, unitQuestions } from '../content'
-import { CED_TOPICS } from '../content/chem/ced'
+import { BUILT, CATALOG, COURSES, unitQuestions } from '../content'
+import { PLAN_ORDER, PLANS } from '../../shared/catalog'
+import { planFeatures } from './Plans'
 import { DEFAULT_MASCOT, Mascot } from '../components/Mascot'
 import { levelInfo } from '../lib/progress'
 
 // The climb shown on the landing page: foundations at the bottom, exam-ready expert at the top.
+// Each time round, the bear climbs a different subject: the same path works for every AP course.
 const STEPS = [
-  { label: 'Atoms', icon: '⚛️', caption: 'Start with the basics: atoms, moles and the periodic table.', xp: 0 },
-  { label: 'Bonds', icon: '🔗', caption: 'Build real understanding, one 5-minute lesson at a time.', xp: 320 },
-  { label: 'Reactions', icon: '⚗️', caption: 'Crack tough problems with tricks great teachers use.', xp: 1050 },
-  { label: 'Equilibrium', icon: '⚖️', caption: 'Lock it all in with quick daily reviews.', xp: 2900 },
+  { label: 'Basics', icon: '🌱', caption: 'Start with the basics, even if the subject feels brand new.', xp: 0 },
+  { label: 'Get it', icon: '💡', caption: 'Build real understanding, one 5-minute lesson at a time.', xp: 320 },
+  { label: 'Practice', icon: '🧩', caption: 'Crack tough questions with tricks great teachers use.', xp: 1050 },
+  { label: 'Remember', icon: '🧠', caption: 'Lock it in with quick daily reviews and a study plan.', xp: 2900 },
   { label: 'Expert', icon: '🏆', caption: 'Walk into the AP exam feeling like an expert.', xp: 5600 },
 ]
+const SUBJECTS = ['chem', 'stats', 'bio', 'calcab', 'apush', 'psych', 'phys1', 'csa', 'macro', 'world'].map((id) => CATALOG.find((c) => c.id === id)!)
 const STEP_COLORS = ['#3cc7bc', '#5fb0f0', '#8d8df0', '#c58ee0', '#f2c443']
 const VB_W = 360
 const VB_H = 250
@@ -32,6 +35,7 @@ function Journey() {
   const reduce = useReducedMotion()
   const [stage, setStage] = useState(reduce ? STEPS.length - 1 : 0)
   const [warp, setWarp] = useState(false)
+  const [loop, setLoop] = useState(0)
 
   useEffect(() => {
     if (reduce) return
@@ -41,6 +45,7 @@ function Journey() {
         if (last) {
           setWarp(true)
           setStage(0)
+          setLoop((n) => n + 1)
         } else {
           setWarp(false)
           setStage(stage + 1)
@@ -56,12 +61,13 @@ function Journey() {
   const g = stepGeom(stage)
   const top = stage === STEPS.length - 1
   const bearW = 17 // % of scene width
+  const subject = SUBJECTS[loop % SUBJECTS.length]
 
   return (
     <div className="journey" aria-hidden>
       <div className="hud">
-        <span className="pill">
-          ⭐ Level {lv.level} · {lv.title}
+        <span className="pill" key={subject.id}>
+          {subject.emoji} {subject.short} · Level {lv.level}
         </span>
         <div className="hud-bar">
           <div style={{ width: `${(stage / (STEPS.length - 1)) * 100}%` }} />
@@ -176,10 +182,8 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
     onUser(u)
   }
 
-  const chem = COURSES[0]
-  const units = chem.units.filter((u) => u.number > 0).length
-  const lessons = chem.units.reduce((n, u) => n + u.lessons.length, 0)
-  const questions = chem.units.reduce((n, u) => n + unitQuestions(u).length, 0)
+  const lessons = COURSES.reduce((n, c) => n + c.units.reduce((m, u) => m + u.lessons.length, 0), 0)
+  const questions = COURSES.reduce((n, c) => n + c.units.reduce((m, u) => m + unitQuestions(u).length, 0), 0)
 
   const signIn = (
     <div className="signin">
@@ -198,14 +202,14 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
       <div className="glow g1" />
       <div className="glow g2" />
       <header className="brand">
-        <span className="brand-mark">⚗️</span> AP Learning
+        <span className="brand-mark">🎓</span> AP Learning
       </header>
 
       <section className="hero">
         <h1>
           From <span className="huh">“huh?”</span> to <span className="grad">AP expert</span>
         </h1>
-        <p className="lede">Bite-size lessons, teacher tricks and friendly practice for AP Chemistry. One small step at a time.</p>
+        <p className="lede">Bite-size lessons, teacher tricks, a study plan built around your exam date and friendly practice for your AP courses. One small step at a time.</p>
         <Journey />
         {signIn}
         <p className="small muted privacy">🔒 Sign in with Google and your progress follows you to every device. It works offline, too.</p>
@@ -232,12 +236,12 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
       <Reveal>
         <section className="numbers">
           <div>
-            <b>{units}</b>
-            <span>units</span>
+            <b>{CATALOG.length}</b>
+            <span>AP courses</span>
           </div>
           <div>
-            <b>{Object.keys(CED_TOPICS).length}</b>
-            <span>CED topics</span>
+            <b>{BUILT.size}</b>
+            <span>ready now</span>
           </div>
           <div>
             <b>{lessons}</b>
@@ -249,8 +253,40 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
           </div>
         </section>
         <p className="small muted" style={{ textAlign: 'center', marginTop: 8 }}>
-          Covers the full College Board AP Chemistry course (CED, effective Fall 2024). AP Statistics is coming next.
+          Every course follows College Board's official Course and Exam Description. Ready now: {COURSES.map((c) => c.title).join(', ')}.
+          The rest are being written and checked one by one.
         </p>
+        <div className="subjects">
+          {CATALOG.map((c) => (
+            <span key={c.id} className={BUILT.has(c.id) ? 'live' : ''}>
+              {c.emoji} {c.short}
+              {BUILT.has(c.id) ? ' ✓' : ''}
+            </span>
+          ))}
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <section className="pricing">
+          <h2>Start free</h2>
+          <div className="plans" style={{ marginTop: 14 }}>
+            {PLAN_ORDER.map((id) => (
+              <div key={id} className={`plan-card ${id}`}>
+                <div className="plan-name">{PLANS[id].name}</div>
+                <div className="plan-price">
+                  {PLANS[id].price ? `$${PLANS[id].price}` : 'Free'}
+                  {PLANS[id].price > 0 && <span>/month</span>}
+                </div>
+                <ul>
+                  {planFeatures(id).map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="small muted center">No card needed for the free plan. Cancel a paid plan anytime.</p>
+        </section>
       </Reveal>
 
       <Reveal>

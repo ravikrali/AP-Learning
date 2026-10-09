@@ -1,13 +1,13 @@
-// Local-only storage: a real SQLite database (sql.js / WebAssembly) kept in memory
-// and persisted to the browser's IndexedDB. One database per signed-in user.
-// Nothing ever leaves the device.
+// Local storage: a real SQLite database (sql.js / WebAssembly) kept in memory and persisted to
+// the browser's IndexedDB. One database per signed-in user. Signed-in devices sync it with the
+// account (lib/sync.ts); guests' data never leaves the device.
 
 import initSqlJs, { type Database, type SqlValue } from 'sql.js'
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
 const IDB_NAME = 'ap-learning'
 const IDB_STORE = 'sqlite'
-const SCHEMA_VERSION = 2
+const SCHEMA_VERSION = 3
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS attempts (
   correct INTEGER NOT NULL,
   first_try INTEGER NOT NULL,
   at TEXT NOT NULL,
-  uid TEXT
+  uid TEXT,
+  lesson TEXT,                              -- lesson the question belongs to (or "unit:<id>")
+  course TEXT
 );
 CREATE TABLE IF NOT EXISTS notes (lesson_id TEXT PRIMARY KEY, body TEXT NOT NULL, updated_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS xp_log (
@@ -55,6 +57,15 @@ CREATE TABLE IF NOT EXISTS checkpoints (
   at TEXT NOT NULL,
   uid TEXT
 );
+CREATE TABLE IF NOT EXISTS plans (course_id TEXT PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS study_time (
+  day TEXT NOT NULL,
+  lesson_id TEXT NOT NULL,                  -- lesson id, or "" for practice outside lessons
+  course TEXT,
+  kind TEXT NOT NULL,                       -- lesson | checkpoint | exam | review
+  seconds INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, lesson_id, kind)
+);
 CREATE TABLE IF NOT EXISTS exams (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   exam_id TEXT NOT NULL,
@@ -72,7 +83,7 @@ CREATE TABLE IF NOT EXISTS exams (
 // Events get a random uid so the same answer is never counted twice across devices.
 
 const EVENT_TABLES: { table: string; kind: string; fields: string[] }[] = [
-  { table: 'attempts', kind: 'a', fields: ['question_id', 'context', 'correct', 'first_try', 'at'] },
+  { table: 'attempts', kind: 'a', fields: ['question_id', 'context', 'correct', 'first_try', 'at', 'lesson', 'course'] },
   { table: 'xp_log', kind: 'x', fields: ['amount', 'reason', 'day', 'at'] },
   { table: 'checkpoints', kind: 'c', fields: ['unit_id', 'score', 'total', 'at'] },
   { table: 'exams', kind: 'e', fields: ['exam_id', 'score', 'total', 'minutes', 'at'] },
@@ -92,6 +103,7 @@ const OUTBOX = {
   card: (p: string) => `'card:' || ${p}card_id, ${jsonOf(p, CARD_FIELDS)}`,
   badge: (p: string) => `'badge:' || ${p}badge_id, json_object('earned_at', ${p}earned_at)`,
   setting: (p: string) => `'set:' || substr(${p}key, 9), json_object('value', ${p}value)`,
+  plan: (p: string) => `'plan:' || ${p}course_id, json(${p}data)`,
 }
 
 function syncSql(): string {
@@ -119,16 +131,20 @@ function syncSql(): string {
   out.push(...upsert('card', 'cards', OUTBOX.card('NEW.')))
   out.push(...upsert('badge', 'badges', OUTBOX.badge('NEW.')))
   out.push(...upsert('setting', 'meta', OUTBOX.setting('NEW.'), " AND NEW.key LIKE 'setting:%'"))
+  out.push(...upsert('plan', 'plans', OUTBOX.plan('NEW.')))
   return out.join('\n')
 }
 
 /** Create tables, add columns that older versions lacked, and install the sync triggers. */
 function prepareSchema(db: Database) {
   db.exec(SCHEMA)
-  for (const { table } of EVENT_TABLES) {
+  for (const { table, fields } of EVENT_TABLES) {
     const cols = db.exec(`PRAGMA table_info(${table})`)[0]?.values.map((r) => r[1]) ?? []
-    if (!cols.includes('uid')) db.exec(`ALTER TABLE ${table} ADD COLUMN uid TEXT`)
+    for (const c of ['uid', ...fields]) if (!cols.includes(c)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${c} TEXT`)
   }
+  // Re-create the triggers every time, so a new app version can change what they record.
+  const triggers = db.exec("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'sync_%'")[0]?.values ?? []
+  for (const [name] of triggers) db.exec(`DROP TRIGGER IF EXISTS ${name}`)
   db.exec(syncSql())
 }
 
@@ -146,6 +162,7 @@ function enqueueAllSql(): string {
   parts.push(all('cards', OUTBOX.card('')))
   parts.push(all('badges', OUTBOX.badge('')))
   parts.push(all('meta', OUTBOX.setting(''), " WHERE key LIKE 'setting:%'"))
+  parts.push(all('plans', OUTBOX.plan('')))
   return parts.join('\n')
 }
 

@@ -1,5 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../lib/app'
+import { openable, useAccount } from '../lib/account'
+import { trickyTopics } from '../lib/tips'
+import { TipSheet, TrickyTopics } from '../components/Help'
+import { TodayPlan } from './Schedule'
 import { COURSES } from '../content'
 import { Progress } from '../components/bits'
 import { dueCount, getSetting, lessonStatuses, levelInfo, nextLesson, streak, totalXp, weekDays, xpToday } from '../lib/progress'
@@ -15,10 +20,14 @@ export function HomePage() {
   const goal = Number(getSetting(db, 'weeklyGoal', '4'))
   const statuses = lessonStatuses(db)
   const due = dueCount(db)
-  const course = COURSES[0]
-  const next = nextLesson(course, statuses)
+  const account = useAccount()
+  const mine = COURSES.filter((c) => openable(account, c.id))
+  const course = mine[0]
+  const next = course ? nextLesson(course, statuses) : null
   const doneCount = [...statuses.values()].filter((s) => s === 'done').length
-  const totalLessons = course.units.reduce((n, u) => n + u.lessons.length, 0)
+  const totalLessons = mine.reduce((n, c) => n + c.units.reduce((m, u) => m + u.lessons.length, 0), 0)
+  const tricky = trickyTopics(db, mine.map((c) => c.id))
+  const [tip, setTip] = useState<string | null>(null)
   const greet = GREETINGS[new Date().getDate() % GREETINGS.length]
 
   return (
@@ -38,7 +47,17 @@ export function HomePage() {
         </div>
       </div>
 
-      {next ? (
+      <TodayPlan />
+
+      {!course ? (
+        <div className="card continue">
+          <h3 style={{ marginTop: 0 }}>Choose your first course</h3>
+          <p className="muted small">Your free plan includes any one AP course. More are on the way.</p>
+          <Link className="btn block" to="/learn">
+            Browse courses ▶
+          </Link>
+        </div>
+      ) : next ? (
         <div className="card continue">
           <div className="small" style={{ fontWeight: 800, opacity: 0.9 }}>
             {statuses.get(next.lesson.id) === 'started' ? 'PICK UP WHERE YOU LEFT OFF' : 'UP NEXT'}
@@ -57,6 +76,9 @@ export function HomePage() {
           <p className="muted">Keep your memory fresh with daily review.</p>
         </div>
       )}
+
+      <TrickyTopics items={tricky} onTip={setTip} />
+      {tip && <TipSheet lessonId={tip} onClose={() => setTip(null)} />}
 
       <Link to="/review" className="card row" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div style={{ fontSize: 30 }}>🃏</div>

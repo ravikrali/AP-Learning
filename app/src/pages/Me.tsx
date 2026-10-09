@@ -1,7 +1,10 @@
 import { useRef, useState, useSyncExternalStore } from 'react'
 import { syncNow, syncStore } from '../lib/sync'
 import { Link } from 'react-router-dom'
-import { COURSES, UPCOMING } from '../content'
+import { COURSES } from '../content'
+import { PLANS } from '../../shared/catalog'
+import { courseTitle, openable, useAccount } from '../lib/account'
+import { minutesByDay } from '../lib/track'
 import type { Course } from '../content/types'
 import { useApp } from '../lib/app'
 import { Progress, TopBar } from '../components/bits'
@@ -19,6 +22,8 @@ import {
   type BadgeProgress,
 } from '../lib/progress'
 
+const ADMIN_URL = import.meta.env.DEV ? '/admin.html' : 'https://admin.aplearning.app/'
+
 export function MePage() {
   const { db, user, signOut } = useApp()
   const xp = totalXp(db)
@@ -35,6 +40,9 @@ export function MePage() {
   const cards = Number(db.get('SELECT COALESCE(SUM(reviews),0) AS n FROM cards')?.n ?? 0)
   const studyDays = Number(db.get('SELECT COUNT(DISTINCT day) AS n FROM xp_log')?.n ?? 0)
   const milestones = badgeProgress(db, COURSES[0]).milestones
+  const account = useAccount()
+  const mine = COURSES.filter((c) => openable(account, c.id))
+  const weekMinutes = minutesByDay(db, 7).reduce((n, d) => n + d.minutes, 0)
 
   function flash(t: string) {
     setToast(t)
@@ -42,7 +50,7 @@ export function MePage() {
   }
 
   async function share() {
-    const course = COURSES[0]
+    const course = mine[0] ?? COURSES[0]
     const total = course.units.reduce((n, u) => n + u.lessons.length, 0)
     const st = streak(db).days
     const text =
@@ -125,23 +133,41 @@ export function MePage() {
         </Link>
       </div>
       {toast && <div className="toast">{toast}</div>}
+      <Link to="/plans" className="card row" style={{ marginTop: 10, textDecoration: 'none', color: 'inherit', padding: 14 }}>
+        <span style={{ fontSize: 24 }}>⭐</span>
+        <span className="grow">
+          <b>{PLANS[account.ownPlan].name} plan</b>
+          <span className="small muted" style={{ display: 'block' }}>
+            {account.plan === 'all'
+              ? 'Every course included'
+              : account.courses.length
+                ? account.courses.map(courseTitle).join(', ')
+                : 'Choose your free course'}
+          </span>
+        </span>
+        <span className="muted">›</span>
+      </Link>
       {user.isAdmin && user.token && (
-        <Link to="/admin" className="card row" style={{ marginTop: 10, textDecoration: 'none', color: 'inherit', padding: 14 }}>
+        <a href={ADMIN_URL} target="_blank" rel="noreferrer" className="card row" style={{ marginTop: 10, textDecoration: 'none', color: 'inherit', padding: 14 }}>
           <span style={{ fontSize: 24 }}>🛠️</span>
           <span className="grow">
-            <b>Admin</b>
+            <b>Admin portal</b>
             <span className="small muted" style={{ display: 'block' }}>
-              Edit lessons, add videos, read feedback, manage admins
+              Dashboard, content, videos, users, feedback and admins
             </span>
           </span>
-          <span className="muted">›</span>
-        </Link>
+          <span className="muted">↗</span>
+        </a>
       )}
 
       <div className="stats" style={{ marginTop: 14 }}>
         <div className="stat">
           <b>{lessonsDone}</b>
           <span>lessons</span>
+        </div>
+        <div className="stat">
+          <b>{weekMinutes}</b>
+          <span>min this week</span>
         </div>
         <div className="stat">
           <b>{cards}</b>
@@ -155,18 +181,12 @@ export function MePage() {
 
       <div className="section-title">My courses</div>
       <div className="stack">
-        {COURSES.map((c) => (
+        {mine.map((c) => (
           <CourseProgress key={c.id} course={c} />
         ))}
-        {UPCOMING.map((u) => (
-          <div key={u.id} className="card row course-head soon">
-            <span className="course-emoji">{u.emoji}</span>
-            <div className="grow">
-              <b>{u.title}</b>
-              <div className="small muted">Coming soon</div>
-            </div>
-          </div>
-        ))}
+        <Link to="/learn" className="btn ghost block">
+          ＋ {mine.length ? 'Browse more courses' : 'Choose a course'}
+        </Link>
       </div>
 
       <div className="section-title">
@@ -242,6 +262,9 @@ export function MePage() {
           onChange={(e) => e.target.files?.[0] && importBackup(e.target.files[0])}
         />
         {msg && <p className="small">{msg}</p>}
+        <Link to="/me/privacy" className="small">
+          Privacy & terms ›
+        </Link>
       </div>
 
       <div className="section-title">About the content</div>

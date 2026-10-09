@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
-import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { CourseGate } from './pages/Plans'
+import { useStudyTimer } from './lib/track'
+import { useApp } from './lib/app'
 import { clearSession, loadSession, saveSession, type User } from './lib/auth'
 import { api } from './lib/api'
 import { startSync } from './lib/sync'
@@ -16,10 +20,13 @@ import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
 import { NotesPage } from './pages/Notes'
 import { MePage } from './pages/Me'
-import { FaqPage, FeedbackPage, HelpPage } from './pages/Support'
+import { FaqPage, FeedbackPage, HelpPage, PrivacyPage } from './pages/Support'
+import { PlansPage } from './pages/Plans'
+import { SchedulePage } from './pages/Schedule'
+import { loadAccount, refreshAccount, accountStore, setPicks } from './lib/account'
+import { COURSES } from './content'
 import { ExamHub, FrqPage, McExamPage } from './pages/Exam'
 import { SyllabusPage } from './pages/Syllabus'
-import { AdminPage } from './pages/Admin'
 import { getSetting } from './lib/progress'
 import { applyTheme } from './lib/theme'
 
@@ -31,6 +38,23 @@ function ScrollTop() {
   return null
 }
 
+/** Only for courses in her plan, and counts active study time on practice screens. */
+function Gated({ course, kind, children }: { course?: string; kind?: string; children: ReactNode }) {
+  const { courseId, unitId } = useParams()
+  const id = course ?? courseId ?? ''
+  return (
+    <CourseGate courseId={id}>
+      {kind ? <Timed kind={kind} course={id} lesson={unitId ? `unit:${unitId}` : undefined}>{children}</Timed> : children}
+    </CourseGate>
+  )
+}
+
+function Timed({ kind, course, lesson, children }: { kind: string; course?: string; lesson?: string; children: ReactNode }) {
+  const { db } = useApp()
+  useStudyTimer(db, { kind, course, lesson })
+  return <>{children}</>
+}
+
 export default function App() {
   const [user, setUser] = useState<User | null>(() => loadSession())
   const [db, setDb] = useState<LocalDB | null>(null)
@@ -39,6 +63,7 @@ export default function App() {
   useEffect(() => {
     if (!user) return
     let live = true
+    loadAccount(user.sub)
     LocalDB.open(user.sub)
       .then((d) => {
         if (!live) return
@@ -76,13 +101,23 @@ export default function App() {
     )
   }, [db, token, updateUser])
 
-  // Pick up admin changes (being added or removed as an admin) on each launch.
+  // Pick up admin changes (being added or removed as an admin) and the plan on each launch.
   useEffect(() => {
     if (!token) return
     api<{ isAdmin: boolean }>('/api/me')
       .then((r) => updateUser({ isAdmin: r.isAdmin }))
       .catch((e) => e?.status === 401 && updateUser({ token: undefined, isAdmin: false }))
+    refreshAccount().catch(() => undefined)
   }, [token, updateUser])
+
+  // Someone who already studied a course before plans existed keeps it as their free course.
+  useEffect(() => {
+    if (!db) return
+    const a = accountStore.get()
+    if (a.courses.length || a.plan === 'all') return
+    const started = COURSES.find((c) => c.units.some((u) => u.lessons.some((l) => db.get('SELECT 1 AS x FROM lesson_progress WHERE lesson_id=?', [l.id]))))
+    if (started) setPicks([started.id]).catch(() => undefined)
+  }, [db, token])
 
   if (!user) return <LoginPage onUser={setUser} />
   if (error) return <div className="login"><h1>😕</h1><p>Couldn't open your saved data: {error}</p></div>
@@ -107,20 +142,22 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/learn" element={<LearnPage />} />
             <Route path="/course/:courseId" element={<CoursePage />} />
-            <Route path="/course/:courseId/unit/:unitId" element={<UnitPage />} />
-            <Route path="/course/:courseId/unit/:unitId/checkpoint" element={<CheckpointPage />} />
+            <Route path="/course/:courseId/unit/:unitId" element={<Gated><UnitPage /></Gated>} />
+            <Route path="/course/:courseId/unit/:unitId/checkpoint" element={<Gated kind="checkpoint"><CheckpointPage /></Gated>} />
             <Route path="/lesson/:lessonId" element={<LessonPage />} />
-            <Route path="/review" element={<ReviewPage />} />
+            <Route path="/review" element={<Timed kind="review"><ReviewPage /></Timed>} />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/me" element={<MePage />} />
             <Route path="/me/help" element={<HelpPage />} />
             <Route path="/me/faq" element={<FaqPage />} />
             <Route path="/me/feedback" element={<FeedbackPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/exam" element={<ExamHub />} />
-            <Route path="/exam/mc/:format" element={<McExamPage />} />
-            <Route path="/exam/frq/:frqId" element={<FrqPage />} />
-            <Route path="/course/:courseId/syllabus" element={<SyllabusPage />} />
+            <Route path="/me/privacy" element={<PrivacyPage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/plan/:courseId" element={<SchedulePage />} />
+            <Route path="/exam" element={<Gated course="chem"><ExamHub /></Gated>} />
+            <Route path="/exam/mc/:format" element={<Gated course="chem" kind="exam"><McExamPage /></Gated>} />
+            <Route path="/exam/frq/:frqId" element={<Gated course="chem" kind="exam"><FrqPage /></Gated>} />
+            <Route path="/course/:courseId/syllabus" element={<Gated><SyllabusPage /></Gated>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

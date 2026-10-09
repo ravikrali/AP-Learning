@@ -20,11 +20,15 @@
   ],
   "vars": {
     "GOOGLE_CLIENT_ID": "1066207111886-bgdealh7knhf47b8kpetallaqi4d0587.apps.googleusercontent.com",
-    "OWNER_EMAIL": "devt309@gmail.com"
+    "OWNER_EMAIL": "devt309@gmail.com",
+    "APP_URL": "https://www.aplearning.app"
   },
+  // Stripe (set once with `npx wrangler secret put STRIPE_SECRET_KEY` and `... STRIPE_WEBHOOK_SECRET`;
+  // until then paid plans show "Coming soon").
   "observability": { "enabled": true },
   "routes": [
     { "pattern": "www.aplearning.app", "custom_domain": true },
-    { "pattern": "aplearning.app", "custom_domain": true }
+    { "pattern": "aplearning.app", "custom_domain": true },
+    { "pattern": "admin.aplearning.app", "custom_domain": true }
   ]
 }

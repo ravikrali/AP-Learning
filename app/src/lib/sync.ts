@@ -30,6 +30,8 @@ export const syncStore = {
 }
 
 let syncNowFn: (() => void) | null = null
+/** True while this device syncs with an account; analytics are only queued then (guests stay private). */
+export let syncing = false
 /** Ask for a sync right away (e.g. a "Sync now" button). */
 export function syncNow() {
   syncNowFn?.()
@@ -48,8 +50,8 @@ export function applyItem(db: LocalDB, it: SyncItem) {
       const kind = rest[0]
       const uid = rest.slice(1).join(':')
       if (kind === 'a')
-        db.exec('INSERT OR IGNORE INTO attempts(question_id, context, correct, first_try, at, uid) VALUES (?,?,?,?,?,?)', [
-          v(d.question_id), v(d.context), v(d.correct), v(d.first_try), v(d.at), uid,
+        db.exec('INSERT OR IGNORE INTO attempts(question_id, context, correct, first_try, at, uid, lesson, course) VALUES (?,?,?,?,?,?,?,?)', [
+          v(d.question_id), v(d.context), v(d.correct), v(d.first_try), v(d.at), uid, v(d.lesson), v(d.course),
         ])
       else if (kind === 'x')
         db.exec('INSERT OR IGNORE INTO xp_log(amount, reason, day, at, uid) VALUES (?,?,?,?,?)', [v(d.amount), v(d.reason), v(d.day), v(d.at), uid])
@@ -99,6 +101,12 @@ export function applyItem(db: LocalDB, it: SyncItem) {
     case 'set':
       db.exec('INSERT INTO meta(key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', [`setting:${id}`, v(d.value)])
       return
+    case 'plan':
+      db.exec(
+        'INSERT INTO plans(course_id, data, updated_at) VALUES (?,?,?) ON CONFLICT(course_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at',
+        [id, JSON.stringify(d), it.updated_at],
+      )
+      return
   }
 }
 
@@ -121,7 +129,10 @@ export function startSync(db: LocalDB, onAuthLost: () => void, onApplied: () => 
 
   const schedule = (ms: number) => {
     window.clearTimeout(timer)
-    timer = window.setTimeout(() => void run(), ms)
+    timer = window.setTimeout(() => {
+      timer = undefined
+      void run()
+    }, ms)
   }
 
   async function run() {
@@ -168,8 +179,12 @@ export function startSync(db: LocalDB, onAuthLost: () => void, onApplied: () => 
     }
   }
 
+  // Real changes go up a few seconds later; analytics alone can wait a couple of minutes.
   const unsub = db.subscribe(() => {
-    if (!running && db.outboxCount() > 0) schedule(4000)
+    if (running) return
+    const real = Number(db.get("SELECT COUNT(*) AS n FROM sync_outbox WHERE key NOT LIKE 't:%'")?.n ?? 0)
+    if (real > 0) schedule(4000)
+    else if (db.outboxCount() > 0 && timer === undefined) schedule(120_000)
   })
   const onVis = () => void run()
   const onOnline = () => void run()
@@ -177,6 +192,7 @@ export function startSync(db: LocalDB, onAuthLost: () => void, onApplied: () => 
   window.addEventListener('online', onOnline)
   const poll = window.setInterval(() => document.visibilityState === 'visible' && void run(), 3 * 60_000)
   syncNowFn = () => void run()
+  syncing = true
   void run()
 
   return () => {
@@ -187,6 +203,7 @@ export function startSync(db: LocalDB, onAuthLost: () => void, onApplied: () => 
     document.removeEventListener('visibilitychange', onVis)
     window.removeEventListener('online', onOnline)
     syncNowFn = null
+    syncing = false
     setStatus({ state: 'off' })
   }
 }

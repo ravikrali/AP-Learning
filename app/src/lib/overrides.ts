@@ -6,6 +6,7 @@
 //        check:<lessonId>:<i>       quick-check question i (prompt, hint, explain, choices, answer [multiple choice only])
 //        flash:<lessonId>:<i>       flashcard i (front, back)
 //        video:<lessonId>           { url?, src?, title? } (an empty url removes the lesson's video)
+//        yt:<lessonId>              { videos: [{ id, title, channel }] } YouTube links shown under "More videos"
 
 import { findLesson } from '../content'
 import type { Question } from '../content/types'
@@ -25,6 +26,12 @@ const LIST_FIELDS = ['steps', 'points', 'choices']
 type Obj = Record<string, unknown>
 const originals = new Map<string, Obj>()
 const videoOverrides = new Map<string, { url?: string; src?: string; title?: string }>()
+export interface YoutubeLink {
+  id: string
+  title: string
+  channel: string
+}
+const ytOverrides = new Map<string, YoutubeLink[]>()
 let current: ContentItem[] = []
 let version = 0
 const listeners = new Set<() => void>()
@@ -49,6 +56,11 @@ export function contentItem(key: string) {
 
 export function videoOverride(lessonId: string) {
   return videoOverrides.get(lessonId)
+}
+
+/** Admin-published YouTube links for a lesson (undefined = use the built-in list). */
+export function youtubeOverride(lessonId: string): YoutubeLink[] | undefined {
+  return ytOverrides.get(lessonId)
 }
 
 /** The live object a key edits (lesson, card, question or flashcard), or undefined. */
@@ -122,9 +134,15 @@ export function applyContent(items: ContentItem[]) {
   }
   originals.clear()
   videoOverrides.clear()
+  ytOverrides.clear()
   for (const it of items) {
     if (it.key.startsWith('video:')) {
       videoOverrides.set(it.key.slice(6), it.data as { url?: string; src?: string; title?: string })
+      continue
+    }
+    if (it.key.startsWith('yt:')) {
+      const list = (it.data as { videos?: YoutubeLink[] }).videos
+      if (Array.isArray(list)) ytOverrides.set(it.key.slice(3), list)
       continue
     }
     const t = contentTarget(it.key)

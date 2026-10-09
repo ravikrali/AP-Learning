@@ -1,6 +1,6 @@
-# AP Learning: AP Chemistry study app (PWA)
+# AP Learning: AP study app (PWA)
 
-A friendly, gamified study app for AP Chemistry. It is a Progressive Web App (PWA), so it can be installed on a phone like a regular app, and it works offline once loaded.
+A friendly, gamified study app for AP courses. AP Chemistry is complete; the catalog lists all 21 courses that are planned (`app/shared/catalog.ts`), and the rest show as "coming soon". It is a Progressive Web App (PWA), so it can be installed on a phone like a regular app, and it works offline once loaded.
 
 ## What's inside
 
@@ -12,6 +12,9 @@ A friendly, gamified study app for AP Chemistry. It is a Progressive Web App (PW
 | **Memory** | 262 flashcards with spaced review (Leitner boxes), capped at 15 a day so it never piles up. |
 | **Motivation** | XP and levels, a kind streak (one missed day never breaks it), a weekly goal, and 25 badges. |
 | **Notes** | A notes button on every lesson, plus a searchable Notes tab. |
+| **Study plans** | Six questions (exam date, study days, session length, time, start unit, review weeks) build a day-by-day plan that spreads the remaining lessons evenly and fills the final weeks with practice exams, FRQs and checkpoint retakes. Subscribe in Google/Apple/Outlook Calendar (a private feed at `/api/cal/<token>.ics` that updates itself) or download an .ics file. |
+| **Tricky topics & tips** | Active study time (visible tab + recent touch) and first-try accuracy are tracked per lesson. Struggling topics get a "Quick tip" button and a Home card with the lesson's own smart tricks and traps (never generated text), a step back and videos. |
+| **YouTube links** | Two popular, on-topic videos per lesson (most-viewed relevant result + an AP-topic video, chosen Oct 2026 and checked to exist), plus a search link. Admins can replace them. |
 | **Syllabus checklist** | Learn → AP Chemistry → 📋 Syllabus shows every official topic, the lesson that teaches it, and whether it's done. |
 
 Progress and notes are written first to a real SQLite database inside the browser (sql.js/WebAssembly, saved to IndexedDB), so everything works offline. When signed in with Google, changes sync through the Cloudflare backend to every device on the same account (see **Backend** below). Guests stay device-only. *Me → Save a backup file* still exports the local database.
@@ -19,7 +22,7 @@ Progress and notes are written first to a real SQLite database inside the browse
 ## How accuracy is protected
 
 - The lessons follow the official CED text. Topic numbers are shown on every lesson.
-- `npm test` (25 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4).
+- `npm test` (42 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4).
 - Two independent expert review passes checked every unit for chemistry errors. Their findings were fixed.
 - Multiple-choice options are shuffled each time a question is shown, so the right answer isn't always in the same position.
 
@@ -59,6 +62,29 @@ npx wrangler login     # once per computer
 npm run deploy         # tests, build, database migrations, upload
 ```
 
+## Plans & payments
+
+| Plan | Price | Courses |
+|---|---|---|
+| Free | $0 | any 1 |
+| Trio | $5.99/month | any 3 |
+| Everything | $12.99/month | all |
+
+Courses can be added into a free slot any time; swapping one out is allowed once per 30 days. Admins can grant a plan without payment (Admin → Students). Rules live in `app/shared/catalog.ts` and are enforced by the server.
+
+Payments use **Stripe Checkout** (no card data touches our server). One-time setup:
+
+1. Create a Stripe account; in test mode copy the secret key (`sk_test_…`).
+2. `cd app && npx wrangler secret put STRIPE_SECRET_KEY`
+3. Stripe → Developers → Webhooks → add endpoint `https://www.aplearning.app/api/billing/webhook` with events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`. Copy its signing secret, then `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
+4. Stripe → Settings → Billing → Customer portal: turn it on (used for receipts, card changes and cancelling).
+
+Products and prices are created automatically on first use (lookup keys `aplearning_three_monthly_599`, `aplearning_all_monthly_1299`). Until the key is set, paid plans show "Coming soon". Switch to live keys when ready.
+
+## Admin portal (admin.aplearning.app)
+
+A separate site served by the same Worker (`app/admin.html`, `app/src/admin/`): **Dashboard** (students, sign-ups per day, subscriptions by plan, by country and region, plan changes per month, revenue per month with a 6-month trend forecast, MRR, daily/weekly/monthly active students, study minutes, lessons finished, feature use, hardest topics, course demand), **Content**, **Videos** (lesson video + YouTube links), **Students** (search, grant plans), **Feedback** and **Admins**. Add `https://admin.aplearning.app` to the Google OAuth client's Authorized JavaScript origins.
+
 ## Backend (Cloudflare Workers + D1)
 
 The same Worker serves the app and `/api/*` (`app/worker/index.ts`), backed by the D1 database `ap-learning` (schema in `app/worker/migrations/`).
@@ -66,6 +92,7 @@ The same Worker serves the app and `/api/*` (`app/worker/index.ts`), backed by t
 - **Sign-in:** `POST /api/auth/google` checks the Google ID token's signature, audience, issuer, expiry and verified email, then creates a session (only a SHA-256 hash of the token is stored).
 - **Sync:** `POST /api/sync` uploads queued changes and returns everything newer than the device's cursor. SQLite triggers fill a local outbox; merge rules live in `app/shared/sync.ts` and are the same on the server and every device (answers/XP are never double-counted, a finished lesson never becomes unfinished, newest note or setting wins).
 - **Admin** (Me → Admin, owner `devt309@gmail.com` plus anyone added there): edit lesson text, quick checks and flashcards; publish videos; read feedback; add/remove admins. Edits are checked before publishing (equations must balance, numeric questions keep their numbers, number changes are flagged) and every change is kept in a history with one-click revert.
+- **Analytics:** devices upload `t:time` / `t:ev` items with the normal sync; the server only adds them to the statistics tables (`daily_user`, `topic_user`, `event_daily`) and never stores or returns them. Guests send nothing.
 - **Local testing:** `npm run dev:api` (local Worker + local D1 on :8787; put `DEV_AUTH=1` in `app/.dev.vars` to enable a test-only sign-in) alongside `npm run dev` (proxies `/api`).
 ## Install on the phone
 
@@ -97,7 +124,12 @@ app/
   src/content/diagrams.tsx          SVG diagrams
   src/lib/db.ts                     local SQLite storage, sync outbox triggers, backup/restore
   src/lib/sync.ts                   device ↔ account sync
-  src/pages/Admin.tsx               admin area
+  src/admin/                        admin portal (dashboard, tools)
+  src/lib/schedule.ts               study plan builder
+  src/lib/track.ts, tips.ts         study time, tricky topics, quick tips
+  shared/catalog.ts                 course catalog, plans, pick rules
+  shared/plan.ts                    study plan + calendar (.ics)
+  worker/stripe.ts                  Stripe calls and webhook checks
   worker/index.ts                   backend (auth, sync, admin, feedback)
   shared/sync.ts                    merge rules used by both sides
   src/lib/progress.ts               XP, streaks, badges, spaced review
@@ -107,9 +139,9 @@ app/
 
 Content uses a small markup: `**bold**`, `{{H2SO4}}` (formula auto-formatting), `[[eq: 2H2(g) + O2(g) -> 2H2O(l)]]` (formatted **and** balance-checked), `x^{2}`, `K_{a}`.
 
-## Next: AP Statistics
+## Adding a course
 
-The app engine is subject-agnostic. AP Statistics will be added as a second course on the same framework.
+The engine is subject-agnostic. Write the course in `app/src/content/<course>/` like `chem/`, add it to `COURSES` in `app/src/content/index.ts` (its catalog id must match `shared/catalog.ts`), add its YouTube list and practice-exam extras, and extend the tests.
 
 ---
 AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this app.

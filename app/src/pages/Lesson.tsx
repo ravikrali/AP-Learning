@@ -9,6 +9,9 @@ import { Cheer } from '../components/Cheer'
 import { NotesSheet, Progress, TopBar, VideoPlayer, useVideo, type VideoEntry } from '../components/bits'
 import { Diagram } from '../content/diagrams'
 import { completeLesson, evaluateBadges, lessonRow, recordAttempt, saveCardIndex, type BadgeDef } from '../lib/progress'
+import { track, useStudyTimer } from '../lib/track'
+import { TipSheet, TopicVideos } from '../components/Help'
+import { CourseGate } from './Plans'
 
 type Step =
   | { t: 'card'; card: Card }
@@ -33,7 +36,11 @@ export function LessonPage() {
   const { lessonId } = useParams()
   const ref = findLesson(lessonId)
   if (!ref) return <TopBar title="Lesson not found" back="/learn" />
-  return <Player key={ref.lesson.id} refx={ref} />
+  return (
+    <CourseGate courseId={ref.course.id}>
+      <Player key={ref.lesson.id} refx={ref} />
+    </CourseGate>
+  )
 }
 
 function Player({ refx }: { refx: LessonRef }) {
@@ -41,6 +48,8 @@ function Player({ refx }: { refx: LessonRef }) {
   const { db } = useApp()
   const nav = useNavigate()
   const video = useVideo(lesson.id)
+  useStudyTimer(db, { lesson: lesson.id, course: course.id, kind: 'lesson' })
+  const [tipOpen, setTipOpen] = useState(false)
 
   const steps: Step[] = useMemo(() => {
     const s: Step[] = []
@@ -66,6 +75,13 @@ function Player({ refx }: { refx: LessonRef }) {
   const [resolved, setResolved] = useState<Record<string, { correct: boolean; firstTry: boolean }>>({})
   const [notesOpen, setNotesOpen] = useState(false)
   const [result, setResult] = useState<{ xp: number; badges: BadgeDef[]; correct: number; total: number } | null>(null)
+
+  // After two questions missed on the first try, offer the lesson's own quick tips.
+  const misses = Object.values(resolved).filter((r) => !(r.correct && r.firstTry)).length
+  const openTip = () => {
+    setTipOpen(true)
+    track(db, 'tip', { course: course.id, lesson: lesson.id })
+  }
 
   const step = steps[Math.min(idx, steps.length - 1)]
   const pct = (idx / (steps.length - 1)) * 100
@@ -152,6 +168,14 @@ function Player({ refx }: { refx: LessonRef }) {
                 <b>New badge: {b.name}</b>
               </div>
             ))}
+            {result.total > 0 && result.correct / result.total < 0.7 && (
+              <button className="btn secondary block" style={{ marginTop: 12 }} onClick={openTip}>
+                💡 Quick tips for this topic
+              </button>
+            )}
+            <div style={{ marginTop: 14, textAlign: 'left' }}>
+              <TopicVideos lessonId={lesson.id} />
+            </div>
             <div className="stack" style={{ marginTop: 16 }}>
               <button className="btn secondary block" onClick={() => setNotesOpen(true)}>
                 📝 Jot down what you learned
@@ -173,6 +197,12 @@ function Player({ refx }: { refx: LessonRef }) {
         )}
       </div>
 
+      {step.t !== 'finish' && misses >= 2 && (
+        <button className="tip-fab" onClick={openTip}>
+          💡 Quick tip
+        </button>
+      )}
+
       {step.t !== 'finish' && (
         <div className="player-nav">
           {idx > 0 && (
@@ -187,6 +217,7 @@ function Player({ refx }: { refx: LessonRef }) {
       )}
 
       {notesOpen && <NotesSheet lessonId={lesson.id} title={lesson.title} onClose={() => setNotesOpen(false)} />}
+      {tipOpen && <TipSheet lessonId={lesson.id} onClose={() => setTipOpen(false)} />}
     </div>
   )
 }

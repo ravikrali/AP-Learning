@@ -1,12 +1,11 @@
+// Admin tools: edit lesson content, lesson videos and YouTube links, feedback inbox, admins.
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { COURSES } from '../content'
+import { builtInYoutube, COURSES } from '../content'
 import type { Card, Lesson, Question } from '../content/types'
-import { useApp } from '../lib/app'
+import { useAdmin } from './context'
 import { api } from '../lib/api'
 import { RichText } from '../lib/RichText'
 import { checkBalanced } from '../lib/chem'
-import { TopBar } from '../components/bits'
 import {
   contentItem,
   contentItems,
@@ -15,46 +14,10 @@ import {
   originalOf,
   refreshContent,
   videoOverride,
+  youtubeOverride,
+  type YoutubeLink,
 } from '../lib/overrides'
 import { loadVideos, type VideoEntry } from '../components/bits'
-
-type Tab = 'content' | 'videos' | 'feedback' | 'admins'
-
-export function AdminPage() {
-  const { user } = useApp()
-  const [tab, setTab] = useState<Tab>('content')
-
-  if (!user.isAdmin || !user.token)
-    return (
-      <div>
-        <TopBar title="Admin" back="/me" />
-        <div className="empty">
-          <div className="e">🔒</div>
-          <p>This area is for admins. Sign in with an admin Google account to use it.</p>
-          <Link className="btn secondary" to="/me">
-            Back
-          </Link>
-        </div>
-      </div>
-    )
-
-  return (
-    <div>
-      <TopBar title="Admin" back="/me" />
-      <div className="seg" style={{ marginBottom: 14 }}>
-        {(['content', 'videos', 'feedback', 'admins'] as Tab[]).map((t) => (
-          <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
-            {t === 'content' ? '📝 Content' : t === 'videos' ? '🎬 Videos' : t === 'feedback' ? '💬 Feedback' : '👥 Admins'}
-          </button>
-        ))}
-      </div>
-      {tab === 'content' && <ContentTab />}
-      {tab === 'videos' && <VideosTab />}
-      {tab === 'feedback' && <FeedbackTab />}
-      {tab === 'admins' && <AdminsTab />}
-    </div>
-  )
-}
 
 // ---------- lesson picker ----------
 
@@ -116,7 +79,7 @@ function preview(o: Record<string, unknown>): string {
   return s.length > 70 ? `${s.slice(0, 70)}…` : s
 }
 
-function ContentTab() {
+export function ContentTab() {
   const { lesson, picker } = useLessonPicker()
   const [editing, setEditing] = useState<string | null>(null)
 
@@ -441,12 +404,13 @@ function Editor({ itemKey, onClose }: { itemKey: string; onClose: () => void }) 
 
 // ---------- videos ----------
 
-function VideosTab() {
+export function VideosTab() {
   const { lesson, picker } = useLessonPicker()
   return (
     <div className="stack">
       {picker}
       <VideoForm key={lesson.id} lesson={lesson} />
+      <YoutubeForm key={`yt-${lesson.id}`} lesson={lesson} />
       <VideoList />
     </div>
   )
@@ -533,6 +497,95 @@ function VideoList() {
   )
 }
 
+function youtubeId(s: string): string | null {
+  const t = s.trim()
+  if (/^[\w-]{11}$/.test(t)) return t
+  const m = t.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/)
+  return m ? m[1] : null
+}
+
+/** The "More ways to learn it" YouTube links under a lesson. */
+function YoutubeForm({ lesson }: { lesson: Lesson }) {
+  const custom = youtubeOverride(lesson.id)
+  const [list, setList] = useState<YoutubeLink[]>(() => custom ?? builtInYoutube(lesson.id))
+  const [link, setLink] = useState('')
+  const [msg, setMsg] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function add() {
+    setMsg(null)
+    const id = youtubeId(link)
+    if (!id) return setMsg('That does not look like a YouTube video link.')
+    if (list.some((v) => v.id === id)) return setMsg('Already in the list.')
+    setBusy(true)
+    try {
+      // looks the video up on YouTube, so a wrong or private link is caught here
+      const info = await api<{ title: string; channel: string }>(`/api/admin/youtube?id=${id}`)
+      setList([...list, { id, title: info.title, channel: info.channel }])
+      setLink('')
+    } catch (e) {
+      setMsg((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function publish(reset = false) {
+    setMsg(null)
+    try {
+      if (reset) await api(`/api/admin/content?key=${encodeURIComponent(`yt:${lesson.id}`)}`, { method: 'DELETE' })
+      else await api('/api/admin/content', { method: 'PUT', body: { key: `yt:${lesson.id}`, data: { videos: list } } })
+      await refreshContent()
+      if (reset) setList(builtInYoutube(lesson.id))
+      setMsg(reset ? 'Back to the built-in list ✓' : 'YouTube links published ✓')
+    } catch (e) {
+      setMsg((e as Error).message)
+    }
+  }
+
+  return (
+    <div className="card stack">
+      <b>YouTube links: "More ways to learn it"</b>
+      <p className="small muted" style={{ margin: 0 }}>
+        Shown on the lesson's finish screen and in its quick tips. {custom ? 'Using your custom list.' : 'Using the built-in list.'}
+      </p>
+      {list.map((v, i) => (
+        <div key={v.id} className="row" style={{ gap: 8 }}>
+          <img src={`https://i.ytimg.com/vi/${v.id}/default.jpg`} alt="" width={64} height={48} style={{ borderRadius: 6 }} />
+          <a className="grow small" href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer">
+            <b>{v.title}</b>
+            <span className="muted" style={{ display: 'block' }}>{v.channel}</span>
+          </a>
+          <button className="btn ghost" disabled={i === 0} onClick={() => setList([v, ...list.filter((x) => x.id !== v.id)])} aria-label="Move to top">
+            ↑
+          </button>
+          <button className="btn ghost" onClick={() => setList(list.filter((x) => x.id !== v.id))} aria-label="Remove">
+            ✕
+          </button>
+        </div>
+      ))}
+      <div className="row" style={{ gap: 8 }}>
+        <input className="admin-input grow" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Paste a YouTube link" />
+        <button className="btn secondary" disabled={busy || !link.trim()} onClick={add}>
+          Add
+        </button>
+      </div>
+      <p className="small muted" style={{ margin: 0 }}>Watch a video all the way through before adding it. Popular doesn't always mean correct.</p>
+      <div className="row" style={{ gap: 10 }}>
+        <button className="btn" onClick={() => publish()}>
+          Publish links
+        </button>
+        {custom && (
+          <button className="btn secondary" onClick={() => publish(true)}>
+            Use built-in list
+          </button>
+        )}
+      </div>
+      {msg && <p className="small" style={{ margin: 0 }}>{msg}</p>}
+    </div>
+  )
+}
+
 // ---------- feedback ----------
 
 interface FeedbackRow {
@@ -546,7 +599,7 @@ interface FeedbackRow {
   resolved: number
 }
 
-function FeedbackTab() {
+export function FeedbackTab() {
   const [items, setItems] = useState<FeedbackRow[] | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const load = () =>
@@ -592,8 +645,8 @@ function FeedbackTab() {
 
 // ---------- admins ----------
 
-function AdminsTab() {
-  const { user } = useApp()
+export function AdminsTab() {
+  const { user } = useAdmin()
   const [items, setItems] = useState<{ email: string; added_by: string; added_at: string; owner: boolean }[]>([])
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState<string | null>(null)

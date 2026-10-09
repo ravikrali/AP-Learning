@@ -5,6 +5,9 @@
 //   ev:c:<uid>  checkpoint result   ev:e:<uid>  exam result        (events: written once, never change)
 //   lesson:<id> lesson progress     note:<id>   note (body "" = deleted)
 //   card:<id>   flashcard schedule  badge:<id>  earned badge       set:<name>  a setting
+//   plan:<course> study plan (see shared/plan.ts)
+//   t:time:<uid> / t:ev:<uid>  learning analytics (upload only: the server adds them to its
+//               statistics and never stores or returns them)
 //
 // Merge rules (the same on every device and on the server, so everyone converges):
 //   events      first copy wins (they never change)
@@ -19,7 +22,12 @@ export interface SyncItem {
   updated_at: string
 }
 
-export const KEY_PATTERN = /^(ev:[axce]:[\w.\-:]{1,80}|(lesson|note|card|badge|set):[\w.#\-:]{1,120})$/
+export const KEY_PATTERN = /^(ev:[axce]:[\w.\-:]{1,80}|t:(time|ev):\w{1,40}|(lesson|note|card|badge|set|plan):[\w.#\-:]{1,120})$/
+
+export const isTelemetry = (key: string) => key.startsWith('t:')
+
+/** Largest allowed item, in characters of JSON (study plans are the big ones). */
+export const maxItemSize = (key: string) => (key.startsWith('plan:') ? 150_000 : 40_000)
 
 function minStr(a: unknown, b: unknown): unknown {
   if (typeof a !== 'string') return b

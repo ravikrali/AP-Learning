@@ -3,6 +3,7 @@
 // streak, and the daily review pile is capped so it can never become a wall.
 
 import type { Course, Lesson, Unit } from '../content/types'
+import { questionTopic } from '../content'
 import { today, type LocalDB } from './db'
 
 export const XP = {
@@ -128,8 +129,9 @@ export function recordAttempt(db: LocalDB, questionId: string, context: string, 
   let award = 0
   db.tx(() => {
     const before = db.get('SELECT 1 AS x FROM attempts WHERE question_id=? AND correct=1', [questionId])
-    db.exec('INSERT INTO attempts(question_id, context, correct, first_try, at) VALUES (?,?,?,?,?)', [
-      questionId, context, correct ? 1 : 0, firstTry ? 1 : 0, new Date().toISOString(),
+    const home = questionTopic(questionId)
+    db.exec('INSERT INTO attempts(question_id, context, correct, first_try, at, lesson, course) VALUES (?,?,?,?,?,?,?)', [
+      questionId, context, correct ? 1 : 0, firstTry ? 1 : 0, new Date().toISOString(), home?.lesson ?? null, home?.course ?? null,
     ])
     if (correct && !before) {
       award = firstTry ? XP.firstTry : XP.afterHint

@@ -17,6 +17,8 @@ const HOW_IT_WORKS: { e: string; t: string; d: string }[] = [
   { e: '📝', t: 'Practice exams', d: 'Multiple-choice sets weighted like the real exam, plus free-response questions you score yourself with a rubric.' },
   { e: '✏️', t: 'Notes', d: 'Tap 📝 in any lesson to write notes in your own words. Find them all in the Notes tab.' },
   { e: '🔥', t: 'XP, levels and streaks', d: 'Earn XP for lessons, first-try answers and reviews. XP is never taken away. Missing one day never breaks your streak; only two missed days in a row do.' },
+  { e: '🗓️', t: 'Study plan', d: 'Open a course and tap "Make my study plan". Answer six quick questions (exam date, study days, session length, time, where to start, review weeks) and get a day-by-day plan you can add to Google, Apple or Outlook Calendar.' },
+  { e: '💪', t: 'Quick tips', d: 'If a topic is being tricky, a "Quick tip" button appears with the lesson’s smart tricks, common traps and popular videos. Tricky topics also show up on the Home screen until you have them.' },
 ]
 
 export function HelpPage() {
@@ -88,6 +90,22 @@ const FAQ: { q: string; a: string }[] = [
   {
     q: 'Why do flashcards come back on different days?',
     a: 'It is called spaced review. Seeing a fact again just before you would forget it makes it stick much longer than re-reading it many times in one night.',
+  },
+  {
+    q: 'What do the plans include?',
+    a: 'Free: any 1 course. Trio ($5.99/month): any 3 courses. Everything ($12.99/month): every course, including new ones as they are added. Every plan includes all lessons, checkpoints, practice exams, study plans and sync. Cancel anytime; you keep access until the end of the month you paid for.',
+  },
+  {
+    q: 'Can I change which courses I picked?',
+    a: 'You can add a course into a free slot any time. Swapping a course out is allowed once every 30 days. Your progress in a course is never deleted, so it is all there if you pick it again.',
+  },
+  {
+    q: 'Which courses are coming?',
+    a: 'All 21 AP courses listed under Learn. AP Chemistry is ready now. Tap a "coming soon" course to tell us you want it; the most-wanted courses are written first.',
+  },
+  {
+    q: 'What do you do with my study data?',
+    a: 'We record which questions you answer and how long you spend on each topic so the app can spot tricky topics, offer tips and show your study time. Combined totals across all students help us find lessons that need improving. We never sell data or show ads. See Me → Privacy & terms.',
   },
   {
     q: 'Is this app made by College Board?',
@@ -221,6 +239,39 @@ export function FeedbackPage() {
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+export function PrivacyPage() {
+  return (
+    <div>
+      <TopBar title="Privacy & terms" back="/me" />
+      <div className="card small stack">
+        <b>What we keep</b>
+        <ul className="rich" style={{ paddingLeft: 20, margin: 0 }}>
+          <li>Your Google name, email and profile picture (to sign you in), and the country you signed up from.</li>
+          <li>Your progress: lessons, answers, flashcards, notes, settings and study plans, so they sync to your devices.</li>
+          <li>Learning statistics: how long you actively study each topic and how often you get questions right, so the app can spot tricky topics and offer tips.</li>
+          <li>Your plan and payment status. Card details are handled by Stripe and never reach us.</li>
+        </ul>
+        <b>How it is used</b>
+        <ul className="rich" style={{ paddingLeft: 20, margin: 0 }}>
+          <li>To run the app for you: sync, tips, study plans and calendar reminders.</li>
+          <li>Combined totals (for example "most students find 7.7 hard") help us improve lessons. Admins can see account details to help with support.</li>
+          <li>We never sell your data, never show ads, and never share it except with the services that run the app (Cloudflare for hosting, Google for sign-in, Stripe for payments).</li>
+        </ul>
+        <b>Guests</b>
+        <p style={{ margin: 0 }}>Without signing in, everything stays on your device and nothing is sent to us.</p>
+        <b>Your choices</b>
+        <p style={{ margin: 0 }}>Email {FEEDBACK_EMAIL} to get a copy of your data or to delete your account.</p>
+        <b>Subscriptions</b>
+        <p style={{ margin: 0 }}>
+          Paid plans renew monthly until cancelled. Cancel anytime from Plans; you keep access until the end of the month you paid for.
+          A parent or guardian should make the purchase.
+        </p>
+        <p className="muted" style={{ margin: 0 }}>AP® is a trademark of College Board, which is not affiliated with this app.</p>
+      </div>
     </div>
   )
 }

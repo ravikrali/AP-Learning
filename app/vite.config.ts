@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => ({
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,wasm,woff2}'],
+        // the admin portal is a separate site (admin.aplearning.app) and is never cached in the app
+        globIgnores: ['**/admin*'],
         // videos.json is fetched fresh when online so new videos show up without an app update
         runtimeCaching: [
           { urlPattern: /videos\.json$/, handler: 'NetworkFirst', options: { cacheName: 'videos-manifest' } },
@@ -24,12 +26,12 @@ export default defineConfig(({ mode }) => ({
         ],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         // the backend is never served from the offline cache
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/admin/],
       },
       manifest: {
         name: 'AP Learning',
         short_name: 'AP Learning',
-        description: 'Short, friendly lessons and practice for AP Chemistry.',
+        description: 'Short, friendly lessons, practice and study plans for AP courses.',
         theme_color: '#12141c',
         background_color: '#12141c',
         display: 'standalone',
@@ -52,7 +54,10 @@ export default defineConfig(({ mode }) => ({
           chunkSizeWarningLimit: 5000,
           rolldownOptions: { output: { codeSplitting: false } },
         }
-      : { chunkSizeWarningLimit: 1200 },
+      : {
+          chunkSizeWarningLimit: 1200,
+          rolldownOptions: { input: { main: 'index.html', admin: 'admin.html' } },
+        },
   // in development, /api goes to the local Worker started by `npm run dev:api`
   server: { proxy: { '/api': 'http://localhost:8787' } },
   test: {
