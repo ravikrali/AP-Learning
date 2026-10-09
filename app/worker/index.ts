@@ -382,6 +382,12 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url)
+    // One address for everyone: Google sign-in only works on origins registered in Google Cloud,
+    // so send the bare domain to www.
+    if (url.hostname === 'aplearning.app') {
+      url.hostname = 'www.aplearning.app'
+      return Response.redirect(url.toString(), 301)
+    }
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(req)
     try {
       return await route(req, env, url)
