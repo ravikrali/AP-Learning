@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import { findFlashcard } from '../content'
 import { useApp } from '../lib/app'
 import { RichText } from '../lib/RichText'
-import { Confetti, Progress, TopBar } from '../components/bits'
+import { Progress, TopBar } from '../components/bits'
+import { Cheer } from '../components/Cheer'
+import { pick, REVIEW_CHEERS } from '../lib/cheer'
 import { dueCards, evaluateBadges, reviewCard } from '../lib/progress'
 
 export function ReviewPage() {
@@ -50,12 +52,11 @@ export function ReviewPage() {
     return (
       <div>
         <TopBar title="Review" />
-        <Confetti />
         <div className="celebrate">
-          <div className="big">🧠</div>
-          <h2>All done for today!</h2>
-          <p className="muted">You reviewed {doneCount} cards. Each review makes the memory last longer.</p>
-          <Link to="/" className="btn">
+          <Cheer message={pick(REVIEW_CHEERS)} headline="All done for today!">
+            <div className="sub">You reviewed {doneCount} cards. Each review makes the memory last longer.</div>
+          </Cheer>
+          <Link to="/" className="btn" style={{ marginTop: 16 }}>
             Back home
           </Link>
         </div>

@@ -272,21 +272,21 @@ interface Stats {
   xp: number
 }
 
-const GENERAL_BADGES: (BadgeDef & { test: (s: Stats) => boolean })[] = [
-  { id: 'first-step', name: 'First Step', emoji: '🌱', desc: 'Finish your first lesson', test: (s) => s.lessonsDone >= 1 },
-  { id: 'ten-lessons', name: 'Getting Into It', emoji: '📚', desc: 'Finish 10 lessons', test: (s) => s.lessonsDone >= 10 },
-  { id: 'thirty-lessons', name: 'Steady Learner', emoji: '🧗', desc: 'Finish 30 lessons', test: (s) => s.lessonsDone >= 30 },
-  { id: 'sixty-lessons', name: 'Unstoppable', emoji: '🚀', desc: 'Finish 60 lessons', test: (s) => s.lessonsDone >= 60 },
-  { id: 'streak-3', name: 'Warming Up', emoji: '🔥', desc: 'Reach a 3-day streak', test: (s) => s.streakDays >= 3 },
-  { id: 'streak-7', name: 'One Great Week', emoji: '🌟', desc: 'Reach a 7-day streak', test: (s) => s.streakDays >= 7 },
-  { id: 'streak-21', name: 'Habit Formed', emoji: '🏅', desc: 'Reach a 21-day streak', test: (s) => s.streakDays >= 21 },
-  { id: 'cards-50', name: 'Memory Builder', emoji: '🧠', desc: 'Review 50 flashcards', test: (s) => s.cardsReviewed >= 50 },
-  { id: 'cards-300', name: 'Memory Palace', emoji: '🏛️', desc: 'Review 300 flashcards', test: (s) => s.cardsReviewed >= 300 },
-  { id: 'notes-5', name: 'Note Taker', emoji: '📝', desc: 'Write notes on 5 lessons', test: (s) => s.notes >= 5 },
-  { id: 'perfect-checkpoint', name: 'Flawless', emoji: '💎', desc: 'Get every question right on a unit checkpoint', test: (s) => s.perfectCheckpoints >= 1 },
-  { id: 'first-exam', name: 'Exam Ready', emoji: '🎓', desc: 'Complete a practice exam', test: (s) => s.exams >= 1 },
-  { id: 'xp-1000', name: 'Thousand Club', emoji: '⚡', desc: 'Earn 1,000 XP', test: (s) => s.xp >= 1000 },
-  { id: 'xp-5000', name: 'Powerhouse', emoji: '🌋', desc: 'Earn 5,000 XP', test: (s) => s.xp >= 5000 },
+const GENERAL_BADGES: (BadgeDef & { stat: keyof Stats; goal: number })[] = [
+  { id: 'first-step', name: 'First Step', emoji: '🌱', desc: 'Finish your first lesson', stat: 'lessonsDone', goal: 1 },
+  { id: 'ten-lessons', name: 'Getting Into It', emoji: '📚', desc: 'Finish 10 lessons', stat: 'lessonsDone', goal: 10 },
+  { id: 'thirty-lessons', name: 'Steady Learner', emoji: '🧗', desc: 'Finish 30 lessons', stat: 'lessonsDone', goal: 30 },
+  { id: 'sixty-lessons', name: 'Unstoppable', emoji: '🚀', desc: 'Finish 60 lessons', stat: 'lessonsDone', goal: 60 },
+  { id: 'streak-3', name: 'Warming Up', emoji: '🔥', desc: 'Reach a 3-day streak', stat: 'streakDays', goal: 3 },
+  { id: 'streak-7', name: 'One Great Week', emoji: '🌟', desc: 'Reach a 7-day streak', stat: 'streakDays', goal: 7 },
+  { id: 'streak-21', name: 'Habit Formed', emoji: '🏅', desc: 'Reach a 21-day streak', stat: 'streakDays', goal: 21 },
+  { id: 'cards-50', name: 'Memory Builder', emoji: '🧠', desc: 'Review 50 flashcards', stat: 'cardsReviewed', goal: 50 },
+  { id: 'cards-300', name: 'Memory Palace', emoji: '🏛️', desc: 'Review 300 flashcards', stat: 'cardsReviewed', goal: 300 },
+  { id: 'notes-5', name: 'Note Taker', emoji: '📝', desc: 'Write notes on 5 lessons', stat: 'notes', goal: 5 },
+  { id: 'perfect-checkpoint', name: 'Flawless', emoji: '💎', desc: 'Get every question right on a unit checkpoint', stat: 'perfectCheckpoints', goal: 1 },
+  { id: 'first-exam', name: 'Exam Ready', emoji: '🎓', desc: 'Complete a practice exam', stat: 'exams', goal: 1 },
+  { id: 'xp-1000', name: 'Thousand Club', emoji: '⚡', desc: 'Earn 1,000 XP', stat: 'xp', goal: 1000 },
+  { id: 'xp-5000', name: 'Powerhouse', emoji: '🌋', desc: 'Earn 5,000 XP', stat: 'xp', goal: 5000 },
 ]
 
 export function allBadges(course: Course): BadgeDef[] {
@@ -307,9 +307,8 @@ export function earnedBadges(db: LocalDB): Map<string, string> {
 }
 
 /** Award any badges newly earned; returns them so the UI can celebrate. */
-export function evaluateBadges(db: LocalDB, course: Course): BadgeDef[] {
-  const statuses = lessonStatuses(db)
-  const stats: Stats = {
+function badgeStats(db: LocalDB, statuses: Map<string, LessonStatus>): Stats {
+  return {
     lessonsDone: [...statuses.values()].filter((s) => s === 'done').length,
     streakDays: streak(db).days,
     cardsReviewed: Number(db.get('SELECT COALESCE(SUM(reviews),0) AS n FROM cards')?.n ?? 0),
@@ -318,9 +317,49 @@ export function evaluateBadges(db: LocalDB, course: Course): BadgeDef[] {
     exams: Number(db.get('SELECT COUNT(*) AS n FROM exams')?.n ?? 0),
     xp: totalXp(db),
   }
+}
+
+export interface BadgeProgress {
+  badge: BadgeDef
+  earned: boolean
+  value: number
+  goal: number
+}
+
+/** Every badge with how far along she is: course badges (one per unit + champion) and general milestones. */
+export function badgeProgress(db: LocalDB, course: Course): { course: BadgeProgress[]; milestones: BadgeProgress[] } {
+  const statuses = lessonStatuses(db)
+  const stats = badgeStats(db, statuses)
+  const have = earnedBadges(db)
+  const defs = new Map(allBadges(course).map((b) => [b.id, b]))
+  const courseItems: BadgeProgress[] = course.units.map((u) => {
+    const p = unitProgress(u, statuses)
+    const id = `unit-${u.id}`
+    return { badge: defs.get(id)!, earned: have.has(id), value: p.done, goal: p.total }
+  })
+  const lessons = course.units.flatMap((u) => u.lessons)
+  const champ = `course-${course.id}`
+  courseItems.push({
+    badge: defs.get(champ)!,
+    earned: have.has(champ),
+    value: lessons.filter((l) => statuses.get(l.id) === 'done').length,
+    goal: lessons.length,
+  })
+  const milestones = GENERAL_BADGES.map((b) => ({
+    badge: defs.get(b.id)!,
+    earned: have.has(b.id),
+    value: Math.min(stats[b.stat], b.goal),
+    goal: b.goal,
+  }))
+  return { course: courseItems, milestones }
+}
+
+export function evaluateBadges(db: LocalDB, course: Course): BadgeDef[] {
+  const statuses = lessonStatuses(db)
+  const stats = badgeStats(db, statuses)
   const have = earnedBadges(db)
   const fresh: BadgeDef[] = []
-  for (const b of GENERAL_BADGES) if (!have.has(b.id) && b.test(stats)) fresh.push(b)
+  for (const b of GENERAL_BADGES) if (!have.has(b.id) && stats[b.stat] >= b.goal) fresh.push(b)
   for (const u of course.units) {
     const id = `unit-${u.id}`
     if (!have.has(id) && u.lessons.length && u.lessons.every((l) => statuses.get(l.id) === 'done'))

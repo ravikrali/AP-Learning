@@ -1,29 +1,68 @@
 import { useRef, useState } from 'react'
-import { COURSES } from '../content'
+import { Link } from 'react-router-dom'
+import { COURSES, UPCOMING } from '../content'
+import type { Course } from '../content/types'
 import { useApp } from '../lib/app'
 import { Progress, TopBar } from '../components/bits'
-import { allBadges, earnedBadges, getSetting, levelInfo, setSetting, streak, totalXp } from '../lib/progress'
+import { MASCOTS, Mascot } from '../components/Mascot'
+import { useMascotLook } from '../components/Cheer'
+import { applyTheme } from '../lib/theme'
+import {
+  badgeProgress,
+  getSetting,
+  lessonStatuses,
+  levelInfo,
+  setSetting,
+  streak,
+  totalXp,
+  type BadgeProgress,
+} from '../lib/progress'
 
 export function MePage() {
   const { db, user, signOut } = useApp()
   const xp = totalXp(db)
   const lv = levelInfo(xp)
-  const earned = earnedBadges(db)
-  const course = COURSES[0]
-  const badges = allBadges(course)
-  const theme = getSetting(db, 'theme', 'auto')
+  const theme = getSetting(db, 'theme', 'dark')
   const goal = getSetting(db, 'weeklyGoal', '4')
+  const look = useMascotLook()
   const fileRef = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
 
-  const lessonsDone = Number(db.get("SELECT COUNT(*) AS n FROM lesson_progress WHERE status='done'")?.n ?? 0)
+  const statuses = lessonStatuses(db)
+  const lessonsDone = [...statuses.values()].filter((s) => s === 'done').length
   const cards = Number(db.get('SELECT COALESCE(SUM(reviews),0) AS n FROM cards')?.n ?? 0)
   const studyDays = Number(db.get('SELECT COUNT(DISTINCT day) AS n FROM xp_log')?.n ?? 0)
+  const milestones = badgeProgress(db, COURSES[0]).milestones
+
+  function flash(t: string) {
+    setToast(t)
+    window.setTimeout(() => setToast(null), 2600)
+  }
+
+  async function share() {
+    const course = COURSES[0]
+    const total = course.units.reduce((n, u) => n + u.lessons.length, 0)
+    const st = streak(db).days
+    const text =
+      `I'm learning ${course.title} on AP Learning! 📚 ${lessonsDone} of ${total} lessons done, ` +
+      `Level ${lv.level} (${lv.title})${st > 1 ? `, ${st}-day streak 🔥` : ''}.`
+    const url = window.location.origin
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'My AP Learning progress', text, url })
+        return
+      }
+      await navigator.clipboard.writeText(`${text} ${url}`)
+      flash('Copied! Paste it into a message. 📋')
+    } catch (e) {
+      if ((e as Error).name !== 'AbortError') flash("Couldn't share from this browser.")
+    }
+  }
 
   function setTheme(t: string) {
     setSetting(db, 'theme', t)
-    if (t === 'auto') delete document.documentElement.dataset.theme
-    else document.documentElement.dataset.theme = t
+    applyTheme(t)
   }
 
   function exportBackup() {
@@ -70,6 +109,22 @@ export function MePage() {
         </div>
       </div>
 
+      <div className="quick">
+        <button onClick={share}>
+          <span className="qi">📤</span>Share
+        </button>
+        <Link to="/me/help">
+          <span className="qi">🧭</span>Help
+        </Link>
+        <Link to="/me/faq">
+          <span className="qi">❓</span>FAQ
+        </Link>
+        <Link to="/me/feedback">
+          <span className="qi">💬</span>Feedback
+        </Link>
+      </div>
+      {toast && <div className="toast">{toast}</div>}
+
       <div className="stats" style={{ marginTop: 14 }}>
         <div className="stat">
           <b>{lessonsDone}</b>
@@ -85,18 +140,28 @@ export function MePage() {
         </div>
       </div>
 
-      <div className="section-title">
-        Badges · {earned.size}/{badges.length}
-      </div>
-      <div className="badges">
-        {badges.map((b) => (
-          <div key={b.id} className={`badge ${earned.has(b.id) ? '' : 'locked'}`} title={b.desc}>
-            <span className="e">{b.emoji}</span>
-            <b>{b.name}</b>
-            <div className="small muted" style={{ fontSize: 11, lineHeight: 1.2, marginTop: 2 }}>
-              {b.desc}
+      <div className="section-title">My courses</div>
+      <div className="stack">
+        {COURSES.map((c) => (
+          <CourseProgress key={c.id} course={c} />
+        ))}
+        {UPCOMING.map((u) => (
+          <div key={u.id} className="card row course-head soon">
+            <span className="course-emoji">{u.emoji}</span>
+            <div className="grow">
+              <b>{u.title}</b>
+              <div className="small muted">Coming soon</div>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="section-title">
+        Milestones · {milestones.filter((m) => m.earned).length}/{milestones.length}
+      </div>
+      <div className="badges">
+        {milestones.map((m) => (
+          <BadgeTile key={m.badge.id} item={m} />
         ))}
       </div>
 
@@ -105,9 +170,26 @@ export function MePage() {
         <div>
           <b>Appearance</b>
           <div className="seg" style={{ marginTop: 6 }}>
-            {['auto', 'light', 'dark'].map((t) => (
+            {['dark', 'light', 'auto'].map((t) => (
               <button key={t} className={theme === t ? 'on' : ''} onClick={() => setTheme(t)}>
-                {t === 'auto' ? 'Auto' : t === 'light' ? '☀️ Light' : '🌙 Dark'}
+                {t === 'auto' ? '📱 Phone' : t === 'light' ? '☀️ Light' : '🌙 Dark'}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <b>Study buddy</b>
+          <div className="buddies" style={{ marginTop: 6 }}>
+            {MASCOTS.map((m) => (
+              <button
+                key={m.id}
+                className={look === m.id ? 'on' : ''}
+                onClick={() => setSetting(db, 'mascot', m.id)}
+                aria-label={`Choose ${m.name}`}
+                aria-pressed={look === m.id}
+              >
+                <Mascot look={m.id} size={58} animate={look === m.id} />
+                <span>{m.name}</span>
               </button>
             ))}
           </div>
@@ -154,14 +236,88 @@ export function MePage() {
           that involves a calculation is re-checked automatically by the app's test suite.
         </p>
         <p className="muted" style={{ marginBottom: 0 }}>
-          AP® is a trademark of College Board, which is not affiliated with this app. Study streak today:{' '}
-          {streak(db).studiedToday ? 'yes ✓' : 'not yet'}.
+          AP® is a trademark of College Board, which is not affiliated with this app.
         </p>
       </div>
 
       <button className="btn ghost block" style={{ marginTop: 16 }} onClick={signOut}>
         Sign out
       </button>
+    </div>
+  )
+}
+
+/** A course's overall progress; tap to see the badge for each unit and how close each one is. */
+function CourseProgress({ course }: { course: Course }) {
+  const { db } = useApp()
+  const [open, setOpen] = useState(false)
+  const items = badgeProgress(db, course).course
+  const champ = items[items.length - 1]
+  const pct = champ.goal ? Math.round((champ.value / champ.goal) * 100) : 0
+  const earned = items.filter((b) => b.earned).length
+  return (
+    <div className="card course-card">
+      <button className="course-head row" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+        <span className="course-emoji">{course.emoji}</span>
+        <span className="grow" style={{ textAlign: 'left' }}>
+          <b>{course.title}</b>
+          <span className="small muted" style={{ display: 'block' }}>
+            {champ.value} of {champ.goal} lessons · {earned}/{items.length} badges
+          </span>
+          <span style={{ display: 'block', marginTop: 6 }}>
+            <Progress pct={pct} />
+          </span>
+        </span>
+        <span className="course-pct">{pct}%</span>
+        <span className={`chev ${open ? 'open' : ''}`} aria-hidden>
+          ›
+        </span>
+      </button>
+      {open && (
+        <div className="badge-rows">
+          {items.map((b, i) => {
+            const unit = course.units[i]
+            return (
+              <div key={b.badge.id} className={`badge-row ${b.earned ? 'earned' : ''}`}>
+                <span className="e">{b.badge.emoji}</span>
+                <div className="grow">
+                  <div className="row" style={{ gap: 6 }}>
+                    <b className="grow">{b.badge.name}</b>
+                    <span className="small muted">
+                      {b.earned ? 'Earned ✓' : `${b.value}/${b.goal}`}
+                    </span>
+                  </div>
+                  <div className="small muted">
+                    {unit ? (unit.number === 0 ? unit.title : `Unit ${unit.number}: ${unit.title}`) : 'Every lesson in the course'}
+                  </div>
+                  <Progress pct={b.goal ? (b.value / b.goal) * 100 : 0} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function BadgeTile({ item }: { item: BadgeProgress }) {
+  const { badge, earned, value, goal } = item
+  return (
+    <div className={`badge ${earned ? '' : 'locked'}`} title={badge.desc}>
+      <span className="e">{badge.emoji}</span>
+      <b>{badge.name}</b>
+      <div className="small muted" style={{ fontSize: 11, lineHeight: 1.2, marginTop: 2 }}>
+        {badge.desc}
+      </div>
+      {!earned && goal > 1 && (
+        <div className="mini">
+          <Progress pct={(value / goal) * 100} />
+          <span>
+            {value}/{goal}
+          </span>
+        </div>
+      )}
     </div>
   )
 }

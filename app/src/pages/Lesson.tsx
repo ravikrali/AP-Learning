@@ -5,7 +5,8 @@ import type { Card, Question } from '../content/types'
 import { useApp } from '../lib/app'
 import { RichText } from '../lib/RichText'
 import { QuestionView } from '../components/QuestionView'
-import { Confetti, NotesSheet, Progress, TopBar, VideoPlayer, useVideo, type VideoEntry } from '../components/bits'
+import { Cheer } from '../components/Cheer'
+import { NotesSheet, Progress, TopBar, VideoPlayer, useVideo, type VideoEntry } from '../components/bits'
 import { Diagram } from '../content/diagrams'
 import { completeLesson, evaluateBadges, lessonRow, recordAttempt, saveCardIndex, type BadgeDef } from '../lib/progress'
 
@@ -137,13 +138,13 @@ function Player({ refx }: { refx: LessonRef }) {
 
         {step.t === 'finish' && result && (
           <div className="celebrate">
-            {(result.xp > 0 || result.badges.length > 0) && <Confetti />}
-            <div className="big">🎉</div>
-            <h2>Lesson complete!</h2>
-            <p className="muted">
-              {result.total > 0 && `You got ${result.correct} of ${result.total} quick-check questions. `}
-              {result.correct === result.total ? 'Fantastic!' : 'Every try makes your brain stronger.'}
-            </p>
+            <Cheer score={result.correct} total={result.total} headline="Lesson complete!">
+              {result.total > 0 && (
+                <div className="sub">
+                  Quick check: {result.correct} of {result.total}
+                </div>
+              )}
+            </Cheer>
             {result.xp > 0 && <p className="xp-pop" style={{ fontSize: 22 }}>+{result.xp} XP</p>}
             {result.badges.map((b) => (
               <div key={b.id} className="card" style={{ margin: '10px 0' }}>

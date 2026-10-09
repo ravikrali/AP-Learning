@@ -5,7 +5,8 @@ import type { McqQuestion, Unit } from '../content/types'
 import { CHEM_FRQS } from '../content/chem/frq'
 import { useApp } from '../lib/app'
 import { RichText, renderInline } from '../lib/RichText'
-import { Confetti, Progress, TopBar } from '../components/bits'
+import { Progress, TopBar } from '../components/bits'
+import { Cheer } from '../components/Cheer'
 import { evaluateBadges, recordAttempt, saveExam, type BadgeDef } from '../lib/progress'
 import { shuffle } from './Checkpoint'
 import { choiceOrder } from '../lib/choices'
@@ -174,14 +175,13 @@ export function McExamPage() {
       <div>
         <TopBar title="Results" back="/exam" />
         <div className="celebrate">
-          {pct >= 60 && <Confetti />}
-          <div className="big">{pct >= 80 ? '🏆' : pct >= 60 ? '🌟' : '💪'}</div>
-          <h2>
-            {result.score} / {questions.length} ({pct}%)
-          </h2>
-          <p className="muted">
-            {pct >= 80 ? 'Excellent work!' : pct >= 60 ? 'Solid! Review the ones you missed below.' : 'Every practice exam shows you exactly what to review next. That\'s how scores go up.'}
-          </p>
+          <Cheer score={result.score} total={questions.length} headline={`${result.score} / ${questions.length} (${pct}%)`}>
+            <div className="sub">
+              {pct >= 80
+                ? 'Excellent work under exam conditions!'
+                : 'The questions you missed are listed below, with explanations. Reviewing them is how scores go up.'}
+            </div>
+          </Cheer>
           {result.badges.map((b) => (
             <div key={b.id} className="card" style={{ margin: '10px 0' }}>
               <div style={{ fontSize: 40 }}>{b.emoji}</div>
@@ -291,12 +291,9 @@ export function FrqPage() {
       <div>
         <TopBar title="FRQ score" back="/exam" />
         <div className="celebrate">
-          {done.score / total >= 0.6 && <Confetti />}
-          <div className="big">✍️</div>
-          <h2>
-            {done.score} / {total} points
-          </h2>
-          <p className="muted">Scoring yourself against a rubric is exactly how AP graders think. Great practice!</p>
+          <Cheer score={done.score} total={total} headline={`${done.score} / ${total} points`}>
+            <div className="sub">Scoring yourself against a rubric teaches you to think like an AP grader.</div>
+          </Cheer>
           {done.badges.map((b) => (
             <div key={b.id} className="card" style={{ margin: '10px 0' }}>
               <div style={{ fontSize: 40 }}>{b.emoji}</div>

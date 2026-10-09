@@ -13,9 +13,11 @@ import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
 import { NotesPage } from './pages/Notes'
 import { MePage } from './pages/Me'
+import { FaqPage, FeedbackPage, HelpPage } from './pages/Support'
 import { ExamHub, FrqPage, McExamPage } from './pages/Exam'
 import { SyllabusPage } from './pages/Syllabus'
 import { getSetting } from './lib/progress'
+import { applyTheme } from './lib/theme'
 
 function ScrollTop() {
   const { pathname } = useLocation()
@@ -36,10 +38,7 @@ export default function App() {
     LocalDB.open(user.sub)
       .then((d) => {
         if (!live) return
-        {
-          const t = getSetting(d, 'theme', 'auto')
-          if (t !== 'auto') document.documentElement.dataset.theme = t
-        }
+        applyTheme(getSetting(d, 'theme', 'dark'))
         setDb(d)
       })
       .catch((e) => setError(String(e?.message ?? e)))
@@ -55,6 +54,7 @@ export default function App() {
   const signOut = () => {
     void db.flush().then(() => {
       clearSession()
+      applyTheme('dark')
       setDb(null)
       setUser(null)
     })
@@ -75,6 +75,9 @@ export default function App() {
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/me" element={<MePage />} />
+            <Route path="/me/help" element={<HelpPage />} />
+            <Route path="/me/faq" element={<FaqPage />} />
+            <Route path="/me/feedback" element={<FeedbackPage />} />
             <Route path="/exam" element={<ExamHub />} />
             <Route path="/exam/mc/:format" element={<McExamPage />} />
             <Route path="/exam/frq/:frqId" element={<FrqPage />} />

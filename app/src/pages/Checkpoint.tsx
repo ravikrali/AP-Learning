@@ -4,7 +4,8 @@ import { findUnit, unitQuestions } from '../content'
 import type { Question } from '../content/types'
 import { useApp } from '../lib/app'
 import { QuestionView } from '../components/QuestionView'
-import { Confetti, Progress, TopBar } from '../components/bits'
+import { Progress, TopBar } from '../components/bits'
+import { Cheer } from '../components/Cheer'
 import { evaluateBadges, recordAttempt, saveCheckpoint, stars, type BadgeDef } from '../lib/progress'
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -49,18 +50,16 @@ export function CheckpointPage() {
       <div>
         <TopBar title="Checkpoint" back={back} />
         <div className="celebrate">
-          {s >= 2 && <Confetti />}
-          <div className="big">{'⭐'.repeat(s) || '💪'}</div>
-          <h2>
-            {done.score} / {questions.length}
-          </h2>
-          <p className="muted">
-            {s === 3
-              ? 'Outstanding! This unit is really sticking.'
-              : s === 2
-                ? 'Solid work! A quick look back at the lessons you missed will get you to 3 stars.'
-                : "Good effort! Checkpoints show what to review next. They aren't grades."}
-          </p>
+          <Cheer score={done.score} total={questions.length} headline={`${done.score} / ${questions.length}`}>
+            <div style={{ fontSize: 30 }}>{'⭐'.repeat(s)}</div>
+            <div className="sub">
+              {s === 3
+                ? 'Three stars! This unit is really sticking.'
+                : s === 2
+                  ? 'A quick look back at the lessons you missed will get you to 3 stars.'
+                  : "Checkpoints aren't grades. They just show what to review next."}
+            </div>
+          </Cheer>
           {done.badges.map((b) => (
             <div key={b.id} className="card" style={{ margin: '10px 0' }}>
               <div style={{ fontSize: 40 }}>{b.emoji}</div>
