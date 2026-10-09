@@ -386,3 +386,16 @@ h3 { font-size: 18px; margin: 0 0 4px; }
 .final { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 40px; }
 .foot { text-align: center; margin-top: 32px; }
 @media (max-width: 420px) { .numbers { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- admin & sync ---------- */
+.field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px; }
+.field > span { color: var(--muted); }
+.field select, .admin-input { width: 100%; min-width: 0; border: 2px solid var(--border); border-radius: 12px; padding: 10px 12px; background: var(--bg); font-weight: 500; font-size: 15px; line-height: 1.45; }
+textarea.admin-input { resize: vertical; }
+.admin-row { width: 100%; text-align: left; font: inherit; margin: 0; }
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sync-card { display: flex; align-items: center; gap: 12px; }
+.sync-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.sync-dot.idle { background: var(--good); }
+.sync-dot.syncing { background: var(--primary); animation: twinkle 0.8s ease-in-out infinite alternate; }
+.sync-dot.offline, .sync-dot.error, .sync-dot.signin { background: var(--warm); }

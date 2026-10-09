@@ -208,7 +208,7 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
         <p className="lede">Bite-size lessons, teacher tricks and friendly practice for AP Chemistry. One small step at a time.</p>
         <Journey />
         {signIn}
-        <p className="small muted privacy">🔒 Your progress stays on your device. Google sign-in just tells the app whose progress to open.</p>
+        <p className="small muted privacy">🔒 Sign in with Google and your progress follows you to every device. It works offline, too.</p>
       </section>
 
       <section className="how">

@@ -1,11 +1,28 @@
-// Cloudflare Workers static-assets deploy: `npm run build` then `npx wrangler deploy` (from app/).
+// Cloudflare Worker: serves the built app from ./dist and the /api/* backend (D1 database).
+// Deploy from app/: `npm run deploy`. Local backend: `npm run dev:api` (uses a local D1 copy).
 {
   "name": "ap-learning",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ap-learning",
+      "database_id": "cfdddd91-4cbf-4b16-94c1-6ee285d15361",
+      "migrations_dir": "worker/migrations"
+    }
+  ],
+  "vars": {
+    "GOOGLE_CLIENT_ID": "1066207111886-bgdealh7knhf47b8kpetallaqi4d0587.apps.googleusercontent.com",
+    "OWNER_EMAIL": "devt309@gmail.com"
+  },
+  "observability": { "enabled": true },
   "routes": [
     { "pattern": "www.aplearning.app", "custom_domain": true },
     { "pattern": "aplearning.app", "custom_domain": true }

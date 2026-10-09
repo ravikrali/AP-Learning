@@ -8,6 +8,8 @@ export interface AppCtx {
   user: User
   db: LocalDB
   signOut: () => void
+  /** update the signed-in user (e.g. admin status or a new session token) */
+  updateUser: (patch: Partial<User>) => void
 }
 
 export const AppContext = createContext<AppCtx | null>(null)

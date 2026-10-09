@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { clearSession, loadSession, type User } from './lib/auth'
+import { clearSession, loadSession, saveSession, type User } from './lib/auth'
+import { api } from './lib/api'
+import { startSync } from './lib/sync'
+import { contentStore } from './lib/overrides'
 import { LocalDB } from './lib/db'
 import { AppContext } from './lib/app'
 import { TabBar } from './components/bits'
@@ -16,6 +19,7 @@ import { MePage } from './pages/Me'
 import { FaqPage, FeedbackPage, HelpPage } from './pages/Support'
 import { ExamHub, FrqPage, McExamPage } from './pages/Exam'
 import { SyllabusPage } from './pages/Syllabus'
+import { AdminPage } from './pages/Admin'
 import { getSetting } from './lib/progress'
 import { applyTheme } from './lib/theme'
 
@@ -45,13 +49,47 @@ export default function App() {
     return () => {
       live = false
     }
-  }, [user])
+    // reopen only when a different person signs in, not when their session details change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.sub])
+
+  // Re-render when admin content edits arrive.
+  useSyncExternalStore(contentStore.subscribe, contentStore.get)
+
+  const updateUser = useCallback((patch: Partial<User>) => {
+    setUser((u) => {
+      if (!u) return u
+      const next = { ...u, ...patch }
+      saveSession(next)
+      return next
+    })
+  }, [])
+
+  // Sync with the account whenever this device has a server session.
+  const token = user?.token
+  useEffect(() => {
+    if (!db || !token) return
+    return startSync(
+      db,
+      () => updateUser({ token: undefined }),
+      () => applyTheme(getSetting(db, 'theme', 'dark')),
+    )
+  }, [db, token, updateUser])
+
+  // Pick up admin changes (being added or removed as an admin) on each launch.
+  useEffect(() => {
+    if (!token) return
+    api<{ isAdmin: boolean }>('/api/me')
+      .then((r) => updateUser({ isAdmin: r.isAdmin }))
+      .catch((e) => e?.status === 401 && updateUser({ token: undefined, isAdmin: false }))
+  }, [token, updateUser])
 
   if (!user) return <LoginPage onUser={setUser} />
   if (error) return <div className="login"><h1>😕</h1><p>Couldn't open your saved data: {error}</p></div>
   if (!db) return <div className="login"><div className="logo">⚗️</div><p className="muted">Getting your stuff ready…</p></div>
 
   const signOut = () => {
+    if (user.token) void api('/api/auth/logout', { body: {} }).catch(() => undefined)
     void db.flush().then(() => {
       clearSession()
       applyTheme('dark')
@@ -61,7 +99,7 @@ export default function App() {
   }
 
   return (
-    <AppContext.Provider value={{ user, db, signOut }}>
+    <AppContext.Provider value={{ user, db, signOut, updateUser }}>
       <HashRouter>
         <ScrollTop />
         <div className="app">
@@ -78,6 +116,7 @@ export default function App() {
             <Route path="/me/help" element={<HelpPage />} />
             <Route path="/me/faq" element={<FaqPage />} />
             <Route path="/me/feedback" element={<FeedbackPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="/exam" element={<ExamHub />} />
             <Route path="/exam/mc/:format" element={<McExamPage />} />
             <Route path="/exam/frq/:frqId" element={<FrqPage />} />

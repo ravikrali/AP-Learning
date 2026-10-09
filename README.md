@@ -14,12 +14,12 @@ A friendly, gamified study app for AP Chemistry. It is a Progressive Web App (PW
 | **Notes** | A notes button on every lesson, plus a searchable Notes tab. |
 | **Syllabus checklist** | Learn → AP Chemistry → 📋 Syllabus shows every official topic, the lesson that teaches it, and whether it's done. |
 
-All progress and notes live **only on the device**, in a real SQLite database running inside the browser (sql.js/WebAssembly, saved to IndexedDB). *Me → Save a backup file* exports the database. *Restore* imports it on another device.
+Progress and notes are written first to a real SQLite database inside the browser (sql.js/WebAssembly, saved to IndexedDB), so everything works offline. When signed in with Google, changes sync through the Cloudflare backend to every device on the same account (see **Backend** below). Guests stay device-only. *Me → Save a backup file* still exports the local database.
 
 ## How accuracy is protected
 
 - The lessons follow the official CED text. Topic numbers are shown on every lesson.
-- `npm test` (17 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4).
+- `npm test` (25 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4).
 - Two independent expert review passes checked every unit for chemistry errors. Their findings were fixed.
 - Multiple-choice options are shuffled each time a question is shown, so the right answer isn't always in the same position.
 
@@ -39,7 +39,7 @@ Other commands: `npm test` (content verification) and `npm run build` (productio
 
 ## Google sign-in (one-time, ~10 minutes)
 
-Sign-in only identifies whose progress to open on the device. No data is sent anywhere.
+The Google sign-in token is verified by the backend, which then issues a 90-day session used for syncing.
 
 1. Go to https://console.cloud.google.com/ and create a project (e.g. "AP Learning").
 2. **APIs & Services → OAuth consent screen**: choose **External**, fill in the app name and your email, and keep the default scopes (no extra scopes needed). Publish it ("In production"). Basic sign-in (name/email) needs no Google review.
@@ -56,8 +56,17 @@ Live at **https://www.aplearning.app** (also https://aplearning.app). It is serv
 ```bash
 cd app
 npx wrangler login     # once per computer
-npm run deploy         # tests, build, upload
+npm run deploy         # tests, build, database migrations, upload
 ```
+
+## Backend (Cloudflare Workers + D1)
+
+The same Worker serves the app and `/api/*` (`app/worker/index.ts`), backed by the D1 database `ap-learning` (schema in `app/worker/migrations/`).
+
+- **Sign-in:** `POST /api/auth/google` checks the Google ID token's signature, audience, issuer, expiry and verified email, then creates a session (only a SHA-256 hash of the token is stored).
+- **Sync:** `POST /api/sync` uploads queued changes and returns everything newer than the device's cursor. SQLite triggers fill a local outbox; merge rules live in `app/shared/sync.ts` and are the same on the server and every device (answers/XP are never double-counted, a finished lesson never becomes unfinished, newest note or setting wins).
+- **Admin** (Me → Admin, owner `devt309@gmail.com` plus anyone added there): edit lesson text, quick checks and flashcards; publish videos; read feedback; add/remove admins. Edits are checked before publishing (equations must balance, numeric questions keep their numbers, number changes are flagged) and every change is kept in a history with one-click revert.
+- **Local testing:** `npm run dev:api` (local Worker + local D1 on :8787; put `DEV_AUTH=1` in `app/.dev.vars` to enable a test-only sign-in) alongside `npm run dev` (proxies `/api`).
 ## Install on the phone
 
 - **Android (Chrome):** open the site → menu ⋮ → **Install app** (or "Add to Home screen").
@@ -67,7 +76,7 @@ Once installed, it opens full-screen and works offline. On iPhone, the installed
 
 ## Adding videos later
 
-Edit `app/public/videos.json`. The key is the lesson id (it appears in the address bar, e.g. `#/lesson/chem-1.1`):
+Easiest: **Me → Admin → Videos**, pick the lesson, paste a YouTube link, Publish. (Or edit `app/public/videos.json`.) The key is the lesson id (it appears in the address bar, e.g. `#/lesson/chem-1.1`):
 
 ```json
 {
@@ -86,7 +95,11 @@ app/
   src/content/chem/frq.ts           free-response practice
   src/content/chem/ced.ts           official CED topic list (used for coverage)
   src/content/diagrams.tsx          SVG diagrams
-  src/lib/db.ts                     local SQLite storage + backup/restore
+  src/lib/db.ts                     local SQLite storage, sync outbox triggers, backup/restore
+  src/lib/sync.ts                   device ↔ account sync
+  src/pages/Admin.tsx               admin area
+  worker/index.ts                   backend (auth, sync, admin, feedback)
+  shared/sync.ts                    merge rules used by both sides
   src/lib/progress.ts               XP, streaks, badges, spaced review
   src/pages/                        screens
   tests/                            content verification

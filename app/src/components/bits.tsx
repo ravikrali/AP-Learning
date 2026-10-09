@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { contentStore, videoOverride } from '../lib/overrides'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../lib/app'
 import { getNote, saveNote, dueCount } from '../lib/progress'
@@ -160,15 +161,22 @@ export function loadVideos(): Promise<Record<string, VideoEntry>> {
   return videoCache
 }
 
+/** A lesson's video: one published from the Admin area wins over public/videos.json. */
 export function useVideo(lessonId: string): VideoEntry | undefined {
   const [v, setV] = useState<VideoEntry | undefined>()
+  const contentVersion = useSyncExternalStore(contentStore.subscribe, contentStore.get)
   useEffect(() => {
+    const o = videoOverride(lessonId)
+    if (o) {
+      setV(o.url || o.src ? o : undefined)
+      return
+    }
     let live = true
     loadVideos().then((all) => live && setV(all[lessonId]))
     return () => {
       live = false
     }
-  }, [lessonId])
+  }, [lessonId, contentVersion])
   return v
 }
 

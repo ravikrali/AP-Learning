@@ -3,6 +3,7 @@ import { TopBar } from '../components/bits'
 import { Mascot } from '../components/Mascot'
 import { useMascotLook } from '../components/Cheer'
 import { useApp } from '../lib/app'
+import { api, type ApiError } from '../lib/api'
 
 /** Where feedback goes until the app has its own server. */
 export const FEEDBACK_EMAIL = 'devt309@gmail.com'
@@ -70,7 +71,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Where is my progress saved?',
-    a: 'In a private database on this device only. Use Me → Save a backup file now and then, and Restore to move your progress to another device.',
+    a: 'On this device first (so everything works offline), and in your private account when you sign in with Google. Sign in on another phone or computer and your progress, notes and review cards are all there. As a guest, progress stays on this device only.',
   },
   {
     q: 'Does it work offline?',
@@ -120,8 +121,31 @@ export function FeedbackPage() {
   const [mood, setMood] = useState<string | null>(null)
   const [text, setText] = useState('')
   const [sent, setSent] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [via, setVia] = useState<'app' | 'email'>('app')
+  const [error, setError] = useState<string | null>(null)
 
-  function send() {
+  async function send() {
+    setError(null)
+    if (user.token) {
+      setBusy(true)
+      try {
+        await api('/api/feedback', { body: { kind, mood, body: text.trim() } })
+        setVia('app')
+        setSent(true)
+        setText('')
+        return
+      } catch (e) {
+        // Server unreachable: fall back to email below.
+        if ((e as ApiError).status && (e as ApiError).status !== 401) {
+          setError((e as Error).message)
+          return
+        }
+      } finally {
+        setBusy(false)
+      }
+    }
+    setVia('email')
     const subject = `AP Learning feedback: ${kind.replace(/^\S+\s/, '')}`
     const body = [
       text.trim(),
@@ -144,9 +168,11 @@ export function FeedbackPage() {
         <div className="cheer" style={{ paddingTop: 30 }}>
           <Mascot look={look} mood="cheer" size={120} />
           <div className="bubble">Thank you! Every message helps make the app better. 💛</div>
-          <p className="small muted" style={{ maxWidth: 340 }}>
-            Your email app should have opened with the message ready. Just tap Send there.
-          </p>
+          {via === 'email' && (
+            <p className="small muted" style={{ maxWidth: 340 }}>
+              Your email app should have opened with the message ready. Tap Send there.
+            </p>
+          )}
           <button className="btn secondary" onClick={() => setSent(false)}>
             Write another
           </button>
@@ -184,12 +210,15 @@ export function FeedbackPage() {
                 : 'Tell us anything: what you love, what is confusing, what you wish it had…'
             }
           />
-          <button className="btn block" disabled={!text.trim()} onClick={send}>
-            Send ✉️
+          <button className="btn block" disabled={!text.trim() || busy} onClick={send}>
+            {busy ? 'Sending…' : 'Send ✉️'}
           </button>
-          <p className="small muted" style={{ margin: 0 }}>
-            This opens your email app with the message ready to send.
-          </p>
+          {error && <p className="small" style={{ margin: 0, color: 'var(--oops)' }}>{error}</p>}
+          {!user.token && (
+            <p className="small muted" style={{ margin: 0 }}>
+              This opens your email app with the message ready to send.
+            </p>
+          )}
         </div>
       )}
     </div>

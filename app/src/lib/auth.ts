@@ -1,6 +1,7 @@
-// "Sign in with Google" using Google Identity Services, entirely in the browser.
-// We only read the user's name/email/picture from the ID token to pick which
-// local database to open. No server, no data upload.
+// "Sign in with Google" using Google Identity Services.
+// The Google ID token is checked by our server (/api/auth/google), which returns a session
+// token used for syncing. If the server can't be reached, sign-in still works on this device
+// and sync starts after the next sign-in.
 
 export interface User {
   sub: string
@@ -8,6 +9,9 @@ export interface User {
   name: string
   picture?: string
   guest?: boolean
+  /** session token from our server; missing = this device isn't syncing */
+  token?: string
+  isAdmin?: boolean
 }
 
 interface GoogleId {
@@ -93,13 +97,26 @@ export async function renderGoogleButton(el: HTMLElement, onUser: (u: User) => v
   gid.initialize({
     client_id: GOOGLE_CLIENT_ID,
     use_fedcm_for_prompt: true,
-    callback: ({ credential }) => {
+    callback: async ({ credential }) => {
       const p = decodeJwt(credential)
-      const user: User = {
+      let user: User = {
         sub: String(p.sub),
         email: String(p.email),
         name: String(p.given_name ?? p.name ?? p.email),
         picture: typeof p.picture === 'string' ? p.picture : undefined,
+      }
+      try {
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ credential }),
+        })
+        if (res.ok) {
+          const d = (await res.json()) as { token: string; isAdmin: boolean }
+          user = { ...user, token: d.token, isAdmin: d.isAdmin }
+        }
+      } catch {
+        /* offline: sign in locally, sync after the next sign-in */
       }
       saveSession(user)
       onUser(user)

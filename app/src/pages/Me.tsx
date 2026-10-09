@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
+import { syncNow, syncStore } from '../lib/sync'
 import { Link } from 'react-router-dom'
 import { COURSES, UPCOMING } from '../content'
 import type { Course } from '../content/types'
@@ -124,6 +125,18 @@ export function MePage() {
         </Link>
       </div>
       {toast && <div className="toast">{toast}</div>}
+      {user.isAdmin && user.token && (
+        <Link to="/admin" className="card row" style={{ marginTop: 10, textDecoration: 'none', color: 'inherit', padding: 14 }}>
+          <span style={{ fontSize: 24 }}>🛠️</span>
+          <span className="grow">
+            <b>Admin</b>
+            <span className="small muted" style={{ display: 'block' }}>
+              Edit lessons, add videos, read feedback, manage admins
+            </span>
+          </span>
+          <span className="muted">›</span>
+        </Link>
+      )}
 
       <div className="stats" style={{ marginTop: 14 }}>
         <div className="stat">
@@ -208,9 +221,12 @@ export function MePage() {
 
       <div className="section-title">Your data</div>
       <div className="card stack">
+        <SyncStatusRow />
         <p className="small muted" style={{ margin: 0 }}>
-          🔒 Progress and notes are stored only on this device, in a private database inside your browser. Save a backup now and
-          then. It also lets you move your progress to another device.
+          {user.guest
+            ? '🔒 As a guest, progress and notes stay only on this device. Sign in with Google to keep them on all your devices.'
+            : '🔒 Progress and notes are saved on this device first, so everything works offline, and kept in step with your private account so they follow you to any phone or computer you sign in on.'}{' '}
+          A backup file is an extra copy you control.
         </p>
         <button className="btn secondary block" onClick={exportBackup}>
           ⬇️ Save a backup file
@@ -242,6 +258,53 @@ export function MePage() {
 
       <button className="btn ghost block" style={{ marginTop: 16 }} onClick={signOut}>
         Sign out
+      </button>
+    </div>
+  )
+}
+
+function ago(iso?: string) {
+  if (!iso) return ''
+  const s = Math.round((Date.now() - new Date(iso).getTime()) / 1000)
+  if (s < 60) return 'just now'
+  if (s < 3600) return `${Math.round(s / 60)} min ago`
+  return new Date(iso).toLocaleString()
+}
+
+function SyncStatusRow() {
+  const { user, signOut } = useApp()
+  const s = useSyncExternalStore(syncStore.subscribe, syncStore.get)
+  if (user.guest) return null
+  if (!user.token)
+    return (
+      <div className="sync-card">
+        <span className="sync-dot signin" />
+        <span className="grow small">
+          <b>Sync is off on this device.</b> Sign out and sign in again with Google to turn it on.
+        </span>
+        <button className="btn secondary" onClick={signOut}>
+          Sign in
+        </button>
+      </div>
+    )
+  const text =
+    s.state === 'syncing'
+      ? 'Syncing…'
+      : s.state === 'idle'
+        ? `Synced ${ago(s.last)} ✓`
+        : s.state === 'offline'
+          ? "Offline. Your progress is safe here and will sync when you're back online."
+          : s.state === 'error'
+            ? `Couldn't sync yet (${s.message}). Trying again soon.`
+            : 'Starting sync…'
+  return (
+    <div className="sync-card">
+      <span className={`sync-dot ${s.state}`} />
+      <span className="grow small">
+        <b>Sync</b> · {text}
+      </span>
+      <button className="btn secondary" onClick={syncNow} disabled={s.state === 'syncing'}>
+        Sync now
       </button>
     </div>
   )

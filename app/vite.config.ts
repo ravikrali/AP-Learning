@@ -23,6 +23,8 @@ export default defineConfig(({ mode }) => ({
           },
         ],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        // the backend is never served from the offline cache
+        navigateFallbackDenylist: [/^\/api\//],
       },
       manifest: {
         name: 'AP Learning',
@@ -51,6 +53,8 @@ export default defineConfig(({ mode }) => ({
           rolldownOptions: { output: { codeSplitting: false } },
         }
       : { chunkSizeWarningLimit: 1200 },
+  // in development, /api goes to the local Worker started by `npm run dev:api`
+  server: { proxy: { '/api': 'http://localhost:8787' } },
   test: {
     include: ['tests/**/*.test.ts'],
   },
