@@ -5,6 +5,7 @@ import { openable, useAccount } from '../lib/account'
 import { trickyTopics } from '../lib/tips'
 import { TipSheet, TrickyTopics } from '../components/Help'
 import { TodayPlan } from './Schedule'
+import { InstallCard } from '../components/Install'
 import { COURSES } from '../content'
 import { Progress } from '../components/bits'
 import { dueCount, getSetting, lessonStatuses, levelInfo, nextLesson, streak, totalXp, weekDays, xpToday } from '../lib/progress'
@@ -46,6 +47,8 @@ export function HomePage() {
           </div>
         </div>
       </div>
+
+      <InstallCard />
 
       <TodayPlan />
 

@@ -4,9 +4,12 @@ import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import App from './App.tsx'
 import { applyCachedContent, refreshContent } from './lib/overrides'
+import { listenForInstall } from './lib/install'
 
 // Offline support: cache the app so lessons work without internet. Updates install quietly.
 registerSW({ immediate: true })
+// Catch the browser's install prompt early so Home can offer "Add to Home screen".
+listenForInstall()
 
 // Admin content edits: show the saved copy right away, then fetch the latest in the background.
 applyCachedContent()

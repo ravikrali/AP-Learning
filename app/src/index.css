@@ -477,3 +477,8 @@ textarea.admin-input { resize: vertical; }
 .tip-sheet > * { flex-shrink: 0; }
 .yt-head { flex-wrap: wrap; }
 .tricky .grow { flex: 1 1 160px; }
+.install-icon { border-radius: 10px; flex-shrink: 0; }
+.install-steps { margin: 10px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.ios-share { vertical-align: -3px; color: var(--primary); }
+.install .btn { white-space: nowrap; padding: 12px 14px; font-size: 15px; }
+.install .btn.ghost { flex: 0 0 auto; }

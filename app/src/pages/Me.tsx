@@ -5,6 +5,7 @@ import { COURSES } from '../content'
 import { PLANS } from '../../shared/catalog'
 import { courseTitle, openable, useAccount } from '../lib/account'
 import { minutesByDay } from '../lib/track'
+import { setDismissed, useInstall } from '../lib/install'
 import type { Course } from '../content/types'
 import { useApp } from '../lib/app'
 import { Progress, TopBar } from '../components/bits'
@@ -43,6 +44,7 @@ export function MePage() {
   const account = useAccount()
   const mine = COURSES.filter((c) => openable(account, c.id))
   const weekMinutes = minutesByDay(db, 7).reduce((n, d) => n + d.minutes, 0)
+  const install = useInstall()
 
   function flash(t: string) {
     setToast(t)
@@ -262,6 +264,11 @@ export function MePage() {
           onChange={(e) => e.target.files?.[0] && importBackup(e.target.files[0])}
         />
         {msg && <p className="small">{msg}</p>}
+        {install.kind !== 'installed' && install.dismissed && (
+          <button className="btn secondary block" onClick={() => setDismissed(false)}>
+            📲 Add to Home screen (shows on Home)
+          </button>
+        )}
         <Link to="/me/privacy" className="small">
           Privacy & terms ›
         </Link>
