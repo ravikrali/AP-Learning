@@ -278,7 +278,7 @@ export function PrivacyText() {
           <li>We never sell your data, never show ads, and never share it except with the services that run the app (Cloudflare for hosting, Google for sign-in, Stripe for payments).</li>
         </ul>
         <b>Guests</b>
-        <p style={{ margin: 0 }}>Without signing in, everything stays on your device and nothing is sent to us.</p>
+        <p style={{ margin: 0 }}>Without signing in, your study data stays on your device. Only the anonymous visit count described above is sent to us.</p>
         <b>Your choices</b>
         <p style={{ margin: 0 }}>Email {FEEDBACK_EMAIL} to get a copy of your data or to delete your account.</p>
         <b>Subscriptions</b>
