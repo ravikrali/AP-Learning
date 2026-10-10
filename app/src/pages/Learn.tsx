@@ -8,6 +8,7 @@ import { useApp, useCourse } from '../lib/app'
 import { Progress, TopBar } from '../components/bits'
 import type { Course } from '../content/types'
 import { bestCheckpoint, lessonStatuses, stars, unitProgress } from '../lib/progress'
+import { SearchButton, courseRefs } from '../components/Search'
 
 export function LearnPage() {
   const { db } = useApp()
@@ -123,7 +124,7 @@ function CourseMap({ course }: { course: Course }) {
 
   return (
     <div>
-      <TopBar title={course.title} back="/learn" />
+      <TopBar title={course.title} back="/learn" right={<SearchButton course={course} scopes={[{ label: 'Whole course', refs: courseRefs(course) }]} />} />
       <p className="muted small" style={{ marginTop: 0 }}>
         Units go from foundations to advanced ideas. Everything is open, so go in order or jump to what your class is doing.
       </p>

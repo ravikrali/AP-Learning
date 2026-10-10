@@ -99,7 +99,7 @@ export function MePage() {
 
   return (
     <div>
-      <TopBar title="Me" />
+      <TopBar title="Me" back="/more" />
       <div className="card row">
         {user.picture ? (
           <img src={user.picture} alt="" width={56} height={56} style={{ borderRadius: '50%' }} referrerPolicy="no-referrer" />

@@ -3,7 +3,8 @@
 // streak, and the daily review pile is capped so it can never become a wall.
 
 import type { Course, Lesson, Unit } from '../content/types'
-import { questionTopic } from '../content'
+import { findLesson, questionTopic } from '../content'
+import { track } from './track'
 import { today, type LocalDB } from './db'
 
 export const XP = {
@@ -182,6 +183,26 @@ export function saveNote(db: LocalDB, lessonId: string, body: string) {
       'INSERT INTO notes(lesson_id, body, updated_at) VALUES (?,?,?) ON CONFLICT(lesson_id) DO UPDATE SET body=excluded.body, updated_at=excluded.updated_at',
       [lessonId, body, new Date().toISOString()],
     )
+}
+
+// ---------- Bookmarks (topics saved to look at again) ----------
+
+export function isBookmarked(db: LocalDB, lessonId: string): boolean {
+  return Number(db.get('SELECT saved FROM bookmarks WHERE lesson_id=?', [lessonId])?.saved ?? 0) === 1
+}
+
+/** Turn a bookmark on or off. Removed bookmarks keep a row (saved = 0) so the removal syncs to her other devices. */
+export function setBookmark(db: LocalDB, lessonId: string, on: boolean) {
+  db.run(
+    'INSERT INTO bookmarks(lesson_id, saved, updated_at) VALUES (?,?,?) ON CONFLICT(lesson_id) DO UPDATE SET saved=excluded.saved, updated_at=excluded.updated_at',
+    [lessonId, on ? 1 : 0, new Date().toISOString()],
+  )
+  if (on) track(db, 'bookmark', { lesson: lessonId, course: findLesson(lessonId)?.course.id })
+}
+
+/** Bookmarked lesson ids, newest first. */
+export function bookmarks(db: LocalDB): { lessonId: string; at: string }[] {
+  return db.all('SELECT lesson_id, updated_at FROM bookmarks WHERE saved = 1 ORDER BY updated_at DESC').map((r) => ({ lessonId: String(r.lesson_id), at: String(r.updated_at) }))
 }
 
 // ---------- Spaced review (Leitner boxes) ----------

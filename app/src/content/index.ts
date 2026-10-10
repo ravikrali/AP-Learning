@@ -83,3 +83,54 @@ export function planExtras(courseId: string): PlanExtras {
     }
   return {}
 }
+
+// ---------- plain text of lessons (search, glossary checks) ----------
+
+/** Markup removed, for matching what the student sees. */
+export function plainText(s: string): string {
+  return s
+    .replace(/\[\[eq:\s*([^\]]*)\]\]/g, '$1')
+    .replace(/\{\{([^}]*)\}\}/g, '$1')
+    .replace(/[_^]\{([^}]*)\}/g, '$1')
+    .replace(/\*\*?/g, '')
+    .replace(/\|/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/** The readable text of one card (questions excluded, so search never reveals an answer). */
+export function cardText(card: Lesson['cards'][number]): { title: string; body: string } {
+  switch (card.kind) {
+    case 'example':
+      return { title: card.title, body: [card.problem, ...card.steps, card.answer].join(' ') }
+    case 'summary':
+      return { title: 'Remember', body: card.points.join(' ') }
+    case 'try':
+      return { title: 'Your turn', body: card.question.prompt }
+    default:
+      return { title: ('title' in card && card.title) || '', body: card.body }
+  }
+}
+
+export function lessonText(lesson: Lesson): string {
+  return plainText([lesson.title, ...lesson.cards.flatMap((c) => Object.values(cardText(c))), ...lesson.flashcards.flatMap((f) => [f.front, f.back])].join(' '))
+}
+
+// ---------- glossary ----------
+
+import { CHEM_GLOSSARY } from './chem/glossary'
+import type { GlossaryEntry } from './types'
+const GLOSSARIES: Record<string, GlossaryEntry[]> = { chem: CHEM_GLOSSARY }
+
+export function glossary(courseId: string): GlossaryEntry[] {
+  return [...(GLOSSARIES[courseId] ?? [])].sort((a, b) => plainText(a.term).localeCompare(plainText(b.term), undefined, { sensitivity: 'base' }))
+}
+
+/** The card of its lesson where a glossary term first appears, so links can open right there. */
+export function glossaryCard(g: GlossaryEntry): number | null {
+  const ref = findLesson(g.lesson)
+  if (!ref) return null
+  const needle = plainText(g.find ?? g.term).toLowerCase()
+  const i = ref.lesson.cards.findIndex((c) => plainText(Object.values(cardText(c)).join(' ')).toLowerCase().includes(needle))
+  return i < 0 ? null : i
+}

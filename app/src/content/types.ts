@@ -90,3 +90,12 @@ export interface Course {
   emoji: string
   units: Unit[]
 }
+
+export interface GlossaryEntry {
+  term: string
+  def: string
+  /** lesson that explains the term */
+  lesson: string
+  /** text the lesson must contain (defaults to the term); checked by the test suite */
+  find?: string
+}

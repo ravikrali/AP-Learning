@@ -18,7 +18,8 @@ import { UnitPage } from './pages/Unit'
 import { LessonPage } from './pages/Lesson'
 import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
-import { NotesPage } from './pages/Notes'
+import { MorePage, GlossaryPage } from './pages/More'
+import { PeriodicTablePage } from './pages/PeriodicTable'
 import { MePage } from './pages/Me'
 import { FaqPage, FeedbackPage, HelpPage, PrivacyPage } from './pages/Support'
 import { PlansPage } from './pages/Plans'
@@ -145,8 +146,11 @@ export default function App() {
             <Route path="/course/:courseId/unit/:unitId" element={<Gated><UnitPage /></Gated>} />
             <Route path="/course/:courseId/unit/:unitId/checkpoint" element={<Gated kind="checkpoint"><CheckpointPage /></Gated>} />
             <Route path="/lesson/:lessonId" element={<LessonPage />} />
-            <Route path="/review" element={<Timed kind="review"><ReviewPage /></Timed>} />
-            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/review" element={<ReviewPage />} />
+            <Route path="/notes" element={<Navigate to="/review?tab=notes" replace />} />
+            <Route path="/more" element={<MorePage />} />
+            <Route path="/more/periodic-table" element={<PeriodicTablePage />} />
+            <Route path="/more/glossary" element={<GlossaryPage />} />
             <Route path="/me" element={<MePage />} />
             <Route path="/me/help" element={<HelpPage />} />
             <Route path="/me/faq" element={<FaqPage />} />

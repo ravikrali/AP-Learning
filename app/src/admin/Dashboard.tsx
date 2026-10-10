@@ -35,15 +35,20 @@ const regionNames = (() => {
     return null
   }
 })()
-const countryName = (c: string) => (c && c !== '??' && c !== 'XX' ? (regionNames?.of(c) ?? c) : 'Unknown')
+export const countryName = (c: string) => (c && c !== '??' && c !== 'XX' ? (regionNames?.of(c) ?? c) : 'Unknown')
 const usd = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: cents % 100 ? 2 : 0, maximumFractionDigits: 2 })}`
-const int = (n: number) => Math.round(n).toLocaleString()
+export const int = (n: number) => Math.round(n).toLocaleString()
 const shortDay = (d: string) => new Date(d + 'T12:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 const shortMonth = (m: string) => `${new Date(m + '-15T12:00:00Z').toLocaleDateString(undefined, { month: 'short' })} ’${m.slice(2, 4)}`
 const RANK: Record<PlanId, number> = { free: 0, three: 1, all: 2 }
 
 const EVENT_LABEL: Record<string, string> = {
   video: 'YouTube video opened',
+  unit_tips: 'Unit tips (💡) opened',
+  search: 'Searches opened',
+  bookmark: 'Topics bookmarked',
+  glossary: 'Glossary opened',
+  periodic_table: 'Periodic table opened',
   tip: 'Quick tips opened',
   plan_create: 'Study plans made',
   plan_update: 'Study plans changed',
@@ -53,7 +58,7 @@ const EVENT_LABEL: Record<string, string> = {
 }
 
 /** Every day in the last `n` days, with zeros where there was no data. */
-function lastDays<T extends { day: string }>(rows: T[], n: number, pick: (r: T | undefined) => number) {
+export function lastDays<T extends { day: string }>(rows: T[], n: number, pick: (r: T | undefined) => number) {
   const map = new Map(rows.map((r) => [r.day, r]))
   const out: { label: string; value: number }[] = []
   for (let i = n - 1; i >= 0; i--) {
@@ -63,7 +68,7 @@ function lastDays<T extends { day: string }>(rows: T[], n: number, pick: (r: T |
   return out
 }
 
-function Tile({ value, label, sub }: { value: string; label: string; sub?: string }) {
+export function Tile({ value, label, sub }: { value: string; label: string; sub?: string }) {
   return (
     <div className="tile">
       <b>{value}</b>

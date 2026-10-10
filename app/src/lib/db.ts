@@ -7,7 +7,7 @@ import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
 const IDB_NAME = 'ap-learning'
 const IDB_STORE = 'sqlite'
-const SCHEMA_VERSION = 3
+const SCHEMA_VERSION = 4
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS checkpoints (
   at TEXT NOT NULL,
   uid TEXT
 );
+CREATE TABLE IF NOT EXISTS bookmarks (lesson_id TEXT PRIMARY KEY, saved INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS plans (course_id TEXT PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS study_time (
   day TEXT NOT NULL,
@@ -104,6 +105,7 @@ const OUTBOX = {
   badge: (p: string) => `'badge:' || ${p}badge_id, json_object('earned_at', ${p}earned_at)`,
   setting: (p: string) => `'set:' || substr(${p}key, 9), json_object('value', ${p}value)`,
   plan: (p: string) => `'plan:' || ${p}course_id, json(${p}data)`,
+  mark: (p: string) => `'mark:' || ${p}lesson_id, json_object('saved', ${p}saved, 'updated_at', ${p}updated_at)`,
 }
 
 function syncSql(): string {
@@ -132,6 +134,7 @@ function syncSql(): string {
   out.push(...upsert('badge', 'badges', OUTBOX.badge('NEW.')))
   out.push(...upsert('setting', 'meta', OUTBOX.setting('NEW.'), " AND NEW.key LIKE 'setting:%'"))
   out.push(...upsert('plan', 'plans', OUTBOX.plan('NEW.')))
+  out.push(...upsert('mark', 'bookmarks', OUTBOX.mark('NEW.')))
   return out.join('\n')
 }
 
@@ -163,6 +166,7 @@ function enqueueAllSql(): string {
   parts.push(all('badges', OUTBOX.badge('')))
   parts.push(all('meta', OUTBOX.setting(''), " WHERE key LIKE 'setting:%'"))
   parts.push(all('plans', OUTBOX.plan('')))
+  parts.push(all('bookmarks', OUTBOX.mark('')))
   return parts.join('\n')
 }
 

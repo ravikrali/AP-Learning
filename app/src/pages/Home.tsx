@@ -34,9 +34,14 @@ export function HomePage() {
   return (
     <div className="stack" style={{ paddingTop: 12 }}>
       <div className="hello">
-        <h2>
-          {greet}, {user.name.split(' ')[0]}! 👋
-        </h2>
+        <div className="row">
+          <h2 className="grow">
+            {greet}, {user.name.split(' ')[0]}! 👋
+          </h2>
+          <Link to="/me" className="avatar-link" aria-label="My profile and settings" title="My profile">
+            {user.picture ? <img src={user.picture} alt="" width={40} height={40} className="avatar" referrerPolicy="no-referrer" /> : <span className="avatar ph">🙂</span>}
+          </Link>
+        </div>
         <div className="muted">
           Level {lv.level} · {lv.title}
         </div>

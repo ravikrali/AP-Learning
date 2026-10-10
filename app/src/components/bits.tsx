@@ -25,29 +25,89 @@ export function TabBar() {
   const due = dueCount(db)
   // Focus mode: no tab bar while inside a lesson or checkpoint.
   if (pathname.startsWith('/lesson/') || pathname.endsWith('/checkpoint') || pathname.startsWith('/exam/')) return null
-  const tabs = [
-    { to: '/', ico: '🏠', label: 'Home', end: true },
-    { to: '/learn', ico: '🗺️', label: 'Learn' },
-    { to: '/review', ico: '🃏', label: 'Review', dot: due },
-    { to: '/notes', ico: '📝', label: 'Notes' },
-    { to: '/me', ico: '🏅', label: 'Me' },
+  // Icons only: each one has a spoken label and a tooltip instead of visible text.
+  const tabs: { to: string; icon: ReactNode; label: string; end?: boolean; dot?: number; also?: string[] }[] = [
+    { to: '/', icon: <HomeIcon />, label: 'Home', end: true },
+    { to: '/learn', icon: <LearnIcon />, label: 'Learn', also: ['/course', '/plan/', '/exam'] },
+    { to: '/review', icon: <ReviewIcon />, label: 'Review: flashcards, bookmarks and notes', dot: due },
+    { to: '/more', icon: <MoreIcon />, label: 'More: periodic table, glossary and your profile', also: ['/me', '/plans'] },
   ]
   return (
     <div className="tabbar">
-      <nav>
+      <nav aria-label="Main">
         {tabs.map((t) => (
-          <NavLink key={t.to} to={t.to} end={t.end} className={({ isActive }) => (isActive ? 'active' : '')}>
+          <NavLink
+            key={t.to}
+            to={t.to}
+            end={t.end}
+            aria-label={t.dot ? `${t.label} (${t.dot} cards due)` : t.label}
+            title={t.label.split(':')[0]}
+            className={({ isActive }) => (isActive || t.also?.some((p) => pathname.startsWith(p)) ? 'active' : '')}
+          >
             <span className="ico" aria-hidden>
-              {t.ico}
+              {t.icon}
             </span>
-            {t.label}
-            {!!t.dot && <span className="dot">{t.dot}</span>}
+            {!!t.dot && (
+              <span className="dot" aria-hidden>
+                {t.dot}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>
     </div>
   )
 }
+
+// ---------- icons (simple line drawings that take the text color) ----------
+
+function Svg({ children, size = 26 }: { children: ReactNode; size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      {children}
+    </svg>
+  )
+}
+
+/** A house. */
+export const HomeIcon = () => (
+  <Svg>
+    <path d="M3 11.5 12 4l9 7.5" />
+    <path d="M5.5 10v9.5h4.5v-5.5h4v5.5h4.5V10" />
+  </Svg>
+)
+
+/** An open book. */
+export const LearnIcon = () => (
+  <Svg>
+    <path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5Z" />
+    <path d="M12 6.5V19.5" />
+  </Svg>
+)
+
+/** Flashcards: two stacked cards. */
+export const ReviewIcon = () => (
+  <Svg>
+    <rect x="3.5" y="7.5" width="13" height="12" rx="2.5" />
+    <path d="M8 4.5h10a2.5 2.5 0 0 1 2.5 2.5v9" />
+    <path d="m7.5 13.5 2 2 3.5-4" />
+  </Svg>
+)
+
+/** Three dots. */
+export const MoreIcon = () => (
+  <Svg>
+    <circle cx="5" cy="12" r="1.6" fill="currentColor" />
+    <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+    <circle cx="19" cy="12" r="1.6" fill="currentColor" />
+  </Svg>
+)
+
+export const BookmarkIcon = ({ filled }: { filled?: boolean }) => (
+  <svg viewBox="0 0 24 24" width={20} height={20} fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden>
+    <path d="M6.5 3.5h11v17l-5.5-4-5.5 4Z" />
+  </svg>
+)
 
 export function Progress({ pct }: { pct: number }) {
   return (

@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { findLesson, type LessonRef } from '../content'
 import type { Card, Question } from '../content/types'
 import { useApp } from '../lib/app'
 import { RichText } from '../lib/RichText'
 import { QuestionView } from '../components/QuestionView'
 import { Cheer } from '../components/Cheer'
-import { NotesSheet, Progress, TopBar, VideoPlayer, useVideo, type VideoEntry } from '../components/bits'
+import { BookmarkIcon, NotesSheet, Progress, TopBar, VideoPlayer, useVideo, type VideoEntry } from '../components/bits'
 import { Diagram } from '../content/diagrams'
-import { completeLesson, evaluateBadges, lessonRow, recordAttempt, saveCardIndex, type BadgeDef } from '../lib/progress'
+import { completeLesson, evaluateBadges, isBookmarked, lessonRow, recordAttempt, saveCardIndex, setBookmark, type BadgeDef } from '../lib/progress'
+import { SearchSheet, courseRefs, unitRefs } from '../components/Search'
 import { track, useStudyTimer } from '../lib/track'
 import { TipSheet, TopicVideos } from '../components/Help'
 import { CourseGate } from './Plans'
@@ -50,6 +51,9 @@ function Player({ refx }: { refx: LessonRef }) {
   const video = useVideo(lesson.id)
   useStudyTimer(db, { lesson: lesson.id, course: course.id, kind: 'lesson' })
   const [tipOpen, setTipOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [params] = useSearchParams()
+  const marked = isBookmarked(db, lesson.id)
 
   const steps: Step[] = useMemo(() => {
     const s: Step[] = []
@@ -68,6 +72,9 @@ function Player({ refx }: { refx: LessonRef }) {
   }, [lesson, video])
 
   const [idx, setIdx] = useState(() => {
+    // opened from search or the glossary: start at that card
+    const want = Number(params.get('card') ?? NaN)
+    if (Number.isInteger(want) && want >= 0 && want < lesson.cards.length) return want
     const row = lessonRow(db, lesson.id)
     const saved = row && row.status !== 'done' ? Number(row.card_index) : 0
     return Math.min(saved, lesson.cards.length) // resume at most at the first quick-check question
@@ -114,6 +121,12 @@ function Player({ refx }: { refx: LessonRef }) {
 
   const next = unit.lessons[refx.index + 1]
 
+  /** Jump to one of this lesson's cards (from search). */
+  function jump(card: number | null) {
+    const at = card === null ? 0 : steps.findIndex((s) => s.t === 'card' && s.card === lesson.cards[card])
+    go(Math.max(0, at))
+  }
+
   return (
     <div className="player">
       <div className="player-top">
@@ -121,6 +134,17 @@ function Player({ refx }: { refx: LessonRef }) {
           ✕
         </button>
         <Progress pct={pct} />
+        <button className="icon-btn" aria-label="Search this topic" onClick={() => setSearchOpen(true)}>
+          🔍
+        </button>
+        <button
+          className={`icon-btn mark ${marked ? 'on' : ''}`}
+          aria-label={marked ? 'Remove bookmark' : 'Bookmark this topic to review later'}
+          aria-pressed={marked}
+          onClick={() => setBookmark(db, lesson.id, !marked)}
+        >
+          <BookmarkIcon filled={marked} />
+        </button>
         <button className="icon-btn" aria-label="My notes" onClick={() => setNotesOpen(true)}>
           📝
         </button>
@@ -180,6 +204,9 @@ function Player({ refx }: { refx: LessonRef }) {
               <button className="btn secondary block" onClick={() => setNotesOpen(true)}>
                 📝 Jot down what you learned
               </button>
+              <button className="btn secondary block" onClick={() => setBookmark(db, lesson.id, !marked)}>
+                {marked ? '🔖 Bookmarked · tap to remove' : '🔖 Bookmark to review later'}
+              </button>
               {next ? (
                 <Link className="btn block" to={`/lesson/${next.id}`}>
                   Next: {next.title} ▶
@@ -216,6 +243,19 @@ function Player({ refx }: { refx: LessonRef }) {
         </div>
       )}
 
+      {searchOpen && (
+        <SearchSheet
+          course={course}
+          currentLesson={lesson.id}
+          onJump={jump}
+          onClose={() => setSearchOpen(false)}
+          scopes={[
+            { label: 'This topic', refs: [refx] },
+            { label: 'This unit', refs: unitRefs(course, unit) },
+            { label: 'Whole course', refs: courseRefs(course) },
+          ]}
+        />
+      )}
       {notesOpen && <NotesSheet lessonId={lesson.id} title={lesson.title} onClose={() => setNotesOpen(false)} />}
       {tipOpen && <TipSheet lessonId={lesson.id} onClose={() => setTipOpen(false)} />}
     </div>

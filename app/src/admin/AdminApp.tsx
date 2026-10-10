@@ -8,6 +8,7 @@ import { refreshContent } from '../lib/overrides'
 import { AdminContext } from './context'
 import { Dashboard } from './Dashboard'
 import { UsersTab } from './Users'
+import { AudienceTab } from './Audience'
 import { AdminsTab, ContentTab, FeedbackTab, VideosTab } from './Tools'
 
 const APP_URL = import.meta.env.DEV ? '/' : 'https://www.aplearning.app/'
@@ -56,6 +57,7 @@ function SignIn({ onUser, note }: { onUser: (u: User) => void; note?: string }) 
 
 const TABS = [
   { to: '/', label: '📊 Dashboard', end: true },
+  { to: '/audience', label: '🧭 Audience' },
   { to: '/content', label: '📝 Content' },
   { to: '/videos', label: '🎬 Videos' },
   { to: '/users', label: '👥 Students' },
@@ -131,6 +133,7 @@ export function AdminApp() {
           <main className="admin-main">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/audience" element={<AudienceTab />} />
               <Route path="/content" element={<ContentTab />} />
               <Route path="/videos" element={<VideosTab />} />
               <Route path="/users" element={<UsersTab />} />

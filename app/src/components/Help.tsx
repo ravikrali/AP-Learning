@@ -1,6 +1,7 @@
-import { useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
 import { builtInYoutube, findLesson } from '../content'
+import type { Unit } from '../content/types'
 import { contentStore, youtubeOverride } from '../lib/overrides'
 import { useApp } from '../lib/app'
 import { track } from '../lib/track'
@@ -112,6 +113,66 @@ export function TipSheet({ lessonId, onClose }: { lessonId: string; onClose: () 
           </ul>
         </div>
         <TopicVideos lessonId={lessonId} compact />
+      </div>
+    </div>
+  )
+}
+
+/** Every smart trick and trap in a unit, in lesson order: the sheet behind the 💡 on the unit page. */
+export function UnitTipsSheet({ unit, onClose }: { unit: Unit; onClose: () => void }) {
+  const [show, setShow] = useState<'all' | 'tricks' | 'traps'>('all')
+  const groups = unit.lessons
+    .map((lesson) => ({ lesson, tips: tipsFor(lesson) }))
+    .map((g) => ({ ...g, tricks: show === 'traps' ? [] : g.tips.tricks, traps: show === 'tricks' ? [] : g.tips.traps }))
+    .filter((g) => g.tricks.length + g.traps.length > 0)
+  const nTricks = unit.lessons.reduce((n, l) => n + tipsFor(l).tricks.length, 0)
+  const nTraps = unit.lessons.reduce((n, l) => n + tipsFor(l).traps.length, 0)
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet tip-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Tips and tricks for this unit">
+        <div className="row" style={{ alignItems: 'center' }}>
+          <div className="grow">
+            <h3 style={{ margin: 0 }}>💡 Tips, tricks & shortcuts</h3>
+            <div className="small muted">{unit.number === 0 ? unit.title : `Unit ${unit.number}: ${unit.title}`}</div>
+          </div>
+          <button className="icon-btn" aria-label="Close" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+        <div className="seg" role="tablist" aria-label="Show">
+          <button role="tab" aria-selected={show === 'all'} className={show === 'all' ? 'on' : ''} onClick={() => setShow('all')}>
+            All {nTricks + nTraps}
+          </button>
+          <button role="tab" aria-selected={show === 'tricks'} className={show === 'tricks' ? 'on' : ''} onClick={() => setShow('tricks')}>
+            🪄 Tricks {nTricks}
+          </button>
+          <button role="tab" aria-selected={show === 'traps'} className={show === 'traps' ? 'on' : ''} onClick={() => setShow('traps')}>
+            ⚠️ Traps {nTraps}
+          </button>
+        </div>
+        {groups.length === 0 && <p className="small muted center">Nothing here yet.</p>}
+        {groups.map((g) => (
+          <div key={g.lesson.id} className="tip-group">
+            <Link to={`/lesson/${g.lesson.id}`} className="tip-group-head" onClick={onClose}>
+              <b className="grow">{g.lesson.title}</b>
+              <span className="small">Open ›</span>
+            </Link>
+            {g.tricks.map((t, i) => (
+              <div key={`h${i}`} className="tip hack">
+                <span className="kind hack">🪄 Smart trick</span>
+                <b>{t.title}</b>
+                <RichText text={t.body} />
+              </div>
+            ))}
+            {g.traps.map((t, i) => (
+              <div key={`t${i}`} className="tip trap">
+                <span className="kind trap">⚠️ Watch out</span>
+                {t.title && <b>{t.title}</b>}
+                <RichText text={t.body} />
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   )

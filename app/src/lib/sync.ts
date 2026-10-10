@@ -101,6 +101,12 @@ export function applyItem(db: LocalDB, it: SyncItem) {
     case 'set':
       db.exec('INSERT INTO meta(key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', [`setting:${id}`, v(d.value)])
       return
+    case 'mark':
+      db.exec(
+        'INSERT INTO bookmarks(lesson_id, saved, updated_at) VALUES (?,?,?) ON CONFLICT(lesson_id) DO UPDATE SET saved=excluded.saved, updated_at=excluded.updated_at',
+        [id, d.saved ? 1 : 0, v(d.updated_at) ?? it.updated_at],
+      )
+      return
     case 'plan':
       db.exec(
         'INSERT INTO plans(course_id, data, updated_at) VALUES (?,?,?) ON CONFLICT(course_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at',

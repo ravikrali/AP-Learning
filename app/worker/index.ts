@@ -1,11 +1,13 @@
 // AP Learning backend: Google sign-in → session, cross-device sync, subscriptions (Stripe),
-// learning statistics, calendar feeds, admin content editing, admin dashboard, feedback.
+// learning statistics, calendar feeds, admin content editing, admin dashboard, feedback,
+// and anonymous visitor counts for the welcome page.
 // Everything that is not /api/* is the static app, served from ./dist by the ASSETS binding;
 // on admin.* hosts the admin portal (admin.html) is served instead.
 
 import { isTelemetry, KEY_PATTERN, maxItemSize, mergeItem, type SyncItem } from '../shared/sync'
 import { CATALOG_IDS, checkPickChange, PLANS, trimPicks, type PlanId } from '../shared/catalog'
 import { planToIcs, type StudyPlan } from '../shared/plan'
+import { channelOf, hostOf, VID_PATTERN, VISIT_EVENTS, type VisitBody } from '../shared/visit'
 import { PAID_STATUSES, priceId, readSubscription, stripe, StripeError, verifyStripeSignature, type StripeEnv } from './stripe'
 
 interface Env extends StripeEnv {
@@ -731,9 +733,167 @@ async function resolveFeedback(req: Request, env: Env) {
   return json({ ok: true })
 }
 
+// ---------- visitors who have not signed in (welcome page) ----------
+
+const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|pingdom|uptime|monitor|facebookexternalhit|whatsapp|python|curl|wget/i
+const cfOf = (req: Request) => (req as Request & { cf?: { country?: string; region?: string } }).cf
+
+/** Count one welcome-page event. Anonymous: a random browser ID, no name, email or IP address is stored. */
+async function recordVisit(req: Request, env: Env) {
+  const text = await req.text()
+  if (text.length > 2000) throw new HttpError(413, 'Request too large')
+  let b: VisitBody
+  try {
+    b = JSON.parse(text) as VisitBody
+  } catch {
+    throw new HttpError(400, 'Invalid JSON')
+  }
+  if (!b || typeof b.vid !== 'string' || !VID_PATTERN.test(b.vid)) throw new HttpError(400, 'Bad visitor')
+  if (!(VISIT_EVENTS as readonly string[]).includes(b.event)) throw new HttpError(400, 'Bad event')
+  // crawlers and link previews are not people
+  if (BOT.test(req.headers.get('user-agent') ?? '')) return json({ ok: true })
+
+  const t = now()
+  const cf = cfOf(req)
+  const referrer = hostOf(str(b.referrer, 120)) || null
+  const source = str(b.source, 80) ?? referrer
+  const medium = str(b.medium, 80)
+  const device = b.device === 'phone' || b.device === 'tablet' || b.device === 'desktop' ? b.device : null
+  const stmts = [
+    // attribution is first-touch: later visits never overwrite where the visitor first came from
+    env.DB.prepare(
+      `INSERT INTO visitors (vid, first_seen, last_seen, visits, country, region, channel, source, medium, campaign, referrer, device, lang)
+       VALUES (?1, ?2, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
+       ON CONFLICT(vid) DO UPDATE SET last_seen = excluded.last_seen, visits = visitors.visits + excluded.visits,
+         country = COALESCE(visitors.country, excluded.country), region = COALESCE(visitors.region, excluded.region),
+         device = COALESCE(excluded.device, visitors.device)`,
+    ).bind(
+      b.vid, t, b.event === 'view' ? 1 : 0, cf?.country ?? null, cf?.region ?? null,
+      channelOf({ source: str(b.source, 80), medium, referrer }), source, medium, str(b.campaign, 80), referrer, device, str(b.lang, 12),
+    ),
+    env.DB.prepare(
+      'INSERT INTO visit_events (day, vid, event, n) VALUES (?, ?, ?, 1) ON CONFLICT(day, vid, event) DO UPDATE SET n = MIN(visit_events.n + 1, 1000)',
+    ).bind(t.slice(0, 10), b.vid, b.event),
+  ]
+  if (b.event === 'signin') {
+    // the browser just signed in: remember which account this visitor became
+    const u = await currentUser(req, env).catch(() => null)
+    if (u) stmts.push(env.DB.prepare('UPDATE visitors SET user_sub = ?, signed_in_at = COALESCE(signed_in_at, ?) WHERE vid = ?').bind(u.sub, t, b.vid))
+  }
+  if (Math.random() < 0.01) stmts.push(env.DB.prepare('DELETE FROM visit_events WHERE day < ?').bind(daysAgo(400)))
+  await env.DB.batch(stmts)
+  return json({ ok: true })
+}
+
+/** "Tell me when my course is ready": an email typed into the welcome page. */
+async function recordLead(req: Request, env: Env) {
+  const text = await req.text()
+  if (text.length > 2000) throw new HttpError(413, 'Request too large')
+  let b: { email?: string; name?: string; course?: string; vid?: string }
+  try {
+    b = JSON.parse(text)
+  } catch {
+    throw new HttpError(400, 'Invalid JSON')
+  }
+  const email = String(b.email ?? '').trim().toLowerCase()
+  if (!EMAIL.test(email) || email.length > 254) throw new HttpError(400, 'That email address does not look right.')
+  const course = typeof b.course === 'string' && CATALOG_IDS.has(b.course) ? b.course : null
+  const vid = typeof b.vid === 'string' && VID_PATTERN.test(b.vid) ? b.vid : null
+  const t = now()
+  const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM leads WHERE created_at > ?').bind(new Date(Date.now() - 3600_000).toISOString()).first<{ n: number }>()
+  if ((recent?.n ?? 0) >= 300) throw new HttpError(429, 'Too many sign-ups right now. Please try again later.')
+  const v = vid ? await env.DB.prepare('SELECT channel, source FROM visitors WHERE vid = ?').bind(vid).first<{ channel: string; source: string | null }>() : null
+  await env.DB.prepare(
+    `INSERT INTO leads (email, name, course, vid, country, channel, source, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)
+     ON CONFLICT(email) DO UPDATE SET name = COALESCE(excluded.name, leads.name), course = COALESCE(excluded.course, leads.course), updated_at = excluded.updated_at`,
+  )
+    .bind(email, str(String(b.name ?? '').trim(), 80), course, vid, cfOf(req)?.country ?? null, v?.channel ?? null, v?.source ?? null, t)
+    .run()
+  return json({ ok: true })
+}
+
 // ---------- admin dashboard ----------
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 86400_000).toISOString().slice(0, 10)
+
+// Plan in force per user (same rule as effectivePlan, in SQL).
+const PLAN_SQL = `CASE
+    WHEN a.comp_plan = 'all' OR (a.plan = 'all' AND a.status IN ('active','trialing','past_due')) THEN 'all'
+    WHEN a.comp_plan = 'three' OR (a.plan = 'three' AND a.status IN ('active','trialing','past_due')) THEN 'three'
+    ELSE 'free' END`
+
+/** Admin: visitors who have not signed in, where they come from, the welcome-page funnel, leads, and students on the free plan. */
+async function audience(req: Request, env: Env) {
+  await requireAdmin(req, env)
+  const q = <T>(sql: string, ...args: unknown[]) =>
+    env.DB.prepare(sql)
+      .bind(...args)
+      .all<T>()
+      .then((r) => r.results)
+  const one = async <T>(sql: string, ...args: unknown[]) => (await q<T>(sql, ...args))[0]
+  const since = daysAgo(89)
+  const group = (col: string) =>
+    q<{ label: string | null; visitors: number; anonymous: number; signed: number }>(
+      `SELECT ${col} AS label, COUNT(*) AS visitors, SUM(user_sub IS NULL) AS anonymous, SUM(user_sub IS NOT NULL) AS signed
+       FROM visitors WHERE last_seen >= ? GROUP BY 1 ORDER BY 2 DESC LIMIT 25`,
+      since,
+    )
+  const [totals, byDay, byCountry, byRegion, byChannel, bySource, byCampaign, byDevice, byLang, funnel, leads, leadCount, free, freeByCountry, freeActive] = await Promise.all([
+    one<{ all_time: number; d30: number; d7: number; anon30: number; signed30: number; returning30: number }>(
+      `SELECT COUNT(*) AS all_time, SUM(last_seen >= ?1) AS d30, SUM(last_seen >= ?2) AS d7,
+              SUM(last_seen >= ?1 AND user_sub IS NULL) AS anon30, SUM(last_seen >= ?1 AND user_sub IS NOT NULL) AS signed30,
+              SUM(last_seen >= ?1 AND visits >= 2) AS returning30
+       FROM visitors`,
+      daysAgo(29), daysAgo(6),
+    ),
+    q<{ day: string; visitors: number; signins: number; leads: number }>(
+      `SELECT day, COUNT(DISTINCT CASE WHEN event = 'view' THEN vid END) AS visitors,
+              COUNT(DISTINCT CASE WHEN event = 'signin' THEN vid END) AS signins,
+              COUNT(DISTINCT CASE WHEN event = 'lead' THEN vid END) AS leads
+       FROM visit_events WHERE day >= ? GROUP BY day ORDER BY day`,
+      daysAgo(59),
+    ),
+    group("COALESCE(country, '??')"),
+    q<{ country: string; region: string; visitors: number }>(
+      `SELECT country, region, COUNT(*) AS visitors FROM visitors
+       WHERE last_seen >= ? AND user_sub IS NULL AND region IS NOT NULL AND region != '' GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 12`,
+      since,
+    ),
+    group('channel'),
+    group("COALESCE(source, '(direct)')"),
+    group('campaign'),
+    group("COALESCE(device, 'unknown')"),
+    group("COALESCE(substr(lang, 1, 2), '??')"),
+    q<{ event: string; visitors: number }>('SELECT event, COUNT(DISTINCT vid) AS visitors FROM visit_events WHERE day >= ? GROUP BY 1', daysAgo(29)),
+    q<{ email: string; name: string | null; course: string | null; country: string | null; channel: string | null; source: string | null; created_at: string; signed_up: number }>(
+      `SELECT l.email, l.name, l.course, l.country, l.channel, l.source, l.created_at,
+              EXISTS (SELECT 1 FROM users u WHERE u.email = l.email) AS signed_up
+       FROM leads l ORDER BY l.created_at DESC LIMIT 1000`,
+    ),
+    one<{ n: number; d30: number }>('SELECT COUNT(*) AS n, SUM(created_at >= ?) AS d30 FROM leads', daysAgo(29)),
+    one<{ n: number; new30: number }>(
+      `SELECT COUNT(*) AS n, SUM(u.created_at >= ?) AS new30 FROM users u LEFT JOIN accounts a ON a.user_sub = u.sub WHERE ${PLAN_SQL} = 'free'`,
+      daysAgo(29),
+    ),
+    q<{ country: string; n: number }>(
+      `SELECT COALESCE(u.country, '??') AS country, COUNT(*) AS n FROM users u LEFT JOIN accounts a ON a.user_sub = u.sub
+       WHERE ${PLAN_SQL} = 'free' GROUP BY 1 ORDER BY 2 DESC LIMIT 12`,
+    ),
+    one<{ wau: number; mau: number; minutes30: number | null; lessons30: number | null }>(
+      `SELECT COUNT(DISTINCT CASE WHEN d.day >= ?1 THEN d.user_sub END) AS wau, COUNT(DISTINCT d.user_sub) AS mau,
+              SUM(d.seconds) / 60.0 AS minutes30, SUM(d.lessons_done) AS lessons30
+       FROM daily_user d LEFT JOIN accounts a ON a.user_sub = d.user_sub
+       WHERE d.day >= ?2 AND (d.seconds > 0 OR d.attempts > 0 OR d.lessons_done > 0) AND ${PLAN_SQL} = 'free'`,
+      daysAgo(6), daysAgo(29),
+    ),
+  ])
+  return json({
+    generatedAt: now(),
+    visitors: { ...totals, byDay, byCountry, byRegion, byChannel, bySource, byCampaign: byCampaign.filter((c) => c.label), byDevice, byLang, funnel },
+    leads: { total: leadCount?.n ?? 0, d30: leadCount?.d30 ?? 0, items: leads },
+    free: { ...free, ...freeActive, byCountry: freeByCountry },
+  })
+}
 
 async function metrics(req: Request, env: Env) {
   await requireAdmin(req, env)
@@ -744,11 +904,7 @@ async function metrics(req: Request, env: Env) {
       .then((r) => r.results)
   const one = async <T>(sql: string, ...args: unknown[]) => (await q<T>(sql, ...args))[0]
 
-  // Plan in force per user (same rule as effectivePlan, in SQL).
-  const planSql = `CASE
-      WHEN a.comp_plan = 'all' OR (a.plan = 'all' AND a.status IN ('active','trialing','past_due')) THEN 'all'
-      WHEN a.comp_plan = 'three' OR (a.plan = 'three' AND a.status IN ('active','trialing','past_due')) THEN 'three'
-      ELSE 'free' END`
+  const planSql = PLAN_SQL
   const paidSql = `CASE WHEN a.status IN ('active','trialing','past_due') THEN a.plan ELSE 'free' END`
 
   const [
@@ -888,6 +1044,8 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/insights' && m === 'GET') return myInsights(req, env)
   if (p === '/api/content' && m === 'GET') return getContent(env)
   if (p === '/api/feedback' && m === 'POST') return postFeedback(req, env)
+  if (p === '/api/visit' && m === 'POST') return recordVisit(req, env)
+  if (p === '/api/lead' && m === 'POST') return recordLead(req, env)
 
   if (p === '/api/account' && m === 'GET') return json(await accountView(env, await currentUser(req, env)))
   if (p === '/api/account/courses' && m === 'POST') return setCourses(req, env)
@@ -901,6 +1059,7 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (cal && m === 'GET') return calendarFeed(env, req, cal[1])
 
   if (p === '/api/admin/metrics' && m === 'GET') return metrics(req, env)
+  if (p === '/api/admin/audience' && m === 'GET') return audience(req, env)
   if (p === '/api/admin/users' && m === 'GET') return listUsers(req, env, url)
   if (p === '/api/admin/users/plan' && m === 'POST') return grantPlan(req, env)
   if (p === '/api/admin/youtube' && m === 'GET') return youtubeInfo(req, env, url)

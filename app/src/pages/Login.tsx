@@ -5,6 +5,9 @@ import { PLAN_ORDER, PLANS } from '../../shared/catalog'
 import { planFeatures } from './Plans'
 import { DEFAULT_MASCOT, Mascot } from '../components/Mascot'
 import { levelInfo } from '../lib/progress'
+import { leadVisitor, trackVisit } from '../lib/visit'
+import type { VisitEvent } from '../../shared/visit'
+import { PrivacyText } from './Support'
 
 // The climb shown on the landing page: foundations at the bottom, exam-ready expert at the top.
 // Each time round, the bear climbs a different subject: the same path works for every AP course.
@@ -135,7 +138,8 @@ function Journey() {
   )
 }
 
-function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+/** Fades its content in when scrolled into view; `seen` also counts that this part of the page was reached. */
+function Reveal({ children, delay = 0, seen }: { children: React.ReactNode; delay?: number; seen?: VisitEvent }) {
   const ref = useRef<HTMLDivElement>(null)
   const [shown, setShown] = useState(false)
   useEffect(() => {
@@ -145,6 +149,7 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
       ([e]) => {
         if (e.isIntersecting) {
           setShown(true)
+          if (seen) trackVisit(seen)
           io.disconnect()
         }
       },
@@ -152,7 +157,7 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
     )
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [seen])
   return (
     <div ref={ref} className={`reveal-in ${shown ? 'in' : ''}`} style={{ transitionDelay: `${delay}ms` }}>
       {children}
@@ -167,13 +172,91 @@ const HOW = [
   { e: '🏆', t: 'Prove it', d: 'Checkpoints and practice exams built like the real AP exam.' },
 ]
 
+/** "Tell me when my course is ready": the only place a visitor who has not signed in gives a name or email. */
+function LeadForm() {
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [course, setCourse] = useState('')
+  const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle')
+  const [err, setErr] = useState<string | null>(null)
+  const soon = CATALOG.filter((c) => !BUILT.has(c.id))
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    setErr(null)
+    setState('sending')
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, name: name || undefined, course: course || undefined, vid: leadVisitor() ?? undefined }),
+      })
+      if (!res.ok) throw new Error(((await res.json().catch(() => ({}))) as { error?: string }).error ?? 'Could not save that. Please try again.')
+      trackVisit('lead')
+      setState('done')
+    } catch (e2) {
+      setErr((e2 as Error).message === 'Failed to fetch' ? "Can't reach the server. Check your internet connection." : (e2 as Error).message)
+      setState('idle')
+    }
+  }
+
+  if (state === 'done')
+    return (
+      <section className="lead">
+        <h2>You're on the list 🎉</h2>
+        <p className="muted">We'll email {email} when {course ? soon.find((c) => c.id === course)?.title : 'new courses'} {course ? 'is' : 'are'} ready.</p>
+      </section>
+    )
+  return (
+    <section className="lead">
+      <h2>Waiting for another course?</h2>
+      <p className="muted">Leave your email and we'll tell you the day it's ready. Your vote also decides which course is written next.</p>
+      <form className="lead-form" onSubmit={submit}>
+        <label>
+          <span>First name (optional)</span>
+          <input value={name} onChange={(e) => setName(e.target.value)} maxLength={80} autoComplete="given-name" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} autoComplete="email" inputMode="email" />
+        </label>
+        <label>
+          <span>Course you want (optional)</span>
+          <select value={course} onChange={(e) => setCourse(e.target.value)}>
+            <option value="">Any new course</option>
+            {soon.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        {err && <p className="small" style={{ color: 'var(--oops)', margin: 0 }}>{err}</p>}
+        <button className="btn" disabled={state === 'sending'}>
+          {state === 'sending' ? 'Saving…' : 'Tell me when it’s ready'}
+        </button>
+        <p className="tiny muted" style={{ margin: 0 }}>
+          We only use this to email you about AP Learning courses. Under 13? Please ask a parent to fill this in.
+        </p>
+      </form>
+    </section>
+  )
+}
+
 export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
   const btn = useRef<HTMLDivElement>(null)
   const [err, setErr] = useState<string | null>(null)
+  const [privacy, setPrivacy] = useState(false)
+
+  // Count the visit (anonymous; see lib/visit.ts).
+  useEffect(() => trackVisit('view'), [])
 
   useEffect(() => {
     if (!btn.current || !GOOGLE_CLIENT_ID) return
-    renderGoogleButton(btn.current, onUser).catch((e) => setErr(String(e.message ?? e)))
+    renderGoogleButton(btn.current, (u) => {
+      trackVisit('signin', u.token)
+      onUser(u)
+    }).catch((e) => setErr(String(e.message ?? e)))
   }, [onUser])
 
   const guest = () => {
@@ -219,7 +302,7 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
         <h2>How you become an expert</h2>
         <div className="how-list">
           {HOW.map((h, i) => (
-            <Reveal key={h.t} delay={i * 90}>
+            <Reveal key={h.t} delay={i * 90} seen={i === 0 ? 'see_how' : undefined}>
               <div className="how-item">
                 <span className="how-n">{i + 1}</span>
                 <span className="how-e">{h.e}</span>
@@ -233,7 +316,7 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
         </div>
       </section>
 
-      <Reveal>
+      <Reveal seen="see_courses">
         <section className="numbers">
           <div>
             <b>{CATALOG.length}</b>
@@ -266,7 +349,7 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
         </div>
       </Reveal>
 
-      <Reveal>
+      <Reveal seen="see_pricing">
         <section className="pricing">
           <h2>Start free</h2>
           <div className="plans" style={{ marginTop: 14 }}>
@@ -290,6 +373,10 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
       </Reveal>
 
       <Reveal>
+        <LeadForm />
+      </Reveal>
+
+      <Reveal seen="see_final">
         <section className="final">
           <Mascot look={DEFAULT_MASCOT} mood="cheer" size={110} />
           <h2>Ready for your first small step?</h2>
@@ -298,7 +385,27 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
           </button>
         </section>
       </Reveal>
-      <footer className="small muted foot">AP® is a trademark of College Board, which is not affiliated with this app.</footer>
+      <footer className="small muted foot">
+        AP® is a trademark of College Board, which is not affiliated with this app.
+        <br />
+        We count visits anonymously to improve this page.{' '}
+        <button className="link-btn" onClick={() => setPrivacy(true)}>
+          Privacy
+        </button>
+      </footer>
+      {privacy && (
+        <div className="sheet-backdrop" onClick={() => setPrivacy(false)}>
+          <div className="sheet tip-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Privacy">
+            <div className="row">
+              <h3 className="grow">Privacy & terms</h3>
+              <button className="btn secondary" onClick={() => setPrivacy(false)}>
+                Close
+              </button>
+            </div>
+            <PrivacyText />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -15,7 +15,10 @@ const HOW_IT_WORKS: { e: string; t: string; d: string }[] = [
   { e: '🃏', t: 'Daily review', d: 'Finishing a lesson adds its flashcards to Review. Cards you know come back later and later (1, 3, 7, 14, 30, then 60 days); ones you miss come back tomorrow. At most 15 a day.' },
   { e: '🎯', t: 'Unit checkpoints', d: '10 mixed questions from a unit, one try each, no timer. 90%+ earns 3 stars, 70%+ earns 2.' },
   { e: '📝', t: 'Practice exams', d: 'Multiple-choice sets weighted like the real exam, plus free-response questions you score yourself with a rubric.' },
-  { e: '✏️', t: 'Notes', d: 'Tap 📝 in any lesson to write notes in your own words. Find them all in the Notes tab.' },
+  { e: '✏️', t: 'Notes', d: 'Tap 📝 in any lesson to write notes in your own words. Find them all under Review → Notes.' },
+  { e: '🔖', t: 'Bookmarks', d: 'Tap the bookmark at the top of any topic to save it for later. Your bookmarks are under Review → Bookmarks.' },
+  { e: '🔍', t: 'Search', d: 'Tap 🔍 on a course, unit or topic to search the lessons. Results open at the exact card.' },
+  { e: '🧰', t: 'Tips, periodic table and glossary', d: 'The 💡 on a unit page lists every smart trick and trap for that unit. Under More (the three dots) you will find an interactive periodic table and a glossary of key terms.' },
   { e: '🔥', t: 'XP, levels and streaks', d: 'Earn XP for lessons, first-try answers and reviews. XP is never taken away. Missing one day never breaks your streak; only two missed days in a row do.' },
   { e: '🗓️', t: 'Study plan', d: 'Open a course and tap "Make my study plan". Answer six quick questions (exam date, study days, session length, time, where to start, review weeks) and get a day-by-day plan you can add to Google, Apple or Outlook Calendar.' },
   { e: '💪', t: 'Quick tips', d: 'If a topic is being tricky, a "Quick tip" button appears with the lesson’s smart tricks, common traps and popular videos. Tricky topics also show up on the Home screen until you have them.' },
@@ -105,7 +108,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What do you do with my study data?',
-    a: 'We record which questions you answer and how long you spend on each topic so the app can spot tricky topics, offer tips and show your study time. Combined totals across all students help us find lessons that need improving. We never sell data or show ads. See Me → Privacy & terms.',
+    a: 'We record which questions you answer and how long you spend on each topic so the app can spot tricky topics, offer tips and show your study time. Combined totals across all students help us find lessons that need improving. We never sell data or show ads. See More → your profile → Privacy & terms.',
   },
   {
     q: 'Is this app made by College Board?',
@@ -247,6 +250,14 @@ export function PrivacyPage() {
   return (
     <div>
       <TopBar title="Privacy & terms" back="/me" />
+      <PrivacyText />
+    </div>
+  )
+}
+
+/** The privacy summary, shared by the in-app page and the landing page. */
+export function PrivacyText() {
+  return (
       <div className="card small stack">
         <b>What we keep</b>
         <ul className="rich" style={{ paddingLeft: 20, margin: 0 }}>
@@ -254,6 +265,11 @@ export function PrivacyPage() {
           <li>Your progress: lessons, answers, flashcards, notes, settings and study plans, so they sync to your devices.</li>
           <li>Learning statistics: how long you actively study each topic and how often you get questions right, so the app can spot tricky topics and offer tips.</li>
           <li>Your plan and payment status. Card details are handled by Stripe and never reach us.</li>
+          <li>
+            Before you sign in: an anonymous visit count. A random ID is kept in your browser, with your country, the kind of device, the site or
+            link that brought you here and which parts of the welcome page you saw. It holds no name or email unless you type them into the
+            "Tell me when my course is ready" form. Browsers that send a "Do Not Track" or Global Privacy Control signal are not counted.
+          </li>
         </ul>
         <b>How it is used</b>
         <ul className="rich" style={{ paddingLeft: 20, margin: 0 }}>
@@ -272,6 +288,5 @@ export function PrivacyPage() {
         </p>
         <p className="muted" style={{ margin: 0 }}>AP® is a trademark of College Board, which is not affiliated with this app.</p>
       </div>
-    </div>
   )
 }
