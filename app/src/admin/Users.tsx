@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
+import { useAdmin } from './context'
 import { catalogCourse, PLANS, type PlanId } from '../../shared/catalog'
 
 interface UserRow {
@@ -25,6 +26,10 @@ export function UsersTab() {
   const [q, setQ] = useState('')
   const [rows, setRows] = useState<UserRow[] | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
+  const { can } = useAdmin()
+  // granting a plan is an edit; taking a granted plan back is a delete
+  const mayGrant = can('students', 'edit')
+  const mayRevoke = can('students', 'delete')
   const load = (term = q) =>
     api<{ items: UserRow[] }>(`/api/admin/users?q=${encodeURIComponent(term)}`)
       .then((r) => setRows(r.items))
@@ -59,7 +64,11 @@ export function UsersTab() {
       </form>
       {msg && <div className="card notice small">{msg}</div>}
       <p className="small muted" style={{ margin: 0 }}>
-        Grant a plan to family, teachers or testers without payment. It sits on top of anything they pay for, and can be removed any time.
+        {mayGrant
+          ? 'Grant a plan to family, teachers or testers without payment. It sits on top of anything they pay for, and can be removed any time.'
+          : mayRevoke
+            ? 'Your role can take a granted plan back, but not grant one.'
+            : 'Your role can look at students but not change their plans.'}
       </p>
       {!rows ? (
         <div className="card muted">Loading…</div>
@@ -97,11 +106,23 @@ export function UsersTab() {
                     </td>
                     <td>{courses || '—'}</td>
                     <td>
-                      <select className="admin-input" value={u.comp_plan ?? ''} onChange={(e) => grant(u, (e.target.value || null) as PlanId | null)}>
-                        <option value="">None</option>
-                        <option value="three">{PLANS.three.name}</option>
-                        <option value="all">{PLANS.all.name}</option>
-                      </select>
+                      {mayGrant || (mayRevoke && u.comp_plan) ? (
+                        <select className="admin-input" value={u.comp_plan ?? ''} onChange={(e) => grant(u, (e.target.value || null) as PlanId | null)}>
+                          <option value="" disabled={!mayRevoke && !!u.comp_plan}>
+                            None
+                          </option>
+                          <option value="three" disabled={!mayGrant}>
+                            {PLANS.three.name}
+                          </option>
+                          <option value="all" disabled={!mayGrant}>
+                            {PLANS.all.name}
+                          </option>
+                        </select>
+                      ) : u.comp_plan ? (
+                        PLANS[u.comp_plan].name
+                      ) : (
+                        '—'
+                      )}
                     </td>
                   </tr>
                 )

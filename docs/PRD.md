@@ -76,7 +76,7 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | A-1 | Sign in with a personal Google account. The server checks the Google token and issues a 90-day session. | ✅ |
 | A-2 | One address for everyone: `aplearning.app` redirects to `www.aplearning.app` so Google sign-in works in every browser. | ✅ |
 | A-3 | The country and region at first sign-in are recorded for the dashboard. | ✅ |
-| A-4 | The owner's email is always an admin. Admins can add and remove other admins. | ✅ |
+| A-4 | The owner's email (`devt309@gmail.com`) is the Super Admin: full access, and nobody can change or remove them. Other people get into the admin portal only when someone with the Admins privilege adds them with a role (see D-9 to D-12). | ✅ |
 
 ### 3.3 Courses and catalog
 
@@ -222,7 +222,11 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | D-5 | **Content:** edit any lesson card, quick-check question or flashcard, with a history of changes. | ✅ |
 | D-6 | **Videos:** attach a lesson video and replace a topic's YouTube links (each link is checked to exist). | ✅ |
 | D-7 | **Students:** search students, see their plan and courses, grant or remove a plan. | ✅ |
-| D-8 | **Feedback** inbox and **Admins** list. | ✅ |
+| D-8 | **Feedback** inbox (mark done, reopen, delete a message) and **Admins** (portal users). | ✅ |
+| D-9 | **Privileges:** every section of the portal (Dashboard, Audience, Content, Videos, Students, Feedback, Admins) has View, Edit and Delete privileges (Dashboard and Audience are view-only). A person sees only the sections they may view, and only the buttons they may use. The server checks the privilege on every request. | ✅ |
+| D-10 | **Roles** are named sets of privileges: Super Admin (owner only, everything), Admin (everything, including adding other admins), Curator (view/edit/delete in Content and Videos only), Support (Students view/edit, Feedback view/edit/delete), Analyst (Dashboard and Audience, view only), Viewer (view everything, change nothing), Custom (any mix). | ✅ |
+| D-11 | **Adding a user:** the role and privileges are chosen in the same form as the email. Picking a role ticks its privileges; changing a tick makes a Custom set. | ✅ |
+| D-12 | **User administration** (Admins tab): list portal users with role, privileges, who added them and when they were last seen; change a person's role or privileges; remove a person. Nobody can give privileges they do not hold, change someone who holds more than they do, change themselves, or change the Super Admin. | ✅ |
 
 *D-1 setup still needed: add `https://admin.aplearning.app` to the Google sign-in client's authorized origins.*
 
@@ -242,7 +246,7 @@ AP Learning helps high-school students learn an AP course from the foundations u
 |---|---|
 | **Accuracy** | `npm test` runs 63 automated checks. They re-compute every numeric answer and worked-example number, check that every chemical equation balances in atoms and charge, that every CED topic is taught, that every glossary term points at a lesson that really uses it, and that periodic-table data is consistent (electron counts, masses matching the lessons, positions). Element data comes from PubChem (U.S. National Institutes of Health, public domain). |
 | **Privacy** | No ads and no data sales. Visitors are counted without name, email or IP address. Do Not Track and Global Privacy Control are honored. Card details are handled only by Stripe. A parent or guardian makes purchases. |
-| **Security** | Google tokens are verified on the server. Sessions are stored as hashes. Admin routes check admin status on every request. Stripe webhooks are signature-checked and safe to receive twice. |
+| **Security** | Google tokens are verified on the server. Sessions are stored as hashes. Admin routes check the person's role and privilege on every request. Stripe webhooks are signature-checked and safe to receive twice. |
 | **Phone use** | Every screen fits a 375-pixel-wide phone without sideways scrolling (the zoomed periodic table scrolls inside its own box). |
 | **Offline** | Lessons, practice, review, search, glossary and the periodic table work without internet after the first load. |
 | **Accessibility** | Icon-only buttons have spoken labels and tooltips. The welcome animation respects the phone's "reduce motion" setting. |

@@ -1,4 +1,5 @@
-// Admin tools: edit lesson content, lesson videos and YouTube links, feedback inbox, admins.
+// Admin tools: edit lesson content, lesson videos and YouTube links, feedback inbox.
+// Buttons a role may not use are hidden here; the server enforces the same rules.
 import { useEffect, useMemo, useState } from 'react'
 import { builtInYoutube, COURSES } from '../content'
 import type { Card, Lesson, Question } from '../content/types'
@@ -82,6 +83,7 @@ function preview(o: Record<string, unknown>): string {
 export function ContentTab() {
   const { lesson, picker } = useLessonPicker()
   const [editing, setEditing] = useState<string | null>(null)
+  const { can } = useAdmin()
 
   if (editing) return <Editor key={editing} itemKey={editing} onClose={() => setEditing(null)} />
 
@@ -100,8 +102,9 @@ export function ContentTab() {
     <div className="stack">
       {picker}
       <p className="small muted" style={{ margin: 0 }}>
-        Edits are published to everyone right away. Equations are balance-checked before saving, and you can always revert to the
-        original text.
+        {can('content', 'edit')
+          ? 'Edits are published to everyone right away. Equations are balance-checked before saving, and you can always revert to the original text.'
+          : 'Your role can look at lesson content but not change it.'}
       </p>
       <div className="stack" style={{ gap: 8 }}>
         {rows.map((r) => (
@@ -113,7 +116,7 @@ export function ContentTab() {
               </span>
             </span>
             {contentItem(r.key) && <span className="weight">edited</span>}
-            <span className="muted">✎</span>
+            <span className="muted">{can('content', 'edit') ? '✎' : '›'}</span>
           </button>
         ))}
       </div>
@@ -258,6 +261,8 @@ function Editor({ itemKey, onClose }: { itemKey: string; onClose: () => void }) 
   const [msg, setMsg] = useState<string | null>(null)
   const [history, setHistory] = useState<{ id: number; changed_by: string; changed_at: string; data: string | null }[]>([])
   const edited = !!contentItem(itemKey)
+  const { can } = useAdmin()
+  const mayEdit = can('content', 'edit')
 
   const loadHistory = () =>
     api<{ items: typeof history }>(`/api/admin/history?key=${encodeURIComponent(itemKey)}`)
@@ -331,7 +336,8 @@ function Editor({ itemKey, onClose }: { itemKey: string; onClose: () => void }) 
         <span className="grow small muted ellipsis">{itemKey}</span>
         {edited && <span className="weight">edited</span>}
       </div>
-      <div className="card stack">
+      {!mayEdit && <div className="card notice small">View only: your role cannot publish changes to content.</div>}
+      <fieldset className="card stack" disabled={!mayEdit}>
         {fields(draft, setDraft, itemKey.startsWith('check:') ? q : undefined)}
         {draft.question !== undefined && (
           <>
@@ -349,7 +355,7 @@ function Editor({ itemKey, onClose }: { itemKey: string; onClose: () => void }) 
           Formatting: **bold**, *italic*, {'{{H2SO4}}'} for formulas, [[eq: 2H2 + O2 -&gt; 2H2O]] for equations (balance-checked),
           x^{'{2}'} and K_{'{a}'}. A blank line starts a new paragraph; lines starting with "- " make a list.
         </p>
-      </div>
+      </fieldset>
 
       {errors.length > 0 && (
         <div className="feedback hint">
@@ -372,10 +378,12 @@ function Editor({ itemKey, onClose }: { itemKey: string; onClose: () => void }) 
       </div>
 
       <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
-        <button className="btn" disabled={busy || errors.length > 0} onClick={save}>
-          {busy ? 'Saving…' : 'Publish'}
-        </button>
-        {edited && (
+        {mayEdit && (
+          <button className="btn" disabled={busy || errors.length > 0} onClick={save}>
+            {busy ? 'Saving…' : 'Publish'}
+          </button>
+        )}
+        {edited && can('content', 'delete') && (
           <button className="btn secondary" disabled={busy} onClick={revert}>
             Revert to original
           </button>
@@ -422,6 +430,8 @@ function VideoForm({ lesson }: { lesson: Lesson }) {
   const [url, setUrl] = useState(o?.url ?? '')
   const [title, setTitle] = useState(o?.title ?? '')
   const [msg, setMsg] = useState<string | null>(null)
+  const { can } = useAdmin()
+  const mayEdit = can('videos', 'edit')
 
   useEffect(() => {
     loadVideos().then((all) => {
@@ -452,21 +462,23 @@ function VideoForm({ lesson }: { lesson: Lesson }) {
       <b>Video for "{lesson.title}"</b>
       <label className="field">
         <span>Video link (YouTube or any https video URL)</span>
-        <input className="admin-input" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://youtu.be/…" />
+        <input className="admin-input" value={url} disabled={!mayEdit} onChange={(e) => setUrl(e.target.value)} placeholder="https://youtu.be/…" />
       </label>
       <label className="field">
         <span>Title (optional)</span>
-        <input className="admin-input" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input className="admin-input" value={title} disabled={!mayEdit} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <p className="small muted" style={{ margin: 0 }}>
         It appears right after the lesson's first key-idea card. Tip: upload to YouTube as "Unlisted".
         {base && !o ? ' (Currently set in videos.json.)' : ''}
       </p>
       <div className="row" style={{ gap: 10 }}>
-        <button className="btn" onClick={() => save()} disabled={!url.trim()}>
-          Publish video
-        </button>
-        {(o?.url || base) && (
+        {mayEdit && (
+          <button className="btn" onClick={() => save()} disabled={!url.trim()}>
+            Publish video
+          </button>
+        )}
+        {(o?.url || base) && can('videos', 'delete') && (
           <button className="btn secondary" onClick={() => save(true)}>
             Remove video
           </button>
@@ -511,6 +523,8 @@ function YoutubeForm({ lesson }: { lesson: Lesson }) {
   const [link, setLink] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const { can } = useAdmin()
+  const mayEdit = can('videos', 'edit')
 
   async function add() {
     setMsg(null)
@@ -556,26 +570,36 @@ function YoutubeForm({ lesson }: { lesson: Lesson }) {
             <b>{v.title}</b>
             <span className="muted" style={{ display: 'block' }}>{v.channel}</span>
           </a>
-          <button className="btn ghost" disabled={i === 0} onClick={() => setList([v, ...list.filter((x) => x.id !== v.id)])} aria-label="Move to top">
-            ↑
-          </button>
-          <button className="btn ghost" onClick={() => setList(list.filter((x) => x.id !== v.id))} aria-label="Remove">
-            ✕
-          </button>
+          {mayEdit && (
+            <>
+              <button className="btn ghost" disabled={i === 0} onClick={() => setList([v, ...list.filter((x) => x.id !== v.id)])} aria-label="Move to top">
+                ↑
+              </button>
+              <button className="btn ghost" onClick={() => setList(list.filter((x) => x.id !== v.id))} aria-label="Remove">
+                ✕
+              </button>
+            </>
+          )}
         </div>
       ))}
-      <div className="row" style={{ gap: 8 }}>
-        <input className="admin-input grow" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Paste a YouTube link" />
-        <button className="btn secondary" disabled={busy || !link.trim()} onClick={add}>
-          Add
-        </button>
-      </div>
-      <p className="small muted" style={{ margin: 0 }}>Watch a video all the way through before adding it. Popular doesn't always mean correct.</p>
+      {mayEdit && (
+        <>
+          <div className="row" style={{ gap: 8 }}>
+            <input className="admin-input grow" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Paste a YouTube link" />
+            <button className="btn secondary" disabled={busy || !link.trim()} onClick={add}>
+              Add
+            </button>
+          </div>
+          <p className="small muted" style={{ margin: 0 }}>Watch a video all the way through before adding it. Popular doesn't always mean correct.</p>
+        </>
+      )}
       <div className="row" style={{ gap: 10 }}>
-        <button className="btn" onClick={() => publish()}>
-          Publish links
-        </button>
-        {custom && (
+        {mayEdit && (
+          <button className="btn" onClick={() => publish()}>
+            Publish links
+          </button>
+        )}
+        {custom && can('videos', 'delete') && (
           <button className="btn secondary" onClick={() => publish(true)}>
             Use built-in list
           </button>
@@ -602,6 +626,7 @@ interface FeedbackRow {
 export function FeedbackTab() {
   const [items, setItems] = useState<FeedbackRow[] | null>(null)
   const [err, setErr] = useState<string | null>(null)
+  const { can } = useAdmin()
   const load = () =>
     api<{ items: FeedbackRow[] }>('/api/admin/feedback')
       .then((r) => setItems(r.items))
@@ -611,7 +636,13 @@ export function FeedbackTab() {
   }, [])
 
   async function toggle(f: FeedbackRow) {
-    await api('/api/admin/feedback', { body: { id: f.id, resolved: !f.resolved } })
+    await api('/api/admin/feedback', { body: { id: f.id, resolved: !f.resolved } }).catch((e) => setErr(e.message))
+    void load()
+  }
+
+  async function remove(f: FeedbackRow) {
+    if (!confirm('Delete this message for good? This cannot be undone.')) return
+    await api(`/api/admin/feedback?id=${f.id}`, { method: 'DELETE' }).catch((e) => setErr(e.message))
     void load()
   }
 
@@ -633,82 +664,19 @@ export function FeedbackTab() {
             <span className="grow muted">
               {f.name} · {f.email}
             </span>
-            <button className="btn secondary" onClick={() => toggle(f)}>
-              {f.resolved ? 'Reopen' : 'Mark done ✓'}
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ---------- admins ----------
-
-export function AdminsTab() {
-  const { user } = useAdmin()
-  const [items, setItems] = useState<{ email: string; added_by: string; added_at: string; owner: boolean }[]>([])
-  const [email, setEmail] = useState('')
-  const [msg, setMsg] = useState<string | null>(null)
-  const load = () =>
-    api<{ items: typeof items }>('/api/admin/admins')
-      .then((r) => setItems(r.items))
-      .catch((e) => setMsg(e.message))
-  useEffect(() => {
-    void load()
-  }, [])
-
-  async function add() {
-    setMsg(null)
-    try {
-      await api('/api/admin/admins', { body: { email } })
-      setEmail('')
-      setMsg('Added ✓ They get admin access the next time they open the app.')
-      void load()
-    } catch (e) {
-      setMsg((e as Error).message)
-    }
-  }
-
-  async function remove(e: string) {
-    if (!confirm(`Remove ${e} as an admin?`)) return
-    try {
-      await api(`/api/admin/admins?email=${encodeURIComponent(e)}`, { method: 'DELETE' })
-      void load()
-    } catch (err) {
-      setMsg((err as Error).message)
-    }
-  }
-
-  return (
-    <div className="stack">
-      <div className="card stack" style={{ gap: 8 }}>
-        {items.map((a) => (
-          <div key={a.email} className="row">
-            <span className="grow">
-              <b>{a.email}</b>
-              <span className="small muted" style={{ display: 'block' }}>
-                {a.owner ? 'Owner (always an admin)' : `Added by ${a.added_by}`}
-              </span>
-            </span>
-            {!a.owner && a.email !== user.email.toLowerCase() && (
-              <button className="btn ghost" onClick={() => remove(a.email)}>
-                Remove
+            {can('feedback', 'edit') && (
+              <button className="btn secondary" onClick={() => toggle(f)}>
+                {f.resolved ? 'Reopen' : 'Mark done ✓'}
+              </button>
+            )}
+            {can('feedback', 'delete') && (
+              <button className="btn ghost" onClick={() => remove(f)}>
+                Delete
               </button>
             )}
           </div>
-        ))}
-      </div>
-      <div className="card stack">
-        <label className="field">
-          <span>Add an admin (their Google email)</span>
-          <input className="admin-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@gmail.com" />
-        </label>
-        <button className="btn" disabled={!email.includes('@')} onClick={add}>
-          Add admin
-        </button>
-        {msg && <p className="small" style={{ margin: 0 }}>{msg}</p>}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }
