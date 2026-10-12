@@ -1,7 +1,8 @@
 // Admin tools: edit lesson content, lesson videos and YouTube links, feedback inbox.
 // Buttons a role may not use are hidden here; the server enforces the same rules.
 import { useEffect, useMemo, useState } from 'react'
-import { builtInYoutube, COURSES } from '../content'
+import { builtInYoutube, COURSES, findLesson } from '../content'
+import { APP_URL } from '../../shared/brand'
 import type { Card, Lesson, Question } from '../content/types'
 import { useAdmin } from './context'
 import { api } from '../lib/api'
@@ -621,19 +622,59 @@ interface FeedbackRow {
   body: string
   created_at: string
   resolved: number
+  /** set on "Report an error" messages sent from a lesson card */
+  lesson_id: string | null
+  card: string | null
+  card_label: string | null
+}
+
+interface ErratumRow {
+  id: number
+  lesson_id: string
+  card: string | null
+  note: string
+  published_at: string
+}
+
+const lessonName = (id: string) => findLesson(id)?.lesson.title ?? id
+/** The app's address for a lesson, opened at the card a report came from. */
+function lessonLink(id: string, card: string | null) {
+  const n = card?.startsWith('card:') ? `?card=${card.slice(5)}` : ''
+  return `${import.meta.env.DEV ? '' : APP_URL}/#/lesson/${id}${n}`
 }
 
 export function FeedbackTab() {
   const [items, setItems] = useState<FeedbackRow[] | null>(null)
+  const [errata, setErrata] = useState<ErratumRow[]>([])
   const [err, setErr] = useState<string | null>(null)
+  const [only, setOnly] = useState<'all' | 'reports'>('all')
+  // the correction being written for a report
+  const [draft, setDraft] = useState<{ id: number; note: string } | null>(null)
   const { can } = useAdmin()
   const load = () =>
-    api<{ items: FeedbackRow[] }>('/api/admin/feedback')
-      .then((r) => setItems(r.items))
+    Promise.all([api<{ items: FeedbackRow[] }>('/api/admin/feedback'), api<{ items: ErratumRow[] }>('/api/errata')])
+      .then(([f, e]) => {
+        setItems(f.items)
+        setErrata(e.items)
+      })
       .catch((e) => setErr(e.message))
   useEffect(() => {
     void load()
   }, [])
+
+  async function publish(f: FeedbackRow) {
+    if (!draft || !f.lesson_id) return
+    await api('/api/admin/errata', { body: { lesson: f.lesson_id, card: f.card, note: draft.note.trim(), feedbackId: f.id } })
+      .then(() => setDraft(null))
+      .catch((e) => setErr(e.message))
+    void load()
+  }
+
+  async function unpublish(e: ErratumRow) {
+    if (!confirm('Remove this correction from the public list?')) return
+    await api(`/api/admin/errata?id=${e.id}`, { method: 'DELETE' }).catch((x) => setErr(x.message))
+    void load()
+  }
 
   async function toggle(f: FeedbackRow) {
     await api('/api/admin/feedback', { body: { id: f.id, resolved: !f.resolved } }).catch((e) => setErr(e.message))
@@ -648,10 +689,22 @@ export function FeedbackTab() {
 
   if (err) return <p className="small">{err}</p>
   if (!items) return <p className="small muted">Loading…</p>
-  if (!items.length) return <div className="empty">No feedback yet.</div>
+  const reports = items.filter((f) => f.lesson_id)
+  const shown = only === 'reports' ? reports : items
   return (
     <div className="stack">
-      {items.map((f) => (
+      <div className="row">
+        <div className="seg">
+          <button className={only === 'all' ? 'on' : ''} onClick={() => setOnly('all')}>
+            All ({items.length})
+          </button>
+          <button className={only === 'reports' ? 'on' : ''} onClick={() => setOnly('reports')}>
+            🚩 Error reports ({reports.filter((f) => !f.resolved).length} open)
+          </button>
+        </div>
+      </div>
+      {!shown.length && <div className="empty">{only === 'reports' ? 'No error reports yet.' : 'No feedback yet.'}</div>}
+      {shown.map((f) => (
         <div key={f.id} className="card" style={{ opacity: f.resolved ? 0.55 : 1 }}>
           <div className="row small">
             <b className="grow">
@@ -659,11 +712,42 @@ export function FeedbackTab() {
             </b>
             <span className="muted">{new Date(f.created_at).toLocaleString()}</span>
           </div>
+          {f.lesson_id && (
+            <div className="small" style={{ marginTop: 6 }}>
+              <span className="weight">{lessonName(f.lesson_id)}</span> <span className="muted">{f.card_label ?? f.card}</span>{' '}
+              <a href={lessonLink(f.lesson_id, f.card)} target="_blank" rel="noreferrer">
+                Open the lesson ↗
+              </a>
+            </div>
+          )}
           <p style={{ whiteSpace: 'pre-wrap', margin: '8px 0' }}>{f.body}</p>
+          {draft?.id === f.id && (
+            <div className="stack" style={{ marginBottom: 10 }}>
+              <textarea
+                className="admin-input"
+                style={{ minHeight: 90, width: '100%' }}
+                value={draft.note}
+                autoFocus
+                onChange={(e) => setDraft({ id: f.id, note: e.target.value })}
+                placeholder="Shown to everyone on the Corrections page. Say what was wrong and what it says now. Fix the lesson itself in the Content tab."
+              />
+              <div className="row" style={{ gap: 8 }}>
+                <button className="btn" disabled={!draft.note.trim()} onClick={() => publish(f)}>
+                  Publish correction
+                </button>
+                <button className="btn secondary" onClick={() => setDraft(null)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           <div className="row small">
-            <span className="grow muted">
-              {f.name} · {f.email}
-            </span>
+            <span className="grow muted">{f.email ? `${f.name ?? ''} · ${f.email}` : 'Not signed in'}</span>
+            {f.lesson_id && can('feedback', 'edit') && draft?.id !== f.id && (
+              <button className="btn secondary" onClick={() => setDraft({ id: f.id, note: '' })}>
+                Add to corrections
+              </button>
+            )}
             {can('feedback', 'edit') && (
               <button className="btn secondary" onClick={() => toggle(f)}>
                 {f.resolved ? 'Reopen' : 'Mark done ✓'}
@@ -675,6 +759,25 @@ export function FeedbackTab() {
               </button>
             )}
           </div>
+        </div>
+      ))}
+
+      <div className="section-title">Published corrections ({errata.length})</div>
+      <p className="small muted" style={{ margin: 0 }}>
+        Everyone can read these: on the welcome page under “Corrections” and in the app under More → Corrections.
+      </p>
+      {errata.map((e) => (
+        <div key={e.id} className="card small">
+          <div className="row">
+            <b className="grow">{lessonName(e.lesson_id)}</b>
+            <span className="muted">{new Date(e.published_at).toLocaleDateString()}</span>
+            {can('feedback', 'delete') && (
+              <button className="btn ghost" onClick={() => unpublish(e)}>
+                Remove
+              </button>
+            )}
+          </div>
+          <p style={{ whiteSpace: 'pre-wrap', margin: '6px 0 0' }}>{e.note}</p>
         </div>
       ))}
     </div>

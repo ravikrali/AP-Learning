@@ -4,6 +4,7 @@ import { CATEGORIES } from '../../shared/catalog'
 import { openable, toggleInterest, useAccount } from '../lib/account'
 import { getPlan } from '../lib/plans'
 import { CourseGate } from './Plans'
+import { Trademark } from '../components/Legal'
 import { useApp, useCourse } from '../lib/app'
 import { Progress, TopBar } from '../components/bits'
 import type { Course } from '../content/types'
@@ -102,6 +103,7 @@ export function LearnPage() {
       <Link to="/plans" className="small center" style={{ display: 'block', marginTop: 16 }}>
         Plans & course choices ›
       </Link>
+      <Trademark className="tiny muted center" style={{ marginTop: 16 }} />
     </div>
   )
 }
@@ -169,7 +171,7 @@ function CourseMap({ course }: { course: Course }) {
         })}
       </div>
       <p className="small muted" style={{ textAlign: 'center', marginTop: 16 }}>
-        Orange tags show each unit's share of the AP exam's multiple-choice section.
+        Orange tags show each unit's share of the AP® exam's multiple-choice section.
       </p>
     </div>
   )

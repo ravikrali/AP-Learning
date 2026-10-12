@@ -62,6 +62,12 @@ export interface Lesson {
   id: string
   /** CED topic numbers covered, e.g. ["1.1"]; empty for prerequisite lessons */
   ced: string[]
+  /**
+   * The edition of the CED this lesson was last checked against, e.g. "Fall 2024". Written by
+   * hand when the lesson is verified; the test suite fails if it differs from the course's
+   * edition, so a new CED cannot go live with lessons nobody re-checked.
+   */
+  cedVersion: string
   title: string
   level: Level
   minutes: number
@@ -88,6 +94,8 @@ export interface Course {
   title: string
   short: string
   emoji: string
+  /** the College Board CED edition the course follows, e.g. "Fall 2024" */
+  cedVersion: string
   units: Unit[]
 }
 

@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { CATALOG, CATEGORIES, PLAN_ORDER, PLANS, pickLimit, type PlanId } from '../../shared/catalog'
 import { BUILT } from '../content'
+import { BRAND } from '../../shared/brand'
+import { Trademark } from '../components/Legal'
 import { useApp } from '../lib/app'
 import {
   addCourse,
@@ -25,7 +27,7 @@ const longDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString
 export function planFeatures(id: PlanId): string[] {
   const n = PLANS[id].courses
   return [
-    n === null ? 'Every AP course, including new ones as they arrive' : `Any ${n} course${n === 1 ? '' : 's'} you choose`,
+    n === null ? 'Every AP® course, including new ones as they arrive' : `Any ${n} course${n === 1 ? '' : 's'} you choose`,
     'Every lesson, checkpoint and practice exam',
     'Study plan with calendar reminders',
     'Sync across your devices',
@@ -184,7 +186,7 @@ export function PlansPage() {
         ))}
       </div>
 
-      {a.compPlan && <p className="small muted center">🎁 {PLANS[a.compPlan].name} was given to you by AP Learning.</p>}
+      {a.compPlan && <p className="small muted center">🎁 {PLANS[a.compPlan].name} was given to you by {BRAND.name}.</p>}
       {a.admin && <p className="small muted center">🛠️ As an admin you can open every course.</p>}
       {a.paidPlan !== 'free' && (
         <div className="card stack" style={{ marginTop: 12 }}>
@@ -215,6 +217,7 @@ export function PlansPage() {
       {user.guest && (
         <p className="small muted center">As a guest your course choice is saved on this device only.</p>
       )}
+      <Trademark className="tiny muted center" style={{ marginTop: 16 }} />
     </div>
   )
 }

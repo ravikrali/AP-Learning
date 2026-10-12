@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { promptInstall, setDismissed, useInstall } from '../lib/install'
+import { BRAND } from '../../shared/brand'
 
 /** Home-screen card: add the app to the phone's home screen. Hidden once installed or dismissed. */
 export function InstallCard() {
@@ -19,12 +20,12 @@ export function InstallCard() {
       <div className="row" style={{ alignItems: 'center' }}>
         <img src="/pwa-192.png" alt="" width={44} height={44} className="install-icon" />
         <div className="grow">
-          <b>Add AP Learning to your Home screen</b>
+          <b>Add {BRAND.name} to your Home screen</b>
           <div className="small muted">Opens like an app, full screen, and works offline.</div>
         </div>
       </div>
       {done ? (
-        <p className="small" style={{ margin: '10px 0 0' }}>🎉 Added! Look for the AP Learning icon on your Home screen.</p>
+        <p className="small" style={{ margin: '10px 0 0' }}>🎉 Added! Look for the {BRAND.name} icon on your Home screen.</p>
       ) : steps ? (
         <ol className="install-steps small">
           {kind === 'ios' && (

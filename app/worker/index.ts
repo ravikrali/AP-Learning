@@ -7,18 +7,30 @@
 import { isTelemetry, KEY_PATTERN, maxItemSize, mergeItem, type SyncItem } from '../shared/sync'
 import { CATALOG_IDS, checkPickChange, PLANS, trimPicks, type PlanId } from '../shared/catalog'
 import { planToIcs, type StudyPlan } from '../shared/plan'
-import { channelOf, hostOf, VID_PATTERN, VISIT_EVENTS, type VisitBody } from '../shared/visit'
+import { CARD_REF_PATTERN, channelOf, countable, hostOf, LESSON_ID_PATTERN, REPORT_MAX, VID_PATTERN, VISIT_EVENTS, type VisitBody } from '../shared/visit'
 import { ASSIGNABLE_ROLES, can, covers, normalizePrivs, privsOf, roleFor, ROLES, type Access, type Action, type RoleId, type Section } from '../shared/roles'
+import { ADMIN_URL, APP_HOST, BRAND, BRAND_SLUG } from '../shared/brand'
+import { MIN_AGE, oldEnough, validBirth } from '../shared/age'
+import { MONTH_PATTERN, SOURCE_PATTERN } from '../shared/business'
 import { PAID_STATUSES, priceId, readSubscription, stripe, StripeError, verifyStripeSignature, type StripeEnv } from './stripe'
+
+/** Cloudflare's rate limiting binding (see "ratelimits" in wrangler.jsonc). */
+interface Limiter {
+  limit(options: { key: string }): Promise<{ success: boolean }>
+}
 
 interface Env extends StripeEnv {
   DB: D1Database
   ASSETS: Fetcher
   GOOGLE_CLIENT_ID: string
   OWNER_EMAIL: string
-  /** main app address, e.g. https://www.aplearning.app (used for links in emails, calendars, Stripe) */
+  /** main app address (used for links in emails, calendars, Stripe); defaults to the address in shared/brand.ts */
   APP_URL?: string
   DEV_AUTH?: string // "1" only in local .dev.vars: enables /api/auth/dev for local testing
+  /** per-address request limits; missing in tests, where nothing is limited */
+  RL_API?: Limiter
+  RL_AUTH?: Limiter
+  RL_PUBLIC?: Limiter
 }
 
 interface User {
@@ -129,15 +141,60 @@ async function verifyGoogleToken(credential: string, clientId: string) {
 
 // ---------- sessions ----------
 
-async function startSession(env: Env, u: User, req: Request) {
+/** What is recorded once, when an account is first made. */
+interface SignupFacts {
+  birthYear: number | null
+  source: string | null
+  medium: string | null
+  campaign: string | null
+}
+
+interface SignInBody {
+  birthYear?: unknown
+  birthMonth?: unknown
+  /** campaign tags from the link that brought this person in */
+  utm?: { source?: unknown; medium?: unknown; campaign?: unknown }
+}
+
+/**
+ * Sign in a person Google has verified. A new student is asked when they were born first
+ * ({ needAge: true }); under-13s get no account, and nothing about them is stored.
+ */
+async function signIn(env: Env, req: Request, u: User, body: SignInBody) {
+  const known = await env.DB.prepare('SELECT 1 FROM users WHERE sub = ?').bind(u.sub).first()
+  const facts: SignupFacts = { birthYear: null, source: null, medium: null, campaign: null }
+  // portal users are staff, added by an admin: they are not asked
+  if (!known && !(await accessOf(env, u.email))) {
+    if (body.birthYear === undefined || body.birthMonth === undefined) return json({ needAge: true })
+    const year = Number(body.birthYear)
+    const month = Number(body.birthMonth)
+    if (!validBirth(year, month)) throw new HttpError(400, 'Please pick the month and year you were born.')
+    if (!oldEnough(year, month)) {
+      const t = now()
+      // an anonymous count for the dashboard, nothing else
+      await env.DB.prepare(
+        `INSERT INTO event_daily (day, name, course, count) VALUES (?, 'age_block', '', 1) ON CONFLICT(day, name, course) DO UPDATE SET count = count + 1`,
+      ).bind(t.slice(0, 10)).run()
+      return json({ error: `Sorry, ${BRAND.name} is for students aged ${MIN_AGE} and older for now.`, underAge: true }, 403)
+    }
+    facts.birthYear = year
+    facts.source = str(body.utm?.source)
+    facts.medium = str(body.utm?.medium)
+    facts.campaign = str(body.utm?.campaign)
+  }
+  return json(await startSession(env, u, req, facts))
+}
+
+async function startSession(env: Env, u: User, req: Request, facts: SignupFacts = { birthYear: null, source: null, medium: null, campaign: null }) {
   const t = now()
   const cf = (req as Request & { cf?: { country?: string; region?: string } }).cf
   await env.DB.batch([
     env.DB.prepare(
-      `INSERT INTO users (sub, email, name, picture, created_at, last_seen, country, region) VALUES (?1, ?2, ?3, ?4, ?5, ?5, ?6, ?7)
+      `INSERT INTO users (sub, email, name, picture, created_at, last_seen, country, region, birth_year, utm_source, utm_medium, utm_campaign)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
        ON CONFLICT(sub) DO UPDATE SET email=excluded.email, name=excluded.name, picture=excluded.picture, last_seen=excluded.last_seen,
          country=COALESCE(users.country, excluded.country), region=COALESCE(users.region, excluded.region)`,
-    ).bind(u.sub, u.email, u.name, u.picture, t, cf?.country ?? null, cf?.region ?? null),
+    ).bind(u.sub, u.email, u.name, u.picture, t, cf?.country ?? null, cf?.region ?? null, facts.birthYear, facts.source, facts.medium, facts.campaign),
     env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(t),
   ])
   const token = bytesToB64url(crypto.getRandomValues(new Uint8Array(32)))
@@ -507,7 +564,11 @@ async function setInterest(req: Request, env: Env) {
   return json({ ok: true })
 }
 
-const appUrl = (env: Env, req: Request) => env.APP_URL ?? new URL(req.url).origin
+/** The app's public address. Local development uses whatever address the request came in on. */
+const appUrl = (env: Env, req: Request) => {
+  const origin = new URL(req.url).origin
+  return env.APP_URL ?? (/\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin) ? origin : `https://${APP_HOST}`)
+}
 
 async function syncSubscription(env: Env, subscriptionId: string, userHint?: string) {
   const s = readSubscription(await stripe(env, 'GET', `subscriptions/${subscriptionId}`))
@@ -587,8 +648,12 @@ async function cancelPlan(req: Request, env: Env) {
 async function stripeWebhook(req: Request, env: Env) {
   if (!env.STRIPE_WEBHOOK_SECRET) throw new HttpError(503, 'Payments are not set up yet')
   const payload = await req.text()
-  if (!(await verifyStripeSignature(payload, req.headers.get('stripe-signature'), env.STRIPE_WEBHOOK_SECRET)))
-    throw new HttpError(400, 'Bad signature')
+  const signature = req.headers.get('stripe-signature')
+  // while the signing secret is being rotated, events signed with the previous one are still accepted
+  const secrets = [env.STRIPE_WEBHOOK_SECRET, env.STRIPE_WEBHOOK_SECRET_PREVIOUS].filter((s): s is string => !!s)
+  let signed = false
+  for (const s of secrets) signed = signed || (await verifyStripeSignature(payload, signature, s))
+  if (!signed) throw new HttpError(400, 'Bad signature')
   const ev = JSON.parse(payload) as { id: string; type: string; data: { object: Record<string, unknown> } }
   const fresh = await env.DB.prepare('INSERT OR IGNORE INTO stripe_events (id, type, received_at) VALUES (?, ?, ?)').bind(ev.id, ev.type, now()).run()
   if (!fresh.meta.changes) return json({ ok: true, duplicate: true })
@@ -635,14 +700,14 @@ async function calendarLink(req: Request, env: Env, reset: boolean) {
 
 async function calendarFeed(env: Env, req: Request, token: string) {
   const row = await env.DB.prepare('SELECT user_sub FROM calendar_tokens WHERE token = ?').bind(token).first<{ user_sub: string }>()
-  if (!row) return new Response('Calendar link not found. Make a new one in AP Learning.', { status: 404 })
+  if (!row) return new Response(`Calendar link not found. Make a new one in ${BRAND.name}.`, { status: 404 })
   const plans = await env.DB.prepare("SELECT data FROM items WHERE user_sub = ? AND key LIKE 'plan:%'").bind(row.user_sub).all<{ data: string }>()
   const list = plans.results.map((r) => JSON.parse(r.data) as StudyPlan).filter((p) => Array.isArray(p.sessions) && !('deleted' in p))
   const ics = planToIcs(list, { baseUrl: appUrl(env, req) })
   return new Response(ics, {
     headers: {
       'content-type': 'text/calendar; charset=utf-8',
-      'content-disposition': 'inline; filename="ap-learning.ics"',
+      'content-disposition': `inline; filename="${BRAND_SLUG}.ics"`,
       'cache-control': 'max-age=900',
     },
   })
@@ -809,6 +874,70 @@ async function postFeedback(req: Request, env: Env) {
   return json({ ok: true })
 }
 
+/**
+ * "Report an error" on a lesson card. Lands in the feedback inbox tagged with the lesson and card.
+ * Works without signing in (a guest can spot a mistake too); then it carries no name or email.
+ */
+async function postReport(req: Request, env: Env) {
+  const b = await readJson<{ lesson?: unknown; card?: unknown; label?: unknown; body?: unknown }>(req)
+  const lesson = String(b.lesson ?? '')
+  const card = String(b.card ?? '')
+  const text = String(b.body ?? '').trim()
+  if (!LESSON_ID_PATTERN.test(lesson) || !CARD_REF_PATTERN.test(card)) throw new HttpError(400, 'Bad lesson or card')
+  if (!text) throw new HttpError(400, 'Please say what looks wrong.')
+  if (text.length > REPORT_MAX) throw new HttpError(413, 'That is too long. Please keep it short.')
+  const u = await currentUser(req, env).catch(() => null)
+  const hourAgo = new Date(Date.now() - 3600_000).toISOString()
+  const recent = u
+    ? await env.DB.prepare('SELECT COUNT(*) AS n FROM feedback WHERE user_sub = ? AND created_at > ?').bind(u.sub, hourAgo).first<{ n: number }>()
+    : await env.DB.prepare('SELECT COUNT(*) AS n FROM feedback WHERE user_sub IS NULL AND created_at > ?').bind(hourAgo).first<{ n: number }>()
+  if ((recent?.n ?? 0) >= (u ? 20 : 200)) throw new HttpError(429, 'Thanks! That is plenty for this hour.')
+  await env.DB.prepare(
+    `INSERT INTO feedback (user_sub, email, name, kind, mood, body, created_at, lesson_id, card, card_label) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)`,
+  )
+    .bind(u?.sub ?? null, u?.email ?? null, u?.name ?? null, REPORT_KIND, text, now(), lesson, card, str(b.label, 120))
+    .run()
+  return json({ ok: true })
+}
+
+const REPORT_KIND = '🚩 Error report'
+
+// ---------- errata: corrections anyone can read ----------
+
+async function listErrata(env: Env) {
+  const rows = await env.DB.prepare('SELECT id, lesson_id, card, note, published_at FROM errata ORDER BY published_at DESC, id DESC LIMIT 500').all()
+  return json({ items: rows.results }, 200, { 'cache-control': 'public, max-age=300' })
+}
+
+/** Publish a correction, usually straight from an error report (which is then marked done). */
+async function addErratum(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'feedback', 'edit')
+  const b = await readJson<{ lesson?: unknown; card?: unknown; note?: unknown; feedbackId?: unknown }>(req)
+  const lesson = String(b.lesson ?? '')
+  const card = b.card ? String(b.card) : null
+  const note = String(b.note ?? '').trim()
+  if (!LESSON_ID_PATTERN.test(lesson) || (card !== null && !CARD_REF_PATTERN.test(card))) throw new HttpError(400, 'Bad lesson or card')
+  if (!note) throw new HttpError(400, 'Write what was wrong and what it says now.')
+  if (note.length > REPORT_MAX) throw new HttpError(413, 'That note is too long')
+  const feedbackId = Number.isSafeInteger(b.feedbackId) ? (b.feedbackId as number) : null
+  const stmts = [
+    env.DB.prepare('INSERT INTO errata (lesson_id, card, note, feedback_id, published_by, published_at) VALUES (?, ?, ?, ?, ?, ?)').bind(
+      lesson, card, note, feedbackId, admin.email, now(),
+    ),
+  ]
+  if (feedbackId !== null) stmts.push(env.DB.prepare('UPDATE feedback SET resolved = 1 WHERE id = ?').bind(feedbackId))
+  await env.DB.batch(stmts)
+  return json({ ok: true })
+}
+
+async function deleteErratum(req: Request, env: Env, url: URL) {
+  await requirePriv(req, env, 'feedback', 'delete')
+  const id = Number(url.searchParams.get('id'))
+  if (!Number.isSafeInteger(id)) throw new HttpError(400, 'Bad errata id')
+  await env.DB.prepare('DELETE FROM errata WHERE id = ?').bind(id).run()
+  return json({ ok: true })
+}
+
 async function listFeedback(req: Request, env: Env) {
   await requirePriv(req, env, 'feedback', 'view')
   const rows = await env.DB.prepare('SELECT * FROM feedback ORDER BY resolved, id DESC LIMIT 200').all()
@@ -835,6 +964,12 @@ async function deleteFeedback(req: Request, env: Env, url: URL) {
 const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|pingdom|uptime|monitor|facebookexternalhit|whatsapp|python|curl|wget/i
 const cfOf = (req: Request) => (req as Request & { cf?: { country?: string; region?: string } }).cf
 
+/** The country Cloudflare reports for this request. Local testing can pretend with an "x-dev-country" header. */
+const countryOf = (req: Request, env: Env) => (env.DEV_AUTH === '1' ? req.headers.get('x-dev-country') : null) ?? cfOf(req)?.country ?? null
+
+/** May visits from here be counted? Not in the EU, EEA or UK until there is a consent banner. */
+const visitCounting = (req: Request, env: Env) => json({ count: countable(countryOf(req, env)) })
+
 /** Count one welcome-page event. Anonymous: a random browser ID, no name, email or IP address is stored. */
 async function recordVisit(req: Request, env: Env) {
   const text = await req.text()
@@ -849,6 +984,8 @@ async function recordVisit(req: Request, env: Env) {
   if (!(VISIT_EVENTS as readonly string[]).includes(b.event)) throw new HttpError(400, 'Bad event')
   // crawlers and link previews are not people
   if (BOT.test(req.headers.get('user-agent') ?? '')) return json({ ok: true })
+  // no consent banner yet: nothing is stored for visitors where consent is needed
+  if (!countable(countryOf(req, env))) return json({ ok: true, counted: false })
 
   const t = now()
   const cf = cfOf(req)
@@ -886,7 +1023,7 @@ async function recordVisit(req: Request, env: Env) {
 async function recordLead(req: Request, env: Env) {
   const text = await req.text()
   if (text.length > 2000) throw new HttpError(413, 'Request too large')
-  let b: { email?: string; name?: string; course?: string; vid?: string }
+  let b: { email?: string; name?: string; course?: string; vid?: string; role?: string; age13?: boolean }
   try {
     b = JSON.parse(text)
   } catch {
@@ -894,17 +1031,23 @@ async function recordLead(req: Request, env: Env) {
   }
   const email = String(b.email ?? '').trim().toLowerCase()
   if (!EMAIL.test(email) || email.length > 254) throw new HttpError(400, 'That email address does not look right.')
+  if (b.role !== 'parent' && b.role !== 'student') throw new HttpError(400, 'Please say whether you are a parent or a student.')
+  if (b.age13 !== true) throw new HttpError(400, `Please confirm you are ${MIN_AGE} or older. If you are younger, ask a parent to fill this in.`)
+  // marketing email goes to parents only; a student is only told when the course they asked for is ready
+  const marketing = b.role === 'parent' ? 1 : 0
   const course = typeof b.course === 'string' && CATALOG_IDS.has(b.course) ? b.course : null
-  const vid = typeof b.vid === 'string' && VID_PATTERN.test(b.vid) ? b.vid : null
+  const vid = typeof b.vid === 'string' && VID_PATTERN.test(b.vid) && countable(countryOf(req, env)) ? b.vid : null
   const t = now()
   const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM leads WHERE created_at > ?').bind(new Date(Date.now() - 3600_000).toISOString()).first<{ n: number }>()
   if ((recent?.n ?? 0) >= 300) throw new HttpError(429, 'Too many sign-ups right now. Please try again later.')
   const v = vid ? await env.DB.prepare('SELECT channel, source FROM visitors WHERE vid = ?').bind(vid).first<{ channel: string; source: string | null }>() : null
   await env.DB.prepare(
-    `INSERT INTO leads (email, name, course, vid, country, channel, source, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)
-     ON CONFLICT(email) DO UPDATE SET name = COALESCE(excluded.name, leads.name), course = COALESCE(excluded.course, leads.course), updated_at = excluded.updated_at`,
+    `INSERT INTO leads (email, name, course, vid, country, channel, source, created_at, updated_at, role, age_ok, marketing)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8, ?9, 1, ?10)
+     ON CONFLICT(email) DO UPDATE SET name = COALESCE(excluded.name, leads.name), course = COALESCE(excluded.course, leads.course),
+       updated_at = excluded.updated_at, role = excluded.role, age_ok = 1, marketing = excluded.marketing`,
   )
-    .bind(email, str(String(b.name ?? '').trim(), 80), course, vid, cfOf(req)?.country ?? null, v?.channel ?? null, v?.source ?? null, t)
+    .bind(email, str(String(b.name ?? '').trim(), 80), course, vid, countryOf(req, env), v?.channel ?? null, v?.source ?? null, t, b.role, marketing)
     .run()
   return json({ ok: true })
 }
@@ -962,8 +1105,8 @@ async function audience(req: Request, env: Env) {
     group("COALESCE(device, 'unknown')"),
     group("COALESCE(substr(lang, 1, 2), '??')"),
     q<{ event: string; visitors: number }>('SELECT event, COUNT(DISTINCT vid) AS visitors FROM visit_events WHERE day >= ? GROUP BY 1', daysAgo(29)),
-    q<{ email: string; name: string | null; course: string | null; country: string | null; channel: string | null; source: string | null; created_at: string; signed_up: number }>(
-      `SELECT l.email, l.name, l.course, l.country, l.channel, l.source, l.created_at,
+    q<{ email: string; name: string | null; course: string | null; country: string | null; channel: string | null; source: string | null; created_at: string; role: string | null; marketing: number; signed_up: number }>(
+      `SELECT l.email, l.name, l.course, l.country, l.channel, l.source, l.created_at, l.role, l.marketing,
               EXISTS (SELECT 1 FROM users u WHERE u.email = l.email) AS signed_up
        FROM leads l ORDER BY l.created_at DESC LIMIT 1000`,
     ),
@@ -1057,10 +1200,42 @@ async function metrics(req: Request, env: Env) {
     ),
   ])
 
+  // Business numbers. "Paid" always means a paid invoice, so granted plans never count.
+  const yearAgo = `${daysAgo(400).slice(0, 7)}-01`
+  const [everPaid, cohorts, payers, retained, utm, spend] = await Promise.all([
+    one<{ n: number }>('SELECT COUNT(DISTINCT user_sub) AS n FROM payments WHERE user_sub IS NOT NULL'),
+    q<{ month: string; signups: number; paid: number }>(
+      `SELECT substr(u.created_at, 1, 7) AS month, COUNT(*) AS signups,
+              SUM(EXISTS (SELECT 1 FROM payments p WHERE p.user_sub = u.sub)) AS paid
+       FROM users u WHERE u.created_at >= ? GROUP BY 1 ORDER BY 1`,
+      yearAgo,
+    ),
+    q<{ month: string; n: number }>(
+      `SELECT substr(paid_at, 1, 7) AS month, COUNT(DISTINCT user_sub) AS n FROM payments
+       WHERE user_sub IS NOT NULL AND paid_at >= ? GROUP BY 1 ORDER BY 1`,
+      yearAgo,
+    ),
+    // of each month's payers, how many paid again the month after
+    q<{ month: string; n: number }>(
+      `WITH pm AS (SELECT DISTINCT user_sub, substr(paid_at, 1, 7) AS month FROM payments WHERE user_sub IS NOT NULL AND paid_at >= ?)
+       SELECT a.month AS month, COUNT(*) AS n FROM pm a
+       JOIN pm b ON b.user_sub = a.user_sub AND b.month = substr(date(a.month || '-01', '+1 month'), 1, 7)
+       GROUP BY 1 ORDER BY 1`,
+      yearAgo,
+    ),
+    q<{ month: string; source: string | null; campaign: string | null; n: number }>(
+      `SELECT substr(created_at, 1, 7) AS month, utm_source AS source, utm_campaign AS campaign, COUNT(*) AS n
+       FROM users WHERE created_at >= ? GROUP BY 1, 2, 3 ORDER BY 1 DESC, 4 DESC`,
+      yearAgo,
+    ),
+    q<{ month: string; source: string; amount: number }>('SELECT month, source, amount FROM ad_spend WHERE month >= ? ORDER BY month DESC, source', yearAgo.slice(0, 7)),
+  ])
+
   // Monthly recurring revenue now: paying subscriptions × list price (admin-granted plans are free).
   const mrr = byPlan.reduce((s, r) => s + (r.paid === 'free' ? 0 : r.n * Math.round(PLANS[r.paid as PlanId].price * 100)), 0)
   return json({
     generatedAt: now(),
+    business: { everPaid: everPaid?.n ?? 0, cohorts, payers, retained, utm, spend },
     users: { ...totals, byDay: signups, byCountry },
     plans: { byPlan, byCountry: subsByCountry, changes, paidRegions: regions },
     revenue: { mrr, currency: 'usd', byMonth: revenue },
@@ -1068,6 +1243,28 @@ async function metrics(req: Request, env: Env) {
     topics,
     courses: { picks, interest },
   })
+}
+
+/** Save what was spent on ads for one month and campaign source (0 clears it). Feeds "cost per sign-up". */
+async function setAdSpend(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'dashboard', 'edit')
+  const b = await readJson<{ month?: unknown; source?: unknown; amount?: unknown }>(req)
+  const month = String(b.month ?? '')
+  const source = String(b.source ?? '').trim()
+  const dollars = Number(b.amount)
+  if (!MONTH_PATTERN.test(month)) throw new HttpError(400, 'Pick a month')
+  if (!SOURCE_PATTERN.test(source)) throw new HttpError(400, 'Type the campaign source this spend was for (the utm_source on the ad link)')
+  if (!Number.isFinite(dollars) || dollars < 0 || dollars > 10_000_000) throw new HttpError(400, 'Type the amount spent in dollars')
+  const cents = Math.round(dollars * 100)
+  if (cents === 0) await env.DB.prepare('DELETE FROM ad_spend WHERE month = ? AND source = ?').bind(month, source).run()
+  else
+    await env.DB.prepare(
+      `INSERT INTO ad_spend (month, source, amount, updated_by, updated_at) VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(month, source) DO UPDATE SET amount = excluded.amount, updated_by = excluded.updated_by, updated_at = excluded.updated_at`,
+    )
+      .bind(month, source, cents, admin.email, now())
+      .run()
+  return json({ ok: true })
 }
 
 async function listUsers(req: Request, env: Env, url: URL) {
@@ -1118,20 +1315,26 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   const m = req.method
 
   if (p === '/api/auth/google' && m === 'POST') {
-    const { credential } = await readJson<{ credential: string }>(req)
-    return json(await startSession(env, await verifyGoogleToken(String(credential ?? ''), env.GOOGLE_CLIENT_ID), req))
+    const body = await readJson<SignInBody & { credential: string }>(req)
+    return signIn(env, req, await verifyGoogleToken(String(body.credential ?? ''), env.GOOGLE_CLIENT_ID), body)
   }
   if (p === '/api/auth/dev' && m === 'POST') {
     // Local testing only: DEV_AUTH=1 comes from .dev.vars, which `wrangler dev` reads and `wrangler deploy`
     // never uploads, so this route does not exist in production.
     if (env.DEV_AUTH !== '1') throw new HttpError(404, 'Not found')
-    const { email, name } = await readJson<{ email: string; name?: string }>(req)
-    const e = String(email).toLowerCase()
-    return json(await startSession(env, { sub: `dev:${e}`, email: e, name: name ?? 'Dev', picture: null }, req))
+    const body = await readJson<SignInBody & { email: string; name?: string }>(req)
+    const e = String(body.email).toLowerCase()
+    return signIn(env, req, { sub: `dev:${e}`, email: e, name: body.name ?? 'Dev', picture: null }, body)
   }
   if (p === '/api/auth/logout' && m === 'POST') {
     const tok = /^Bearer (.+)$/.exec(req.headers.get('authorization') ?? '')?.[1]
     if (tok) await env.DB.prepare('DELETE FROM sessions WHERE token_hash = ?').bind(await sha256Hex(tok)).run()
+    return json({ ok: true })
+  }
+  if (p === '/api/auth/logout-all' && m === 'POST') {
+    // sign out everywhere: every device has to sign in with Google again
+    const u = await currentUser(req, env)
+    await env.DB.prepare('DELETE FROM sessions WHERE sub = ?').bind(u.sub).run()
     return json({ ok: true })
   }
   if (p === '/api/me' && m === 'GET') {
@@ -1143,6 +1346,9 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/insights' && m === 'GET') return myInsights(req, env)
   if (p === '/api/content' && m === 'GET') return getContent(env)
   if (p === '/api/feedback' && m === 'POST') return postFeedback(req, env)
+  if (p === '/api/report' && m === 'POST') return postReport(req, env)
+  if (p === '/api/errata' && m === 'GET') return listErrata(env)
+  if (p === '/api/geo' && m === 'GET') return visitCounting(req, env)
   if (p === '/api/visit' && m === 'POST') return recordVisit(req, env)
   if (p === '/api/lead' && m === 'POST') return recordLead(req, env)
 
@@ -1173,33 +1379,101 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/admin/feedback' && m === 'GET') return listFeedback(req, env)
   if (p === '/api/admin/feedback' && m === 'POST') return resolveFeedback(req, env)
   if (p === '/api/admin/feedback' && m === 'DELETE') return deleteFeedback(req, env, url)
+  if (p === '/api/admin/errata' && m === 'POST') return addErratum(req, env)
+  if (p === '/api/admin/errata' && m === 'DELETE') return deleteErratum(req, env, url)
+  if (p === '/api/admin/spend' && m === 'POST') return setAdSpend(req, env)
 
   throw new HttpError(404, 'Not found')
+}
+
+// ---------- rate limits ----------
+
+/** Routes anyone can call without signing in and that write something. */
+const PUBLIC_WRITES = new Set(['/api/visit', '/api/lead', '/api/report'])
+
+/**
+ * Per-address request limits on /api/* (the numbers are in wrangler.jsonc). Schools share one
+ * address between a whole class, so the limits are sized for a classroom, not for one phone.
+ * Returns the "slow down" response, or null to carry on.
+ */
+async function rateLimit(req: Request, env: Env, path: string): Promise<Response | null> {
+  // Stripe's webhook proves itself with a signature and must never be turned away
+  if (path === '/api/billing/webhook') return null
+  const ip = req.headers.get('cf-connecting-ip') ?? 'local'
+  const checks: [Limiter | undefined, string][] = [[env.RL_API, ip]]
+  if (path.startsWith('/api/auth/')) checks.push([env.RL_AUTH, ip])
+  if (PUBLIC_WRITES.has(path)) checks.push([env.RL_PUBLIC, ip])
+  for (const [limiter, key] of checks) {
+    if (!limiter) continue
+    const { success } = await limiter.limit({ key })
+    if (!success) return json({ error: 'Too many requests. Please wait a minute and try again.' }, 429, { 'retry-after': '60' })
+  }
+  return null
+}
+
+// ---------- security headers ----------
+
+// What a page of the app may load. Google sign-in needs its script, frame and stylesheet;
+// the in-browser database is WebAssembly; lesson videos are embedded from other sites.
+const PAGE_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'wasm-unsafe-eval' https://accounts.google.com/gsi/client",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self' blob: https:",
+  "connect-src 'self' https://accounts.google.com/gsi/ https://fonts.googleapis.com https://fonts.gstatic.com",
+  'frame-src https:',
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ')
+const API_CSP = "default-src 'none'; frame-ancestors 'none'"
+
+/** Add the security headers to a response (pages and API alike). */
+function secure(res: Response, url: URL, api: boolean): Response {
+  const out = new Response(res.body, res)
+  const h = out.headers
+  h.set('content-security-policy', api ? API_CSP : PAGE_CSP)
+  h.set('x-content-type-options', 'nosniff')
+  h.set('x-frame-options', 'DENY')
+  h.set('referrer-policy', 'strict-origin-when-cross-origin')
+  h.set('permissions-policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()')
+  // Google's sign-in window has to be able to talk back to the page that opened it
+  h.set('cross-origin-opener-policy', 'same-origin-allow-popups')
+  if (url.protocol === 'https:') h.set('strict-transport-security', 'max-age=31536000')
+  return out
+}
+
+async function handle(req: Request, env: Env, url: URL): Promise<Response> {
+  // One address for everyone: Google sign-in only works on origins registered in Google Cloud,
+  // so send the bare domain to www.
+  if (url.hostname === BRAND.domain) {
+    url.hostname = APP_HOST
+    return Response.redirect(url.toString(), 301)
+  }
+  if (!url.pathname.startsWith('/api/')) {
+    // The admin portal lives at admin.<domain>; its page is admin.html, served at "/admin".
+    if (url.hostname.startsWith('admin.') && (url.pathname === '/' || url.pathname === '/index.html'))
+      return env.ASSETS.fetch(new Request(new URL('/admin', url), req))
+    if (url.hostname === APP_HOST && (url.pathname === '/admin' || url.pathname === '/admin.html')) return Response.redirect(`${ADMIN_URL}/`, 302)
+    return env.ASSETS.fetch(req)
+  }
+  try {
+    return (await rateLimit(req, env, url.pathname)) ?? (await route(req, env, url))
+  } catch (e) {
+    if (e instanceof HttpError || e instanceof StripeError) return json({ error: e.message }, e.status)
+    console.error(e)
+    return json({ error: 'Something went wrong on the server' }, 500)
+  }
 }
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url)
-    // One address for everyone: Google sign-in only works on origins registered in Google Cloud,
-    // so send the bare domain to www.
-    if (url.hostname === 'aplearning.app') {
-      url.hostname = 'www.aplearning.app'
-      return Response.redirect(url.toString(), 301)
-    }
-    if (!url.pathname.startsWith('/api/')) {
-      // The admin portal lives at admin.<domain>; its page is admin.html, served at "/admin".
-      if (url.hostname.startsWith('admin.') && (url.pathname === '/' || url.pathname === '/index.html'))
-        return env.ASSETS.fetch(new Request(new URL('/admin', url), req))
-      if (url.hostname === 'www.aplearning.app' && (url.pathname === '/admin' || url.pathname === '/admin.html'))
-        return Response.redirect('https://admin.aplearning.app/', 302)
-      return env.ASSETS.fetch(req)
-    }
-    try {
-      return await route(req, env, url)
-    } catch (e) {
-      if (e instanceof HttpError || e instanceof StripeError) return json({ error: e.message }, e.status)
-      console.error(e)
-      return json({ error: 'Something went wrong on the server' }, 500)
-    }
+    return secure(await handle(req, env, url), url, url.pathname.startsWith('/api/'))
   },
 } satisfies ExportedHandler<Env>

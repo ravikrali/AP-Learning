@@ -60,7 +60,7 @@ export function HomePage() {
       {!course ? (
         <div className="card continue">
           <h3 style={{ marginTop: 0 }}>Choose your first course</h3>
-          <p className="muted small">Your free plan includes any one AP course. More are on the way.</p>
+          <p className="muted small">Your free plan includes any one AP® course. More are on the way.</p>
           <Link className="btn block" to="/learn">
             Browse courses ▶
           </Link>

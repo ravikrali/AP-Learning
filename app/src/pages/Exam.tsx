@@ -48,7 +48,7 @@ export function ExamHub() {
     <div>
       <TopBar title="Practice exams" back="/learn" />
       <p className="muted small" style={{ marginTop: 0 }}>
-        The real AP Chemistry exam has 60 multiple-choice questions (90 min) and 7 free-response questions (105 min).
+        The real AP® Chemistry exam has 60 multiple-choice questions (90 min) and 7 free-response questions (105 min).
         Practice here at your own pace. The timer is optional, and nothing here affects your lessons.
       </p>
       <div className="section-title">Multiple choice</div>
@@ -292,7 +292,7 @@ export function FrqPage() {
         <TopBar title="FRQ score" back="/exam" />
         <div className="celebrate">
           <Cheer score={done.score} total={total} headline={`${done.score} / ${total} points`}>
-            <div className="sub">Scoring yourself against a rubric teaches you to think like an AP grader.</div>
+            <div className="sub">Scoring yourself against a rubric teaches you to think like an AP® grader.</div>
           </Cheer>
           {done.badges.map((b) => (
             <div key={b.id} className="card" style={{ margin: '10px 0' }}>

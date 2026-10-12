@@ -13,6 +13,8 @@ import { SearchSheet, courseRefs, unitRefs } from '../components/Search'
 import { track, useStudyTimer } from '../lib/track'
 import { TipSheet, TopicVideos } from '../components/Help'
 import { CourseGate } from './Plans'
+import { api } from '../lib/api'
+import { REPORT_MAX } from '../../shared/visit'
 
 type Step =
   | { t: 'card'; card: Card }
@@ -81,6 +83,7 @@ function Player({ refx }: { refx: LessonRef }) {
   })
   const [resolved, setResolved] = useState<Record<string, { correct: boolean; firstTry: boolean }>>({})
   const [notesOpen, setNotesOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
   const [result, setResult] = useState<{ xp: number; badges: BadgeDef[]; correct: number; total: number } | null>(null)
 
   // After two questions missed on the first try, offer the lesson's own quick tips.
@@ -92,6 +95,7 @@ function Player({ refx }: { refx: LessonRef }) {
 
   const step = steps[Math.min(idx, steps.length - 1)]
   const pct = (idx / (steps.length - 1)) * 100
+  const reportRef = stepRef(step, lesson.cards)
 
   const needsAnswer =
     (step.t === 'card' && step.card.kind === 'try' && !resolved[step.card.question.id]) || (step.t === 'check' && !resolved[step.q.id])
@@ -153,7 +157,7 @@ function Player({ refx }: { refx: LessonRef }) {
       <div className="lcard" key={idx}>
         {idx === 0 && (
           <div className="small muted" style={{ marginBottom: 6, fontWeight: 700 }}>
-            {lesson.title} {lesson.ced.length ? `· CED ${lesson.ced.join(', ')}` : ''}
+            {lesson.title} {lesson.ced.length ? `· CED ${lesson.ced.join(', ')} (${lesson.cedVersion})` : ''}
           </div>
         )}
 
@@ -222,6 +226,12 @@ function Player({ refx }: { refx: LessonRef }) {
             </div>
           </div>
         )}
+
+        {reportRef && (
+          <button className="link-btn report-link" onClick={() => setReportOpen(true)}>
+            🚩 Report an error
+          </button>
+        )}
       </div>
 
       {step.t !== 'finish' && misses >= 2 && (
@@ -258,6 +268,76 @@ function Player({ refx }: { refx: LessonRef }) {
       )}
       {notesOpen && <NotesSheet lessonId={lesson.id} title={lesson.title} onClose={() => setNotesOpen(false)} />}
       {tipOpen && <TipSheet lessonId={lesson.id} onClose={() => setTipOpen(false)} />}
+      {reportOpen && reportRef && <ReportSheet lessonId={lesson.id} lessonTitle={lesson.title} at={reportRef} onClose={() => setReportOpen(false)} />}
+    </div>
+  )
+}
+
+/** Which part of the lesson a step is, as the tag sent with an error report. */
+function stepRef(step: Step, cards: Card[]): { card: string; label: string } | null {
+  const clean = (s: string) => s.replace(/^\S+\s/, '') // drop the emoji from a kind label
+  if (step.t === 'card') {
+    const i = cards.indexOf(step.card)
+    const title = step.card.kind === 'try' ? '' : 'title' in step.card && step.card.title ? step.card.title : ''
+    return { card: `card:${i}`, label: `Card ${i + 1} · ${clean(KIND_LABEL[step.card.kind])}${title ? `: ${title}` : ''}` }
+  }
+  if (step.t === 'check') return { card: `check:${step.n - 1}`, label: `Quick check ${step.n} of ${step.of}` }
+  if (step.t === 'video') return { card: 'video', label: 'Video' }
+  return null
+}
+
+/** "Report an error": a short note sent to the team, tagged with this lesson and card. Works for guests too. */
+function ReportSheet({ lessonId, lessonTitle, at, onClose }: { lessonId: string; lessonTitle: string; at: { card: string; label: string }; onClose: () => void }) {
+  const [text, setText] = useState('')
+  const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
+  const [err, setErr] = useState<string | null>(null)
+
+  async function send() {
+    setErr(null)
+    setState('sending')
+    try {
+      await api('/api/report', { body: { lesson: lessonId, card: at.card, label: at.label.slice(0, 120), body: text.trim() } })
+      setState('sent')
+    } catch (e) {
+      setErr((e as Error).message)
+      setState('idle')
+    }
+  }
+
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet tip-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Report an error">
+        <div className="row">
+          <h3 className="grow">Report an error</h3>
+          <button className="btn secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        {state === 'sent' ? (
+          <p>
+            Thank you! We'll check it against the official course description. Fixes are listed under <Link to="/more/errata">More → Corrections</Link>.
+          </p>
+        ) : (
+          <div className="stack">
+            <p className="small muted" style={{ margin: 0 }}>
+              {lessonTitle} · {at.label}
+            </p>
+            <textarea
+              className="note-area"
+              style={{ minHeight: 120 }}
+              value={text}
+              maxLength={REPORT_MAX}
+              autoFocus
+              onChange={(e) => setText(e.target.value)}
+              placeholder="What looks wrong? For example: the answer should be 0.25 mol, or step 2 uses the wrong formula."
+            />
+            {err && <p className="small" style={{ margin: 0, color: 'var(--oops)' }}>{err}</p>}
+            <button className="btn block" disabled={!text.trim() || state === 'sending'} onClick={send}>
+              {state === 'sending' ? 'Sending…' : 'Send report'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

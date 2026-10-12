@@ -25,7 +25,7 @@ Progress and notes are written first to a real SQLite database inside the browse
 ## How accuracy is protected
 
 - The lessons follow the official CED text. Topic numbers are shown on every lesson.
-- `npm test` (63 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4). It also checks the periodic table (118 elements, every electron configuration adds up to the atomic number, masses match the lessons, positions) and that every glossary term points at a lesson that uses it.
+- `npm test` (90 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4). It also checks the periodic table (118 elements, every electron configuration adds up to the atomic number, masses match the lessons, positions) and that every glossary term points at a lesson that uses it.
 - Element data comes from PubChem (U.S. National Institutes of Health, public domain); `app/src/content/elementData.ts` is generated from it, not typed by hand.
 - Two independent expert review passes checked every unit for chemistry errors. Their findings were fixed.
 - Multiple-choice options are shuffled each time a question is shown, so the right answer isn't always in the same position.
@@ -97,7 +97,11 @@ The same Worker serves the app and `/api/*` (`app/worker/index.ts`), backed by t
 - **Sync:** `POST /api/sync` uploads queued changes and returns everything newer than the device's cursor. SQLite triggers fill a local outbox; merge rules live in `app/shared/sync.ts` and are the same on the server and every device (answers/XP are never double-counted, a finished lesson never becomes unfinished, newest note or setting wins).
 - **Admin** (Me → Admin, owner `devt309@gmail.com` as Super Admin plus anyone added in the Admins tab with a role): edit lesson text, quick checks and flashcards; publish videos; read feedback; add/remove portal users. What each person can view, edit or delete per section comes from their role (Admin, Curator, Support, Analyst, Viewer or a custom set; defined in `app/shared/roles.ts`, enforced in `app/worker/index.ts`). Edits are checked before publishing (equations must balance, numeric questions keep their numbers, number changes are flagged) and every change is kept in a history with one-click revert.
 - **Analytics:** devices upload `t:time` / `t:ev` items with the normal sync; the server only adds them to the statistics tables (`daily_user`, `topic_user`, `event_daily`) and never stores or returns them. Guests send nothing.
-- **Visitors:** the welcome page posts anonymous events to `POST /api/visit` (`app/src/lib/visit.ts`, `app/shared/visit.ts`): a random browser ID, first-touch source (`utm_source` / `utm_medium` / `utm_campaign` or the referring host), device and language; the Worker adds country and region. No name, email or IP address is stored, bots are skipped, and browsers sending Do Not Track or Global Privacy Control are never counted. `POST /api/lead` saves the "Tell me when it's ready" form. To tag a link you share, add e.g. `?utm_source=instagram&utm_medium=social&utm_campaign=fall` to the address. If you market in the EU or UK, check whether this counting needs a consent banner there.
+- **Visitors:** the welcome page posts anonymous events to `POST /api/visit` (`app/src/lib/visit.ts`, `app/shared/visit.ts`): a random browser ID, first-touch source (`utm_source` / `utm_medium` / `utm_campaign` or the referring host), device and language; the Worker adds country and region. No name, email or IP address is stored, bots are skipped, and browsers sending Do Not Track or Global Privacy Control are never counted. `POST /api/lead` saves the "Tell me when it's ready" form. To tag a link you share, add e.g. `?utm_source=instagram&utm_medium=social&utm_campaign=fall` to the address. Visitors in the EU, the rest of the EEA and the UK are not counted at all (the Worker checks the country Cloudflare reports; `GET /api/geo` tells the page, which then makes no browser ID). That stands in until a consent banner is decided. The form asks parent or student and has a required “13 or older” tick; only parents are flagged for marketing email.
+- **Age question:** a new student is asked their birth month and year before the account is made (`app/shared/age.ts`). Under 13: no account and nothing stored. Otherwise only the birth year is saved, with the campaign tags on the link they arrived by.
+- **Error reports and corrections:** "Report an error" under every lesson card posts to `POST /api/report` (sign-in optional) and lands in the Feedback inbox tagged with the lesson and card. An admin can publish a correction from it; `GET /api/errata` is the public list shown on the welcome page and under More → Corrections.
+- **Business numbers:** the Dashboard shows free-to-paid conversion, monthly churn, sign-ups by campaign tag and cost per sign-up (rules in `app/shared/business.ts`). Ad spend is typed in on the Dashboard (needs the Dashboard "edit" privilege).
+- **Security:** every `/api/*` route is rate-limited per network address (`ratelimits` in `app/wrangler.jsonc`) and every response carries security headers (Content Security Policy, HSTS and others; `secure` in `app/worker/index.ts`). If you add a new outside script, font, or API, add its address to the policy there or the browser will block it. Secret rotation steps are in `docs/security.md`.
 - **Local testing:** `npm run dev:api` (local Worker + local D1 on :8787; put `DEV_AUTH=1` in `app/.dev.vars` to enable a test-only sign-in) alongside `npm run dev` (proxies `/api`).
 
 ## Install on the phone
@@ -137,6 +141,9 @@ app/
   src/lib/visit.ts                  anonymous welcome-page visit counting
   src/content/elements.ts           periodic table layout and insights (data in elementData.ts)
   src/content/chem/glossary.ts      glossary terms
+  shared/brand.ts                   app name, logo mark, domain, contact email, trademark notice (the one place to rename)
+  shared/age.ts                     the sign-up age rule
+  shared/business.ts                conversion, churn and cost-per-sign-up rules
   shared/catalog.ts                 course catalog, plans, pick rules
   shared/plan.ts                    study plan + calendar (.ics)
   worker/stripe.ts                  Stripe calls and webhook checks
@@ -149,9 +156,15 @@ app/
 
 Content uses a small markup: `**bold**`, `{{H2SO4}}` (formula auto-formatting), `[[eq: 2H2(g) + O2(g) -> 2H2O(l)]]` (formatted **and** balance-checked), `x^{2}`, `K_{a}`.
 
+## Renaming the app
+
+The name, logo mark, domain and contact email are in `app/shared/brand.ts`; change `name` there and everything follows (screens, page titles, the install name, calendar files, Stripe product names). A test fails if the name or domain is typed anywhere else. Moving to another domain also needs the `routes` in `app/wrangler.jsonc`, the Google sign-in authorized origins and the Stripe webhook address.
+
 ## Adding a course
+
+Every lesson needs a `cedVersion` tag (the CED edition it was checked against, e.g. `'Fall 2024'`) and the course a matching `cedVersion`; `npm test` fails on a mismatch. When College Board publishes a new edition, change the course's edition, re-check each lesson, and update each lesson's tag by hand as you go.
 
 The engine is subject-agnostic. Write the course in `app/src/content/<course>/` like `chem/`, add it to `COURSES` in `app/src/content/index.ts` (its catalog id must match `shared/catalog.ts`), add its YouTube list, glossary and practice-exam extras, and extend the tests.
 
 ---
-AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this app.
+AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, AP Learning.

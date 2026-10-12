@@ -143,7 +143,7 @@ describe('calendar (.ics)', () => {
     const events = ics.match(/BEGIN:VEVENT/g)!.length
     expect(events).toBe(p.sessions.length + 1)
     expect(ics).toContain('DTSTART;TZID=America/Chicago:20261009T163000')
-    expect(ics).toContain('SUMMARY:🎯 AP Chemistry exam')
+    expect(ics).toContain('SUMMARY:🎯 AP® Chemistry exam')
     for (const line of ics.split('\r\n')) expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75)
     expect(ics).not.toMatch(/[^\r]\n/)
     expect(addMinutes('23:50', 30)).toBe('23:59')

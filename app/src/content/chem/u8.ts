@@ -15,6 +15,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.1',
       ced: ['8.1'],
+      cedVersion: 'Fall 2024',
       title: 'pH, pOH & Water',
       level: 'foundation',
       minutes: 8,
@@ -111,6 +112,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.2',
       ced: ['8.2'],
+      cedVersion: 'Fall 2024',
       title: 'Strong Acids & Strong Bases',
       level: 'foundation',
       minutes: 7,
@@ -185,6 +187,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.3a',
       ced: ['8.3'],
+      cedVersion: 'Fall 2024',
       title: 'Weak Acids & Ka',
       level: 'core',
       minutes: 11,
@@ -278,6 +281,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.3b',
       ced: ['8.3'],
+      cedVersion: 'Fall 2024',
       title: 'Weak Bases, Kb & Ka × Kb = Kw',
       level: 'core',
       minutes: 8,
@@ -354,6 +358,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.6',
       ced: ['8.6'],
+      cedVersion: 'Fall 2024',
       title: 'Structure & Acid Strength',
       level: 'core',
       minutes: 8,
@@ -432,6 +437,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.4',
       ced: ['8.4'],
+      cedVersion: 'Fall 2024',
       title: 'Mixing Acids & Bases',
       level: 'core',
       minutes: 10,
@@ -515,6 +521,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.8',
       ced: ['8.8'],
+      cedVersion: 'Fall 2024',
       title: 'Buffers: How They Work',
       level: 'core',
       minutes: 7,
@@ -594,6 +601,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.9',
       ced: ['8.9'],
+      cedVersion: 'Fall 2024',
       title: 'Henderson–Hasselbalch',
       level: 'core',
       minutes: 8,
@@ -670,6 +678,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.7',
       ced: ['8.7'],
+      cedVersion: 'Fall 2024',
       title: 'pH vs. pKa & Indicators',
       level: 'core',
       minutes: 7,
@@ -740,6 +749,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.5',
       ced: ['8.5'],
+      cedVersion: 'Fall 2024',
       title: 'Titration Curves',
       level: 'advanced',
       minutes: 11,
@@ -828,6 +838,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.10',
       ced: ['8.10'],
+      cedVersion: 'Fall 2024',
       title: 'Buffer Capacity',
       level: 'advanced',
       minutes: 6,
@@ -896,6 +907,7 @@ export const unit8: Unit = {
     {
       id: 'chem-8.11',
       ced: ['8.11'],
+      cedVersion: 'Fall 2024',
       title: 'pH & Solubility',
       level: 'advanced',
       minutes: 6,

@@ -18,7 +18,7 @@ export function SyllabusPage() {
     <div>
       <TopBar title="Syllabus checklist" back="/course/chem" />
       <p className="small muted" style={{ marginTop: 0 }}>
-        All {topics.length} topics from the official AP Chemistry Course and Exam Description (College Board, effective Fall 2024),
+        All {topics.length} topics from the official AP® Chemistry Course and Exam Description (College Board, effective Fall 2024),
         each linked to the lesson that teaches it. {doneTopics} of {topics.length} topics completed.
       </p>
       {CED_UNITS.map((u) => (

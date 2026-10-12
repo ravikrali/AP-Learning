@@ -12,6 +12,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.1',
       ced: ['2.1'],
+      cedVersion: 'Fall 2024',
       title: 'Types of Chemical Bonds',
       level: 'foundation',
       minutes: 7,
@@ -102,6 +103,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.5',
       ced: ['2.5'],
+      cedVersion: 'Fall 2024',
       title: 'Lewis Diagrams',
       level: 'foundation',
       minutes: 9,
@@ -200,6 +202,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.2',
       ced: ['2.2'],
+      cedVersion: 'Fall 2024',
       title: 'Bonds & Potential Energy',
       level: 'core',
       minutes: 8,
@@ -294,6 +297,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.3',
       ced: ['2.3'],
+      cedVersion: 'Fall 2024',
       title: 'Structure of Ionic Solids',
       level: 'core',
       minutes: 5,
@@ -373,6 +377,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.4',
       ced: ['2.4'],
+      cedVersion: 'Fall 2024',
       title: 'Metals & Alloys',
       level: 'core',
       minutes: 6,
@@ -457,6 +462,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.7a',
       ced: ['2.7'],
+      cedVersion: 'Fall 2024',
       title: 'VSEPR: Shapes of Molecules',
       level: 'core',
       minutes: 10,
@@ -564,6 +570,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.7b',
       ced: ['2.7'],
+      cedVersion: 'Fall 2024',
       title: 'Hybridization, Sigma/Pi Bonds & Polarity',
       level: 'core',
       minutes: 8,
@@ -675,6 +682,7 @@ export const unit2: Unit = {
     {
       id: 'chem-2.6',
       ced: ['2.6'],
+      cedVersion: 'Fall 2024',
       title: 'Resonance & Formal Charge',
       level: 'advanced',
       minutes: 9,

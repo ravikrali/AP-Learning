@@ -12,6 +12,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.1',
       ced: ['5.1'],
+      cedVersion: 'Fall 2024',
       title: 'Reaction Rates',
       level: 'foundation',
       minutes: 7,
@@ -84,6 +85,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.5',
       ced: ['5.5'],
+      cedVersion: 'Fall 2024',
       title: 'The Collision Model',
       level: 'foundation',
       minutes: 7,
@@ -165,6 +167,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.2',
       ced: ['5.2'],
+      cedVersion: 'Fall 2024',
       title: 'Rate Laws & the Method of Initial Rates',
       level: 'core',
       minutes: 10,
@@ -267,6 +270,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.3',
       ced: ['5.3'],
+      cedVersion: 'Fall 2024',
       title: 'Concentration vs. Time & Half-Life',
       level: 'core',
       minutes: 10,
@@ -373,6 +377,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.4',
       ced: ['5.4'],
+      cedVersion: 'Fall 2024',
       title: 'Elementary Reactions',
       level: 'core',
       minutes: 6,
@@ -441,6 +446,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.6',
       ced: ['5.6'],
+      cedVersion: 'Fall 2024',
       title: 'Reaction Energy Profiles',
       level: 'core',
       minutes: 7,
@@ -508,6 +514,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.7',
       ced: ['5.7'],
+      cedVersion: 'Fall 2024',
       title: 'Reaction Mechanisms',
       level: 'core',
       minutes: 8,
@@ -594,6 +601,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.11',
       ced: ['5.11'],
+      cedVersion: 'Fall 2024',
       title: 'Catalysis',
       level: 'core',
       minutes: 7,
@@ -670,6 +678,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.8',
       ced: ['5.8'],
+      cedVersion: 'Fall 2024',
       title: 'Mechanisms & Rate Laws: The Slow Step',
       level: 'advanced',
       minutes: 8,
@@ -750,6 +759,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.9',
       ced: ['5.9'],
+      cedVersion: 'Fall 2024',
       title: 'Pre-Equilibrium Approximation',
       level: 'advanced',
       minutes: 9,
@@ -832,6 +842,7 @@ export const unit5: Unit = {
     {
       id: 'chem-5.10',
       ced: ['5.10'],
+      cedVersion: 'Fall 2024',
       title: 'Multistep Energy Profiles',
       level: 'advanced',
       minutes: 6,

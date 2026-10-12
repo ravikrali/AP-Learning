@@ -20,6 +20,7 @@ import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
 import { MorePage, GlossaryPage, VideoLinksPage } from './pages/More'
 import { PeriodicTablePage } from './pages/PeriodicTable'
+import { ErrataPage } from './pages/Errata'
 import { MePage } from './pages/Me'
 import { FaqPage, FeedbackPage, HelpPage, PrivacyPage } from './pages/Support'
 import { PlansPage } from './pages/Plans'
@@ -152,6 +153,7 @@ export default function App() {
             <Route path="/more/periodic-table" element={<PeriodicTablePage />} />
             <Route path="/more/glossary" element={<GlossaryPage />} />
             <Route path="/more/videos" element={<VideoLinksPage />} />
+            <Route path="/more/errata" element={<ErrataPage />} />
             <Route path="/me" element={<MePage />} />
             <Route path="/me/help" element={<HelpPage />} />
             <Route path="/me/faq" element={<FaqPage />} />

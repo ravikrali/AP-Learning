@@ -20,12 +20,19 @@
   ],
   "vars": {
     "GOOGLE_CLIENT_ID": "1066207111886-bgdealh7knhf47b8kpetallaqi4d0587.apps.googleusercontent.com",
-    "OWNER_EMAIL": "devt309@gmail.com",
-    "APP_URL": "https://www.aplearning.app"
+    "OWNER_EMAIL": "devt309@gmail.com"
   },
+  // Request limits per network address, per minute, on /api/* (see rateLimit in worker/index.ts).
+  // A school shares one address between a whole class, so these are sized for a classroom.
+  "ratelimits": [
+    { "name": "RL_API", "namespace_id": "1001", "simple": { "limit": 600, "period": 60 } },
+    { "name": "RL_AUTH", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } },
+    { "name": "RL_PUBLIC", "namespace_id": "1003", "simple": { "limit": 120, "period": 60 } }
+  ],
   // Stripe (set once with `npx wrangler secret put STRIPE_SECRET_KEY` and `... STRIPE_WEBHOOK_SECRET`;
   // until then paid plans show "Coming soon").
   "observability": { "enabled": true },
+  // The address also lives in shared/brand.ts (domain); keep the two in step.
   "routes": [
     { "pattern": "www.aplearning.app", "custom_domain": true },
     { "pattern": "aplearning.app", "custom_domain": true },

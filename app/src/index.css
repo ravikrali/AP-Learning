@@ -338,6 +338,8 @@ h3 { font-size: 18px; margin: 0 0 4px; }
 .landing .glow.g2 { width: 240px; height: 240px; background: var(--accent); top: 260px; right: -110px; animation-delay: -6s; }
 @keyframes drift { from { transform: translate(0, 0); } to { transform: translate(30px, 40px); } }
 .landing > * { position: relative; z-index: 1; }
+/* sheets opened from the welcome page (age question, privacy, corrections) cover the screen */
+.landing > .sheet-backdrop { position: fixed; z-index: 20; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; padding: 16px 0 0; }
 .brand-mark { font-size: 24px; }
 .hero { text-align: center; padding-top: 18px; }
@@ -596,4 +598,10 @@ textarea.admin-input { resize: vertical; }
 .lead-form input, .lead-form select { border: 2px solid var(--border); border-radius: 12px; padding: 10px 12px; background: var(--bg); font-weight: 400; font-size: 16px; width: 100%; }
 .lead-form input:focus, .lead-form select:focus { outline: none; border-color: var(--primary); }
 .link-btn { border: none; background: none; padding: 0; color: var(--primary); text-decoration: underline; font-size: inherit; }
+.report-link { display: block; margin: 12px 0 0 auto; padding: 6px 2px; font-size: 13px; color: var(--muted); }
+.lead-form .lead-role { border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.lead-form .lead-role legend { font-size: 14px; font-weight: 700; padding: 0; margin-bottom: 4px; }
+.lead-form label.check { flex-direction: row; align-items: center; gap: 8px; font-weight: 600; }
+.lead-form label.check input { width: 20px; height: 20px; flex-shrink: 0; padding: 0; accent-color: var(--primary); }
+.trademark { line-height: 1.4; }
 .zoom-btn { padding: 8px 14px; font-size: 14px; border-radius: 12px; }

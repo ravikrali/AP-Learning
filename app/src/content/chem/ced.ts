@@ -1,6 +1,9 @@
 // Official topic list from the AP Chemistry Course and Exam Description (CED), effective Fall 2024.
 // Used by the test suite to prove every topic is covered by at least one lesson.
 
+/** The edition these lists were copied from. Change it only together with the lists below. */
+export const CED_VERSION = 'Fall 2024'
+
 export const CED_UNITS: { number: number; title: string; weight: string }[] = [
   { number: 1, title: 'Atomic Structure and Properties', weight: '7–9%' },
   { number: 2, title: 'Compound Structure and Properties', weight: '7–9%' },

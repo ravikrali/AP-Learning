@@ -19,6 +19,25 @@ export interface VisitBody {
 
 export const VID_PATTERN = /^[A-Za-z0-9_-]{16,40}$/
 
+// Places where counting a visit needs the visitor's consent first (EU, the rest of the EEA, and
+// the UK). There is no consent banner yet, so visitors from these countries are not counted at
+// all: no browser ID is made and nothing is stored. Country codes are the ones Cloudflare reports.
+const CONSENT_COUNTRIES = new Set([
+  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', // EU
+  'IS', 'LI', 'NO', // rest of the EEA
+  'GB', // UK
+])
+
+/** True when visits from this country may be counted without asking. Unknown country = allowed. */
+export const countable = (country: string | null | undefined) => !CONSENT_COUNTRIES.has(String(country ?? '').toUpperCase())
+
+// ---------- "Report an error" on a lesson card ----------
+
+export const LESSON_ID_PATTERN = /^[\w.-]{1,60}$/
+/** Where in the lesson a report was sent from: a card, a quick-check question, or the video. */
+export const CARD_REF_PATTERN = /^((card|check):\d{1,3}|video)$/
+export const REPORT_MAX = 2000
+
 export type Channel = 'Direct' | 'Search' | 'Social' | 'Email' | 'Paid' | 'Referral' | 'Campaign'
 
 const SEARCH = /(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|baidu|yandex|startpage)\./

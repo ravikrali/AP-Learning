@@ -45,6 +45,13 @@ export function MorePage() {
           <b>Video links</b>
           <span className="small muted">Popular YouTube videos for every topic</span>
         </Link>
+        <Link to="/more/errata" className="more-btn wide">
+          <span className="more-ico" aria-hidden>
+            🛠️
+          </span>
+          <b>Corrections</b>
+          <span className="small muted">Mistakes found in lessons and what we fixed</span>
+        </Link>
       </div>
 
       <Link to="/me" className="card row plain-link" style={{ marginTop: 18 }}>

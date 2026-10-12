@@ -18,6 +18,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.1',
       ced: ['7.1', '7.2'],
+      cedVersion: 'Fall 2024',
       title: 'What Is Equilibrium?',
       level: 'foundation',
       minutes: 7,
@@ -102,6 +103,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.3',
       ced: ['7.3'],
+      cedVersion: 'Fall 2024',
       title: 'Writing K and Q',
       level: 'foundation',
       minutes: 8,
@@ -178,6 +180,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.4',
       ced: ['7.4', '7.5'],
+      cedVersion: 'Fall 2024',
       title: 'Calculating K & What Its Size Means',
       level: 'core',
       minutes: 7,
@@ -251,6 +254,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.6',
       ced: ['7.6'],
+      cedVersion: 'Fall 2024',
       title: 'Manipulating K',
       level: 'core',
       minutes: 6,
@@ -313,6 +317,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.7',
       ced: ['7.7'],
+      cedVersion: 'Fall 2024',
       title: 'Q vs. K & ICE Tables',
       level: 'core',
       minutes: 11,
@@ -415,6 +420,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.8',
       ced: ['7.8'],
+      cedVersion: 'Fall 2024',
       title: 'Particle Diagrams of Equilibrium',
       level: 'core',
       minutes: 5,
@@ -484,6 +490,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.9',
       ced: ['7.9', '7.10'],
+      cedVersion: 'Fall 2024',
       title: 'Le Châtelier\'s Principle',
       level: 'core',
       minutes: 11,
@@ -585,6 +592,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.11',
       ced: ['7.11'],
+      cedVersion: 'Fall 2024',
       title: 'Solubility Equilibria (Ksp)',
       level: 'core',
       minutes: 10,
@@ -681,6 +689,7 @@ export const unit7: Unit = {
     {
       id: 'chem-7.12',
       ced: ['7.12'],
+      cedVersion: 'Fall 2024',
       title: 'The Common-Ion Effect',
       level: 'advanced',
       minutes: 7,

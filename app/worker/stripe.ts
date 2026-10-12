@@ -2,10 +2,13 @@
 // and webhook signature checks.
 
 import { PLANS, priceCents, type PlanId } from '../shared/catalog'
+import { BRAND } from '../shared/brand'
 
 export interface StripeEnv {
   STRIPE_SECRET_KEY?: string
   STRIPE_WEBHOOK_SECRET?: string
+  /** only set while rotating the webhook secret (see docs/security.md) */
+  STRIPE_WEBHOOK_SECRET_PREVIOUS?: string
 }
 
 export class StripeError extends Error {
@@ -71,7 +74,7 @@ export async function priceId(env: StripeEnv, plan: Exclude<PlanId, 'free'>): Pr
   let id = found.data[0]?.id
   if (!id) {
     const product = await stripe<{ id: string }>(env, 'POST', 'products', {
-      name: `AP Learning ${PLANS[plan].name}`,
+      name: `${BRAND.name} ${PLANS[plan].name}`,
       description: PLANS[plan].blurb,
     })
     const price = await stripe<{ id: string }>(env, 'POST', 'prices', {

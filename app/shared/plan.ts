@@ -2,6 +2,8 @@
 // The app builds the plan (src/lib/schedule.ts) and syncs it as item "plan:<courseId>";
 // the Worker turns every plan into a calendar feed people can subscribe to.
 
+import { BRAND } from './brand'
+
 export interface PlanItem {
   /** lesson | checkpoint | exam (practice exam) | frq | cards (flashcard review) | review (weak spots) */
   k: 'lesson' | 'checkpoint' | 'exam' | 'frq' | 'cards' | 'review'
@@ -84,10 +86,10 @@ export function planToIcs(plans: StudyPlan[], opts: { baseUrl: string; name?: st
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//AP Learning//Study plan//EN',
+    `PRODID:-//${BRAND.name}//Study plan//EN`,
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:${esc(opts.name ?? 'AP Learning study plan')}`,
+    `X-WR-CALNAME:${esc(opts.name ?? `${BRAND.name} study plan`)}`,
     ...(tz ? [`X-WR-TIMEZONE:${tz}`] : []),
     'REFRESH-INTERVAL;VALUE=DURATION:PT12H',
     'X-PUBLISHED-TTL:PT12H',
@@ -102,15 +104,15 @@ export function planToIcs(plans: StudyPlan[], opts: { baseUrl: string; name?: st
       const desc = [
         ...s.items.map((i) => `• ${i.t} (${i.m} min)`),
         '',
-        `Open AP Learning: ${opts.baseUrl}/#${first.to ?? '/'}`,
+        `Open ${BRAND.name}: ${opts.baseUrl}/#${first.to ?? '/'}`,
       ].join('\n')
       lines.push(
         'BEGIN:VEVENT',
-        `UID:${p.course}-${s.date}@aplearning.app`,
+        `UID:${p.course}-${s.date}@${BRAND.domain}`,
         `DTSTAMP:${now}`,
         `DTSTART${when(p, s.date, p.time)}`,
         `DTEND${when(p, s.date, addMinutes(p.time, mins))}`,
-        `SUMMARY:${esc(`📚 ${p.courseTitle.replace(/^AP /, '')}: ${title}`)}`,
+        `SUMMARY:${esc(`📚 ${p.courseTitle.replace(/^AP®? /, '')}: ${title}`)}`,
         `DESCRIPTION:${esc(desc)}`,
         `URL:${opts.baseUrl}/#${first.to ?? '/'}`,
         'BEGIN:VALARM',
@@ -123,12 +125,12 @@ export function planToIcs(plans: StudyPlan[], opts: { baseUrl: string; name?: st
     }
     lines.push(
       'BEGIN:VEVENT',
-      `UID:${p.course}-exam@aplearning.app`,
+      `UID:${p.course}-exam@${BRAND.domain}`,
       `DTSTAMP:${now}`,
       `DTSTART${when(p, p.examDate, p.examTime)}`,
       `DTEND${when(p, p.examDate, addMinutes(p.examTime, 195))}`,
       `SUMMARY:${esc(`🎯 ${p.courseTitle} exam`)}`,
-      `DESCRIPTION:${esc('Check the exact reporting time and room with your AP coordinator. You have got this!')}`,
+      `DESCRIPTION:${esc('Check the exact reporting time and room with your AP® coordinator. You have got this!')}`,
       'END:VEVENT',
     )
   }

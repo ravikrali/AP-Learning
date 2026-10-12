@@ -15,6 +15,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.1',
       ced: ['1.1'],
+      cedVersion: 'Fall 2024',
       title: 'Moles and Molar Mass',
       level: 'foundation',
       minutes: 7,
@@ -128,6 +129,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.5',
       ced: ['1.5'],
+      cedVersion: 'Fall 2024',
       title: 'Atomic Structure & Electron Configuration',
       level: 'foundation',
       minutes: 9,
@@ -246,6 +248,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.2',
       ced: ['1.2'],
+      cedVersion: 'Fall 2024',
       title: 'Mass Spectra of Elements',
       level: 'core',
       minutes: 6,
@@ -345,6 +348,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.3',
       ced: ['1.3'],
+      cedVersion: 'Fall 2024',
       title: 'Composition of Pure Substances',
       level: 'core',
       minutes: 8,
@@ -450,6 +454,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.4',
       ced: ['1.4'],
+      cedVersion: 'Fall 2024',
       title: 'Composition of Mixtures',
       level: 'core',
       minutes: 7,
@@ -551,6 +556,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.7',
       ced: ['1.7'],
+      cedVersion: 'Fall 2024',
       title: 'Periodic Trends',
       level: 'core',
       minutes: 9,
@@ -662,6 +668,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.8',
       ced: ['1.8'],
+      cedVersion: 'Fall 2024',
       title: 'Valence Electrons & Ionic Compounds',
       level: 'core',
       minutes: 6,
@@ -744,6 +751,7 @@ export const unit1: Unit = {
     {
       id: 'chem-1.6',
       ced: ['1.6'],
+      cedVersion: 'Fall 2024',
       title: 'Photoelectron Spectroscopy (PES)',
       level: 'advanced',
       minutes: 8,
