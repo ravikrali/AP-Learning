@@ -520,6 +520,16 @@ textarea.admin-input { resize: vertical; }
 .more-btn { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 22px 12px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); text-decoration: none; color: inherit; }
 .more-btn .more-ico { height: 44px; display: grid; place-items: center; font-size: 34px; color: var(--primary); }
 .more-btn b { font-size: 18px; }
+.more-btn.wide { grid-column: 1 / -1; }
+
+.vl details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; padding: 0 14px; }
+.vl summary { display: flex; align-items: center; gap: 8px; padding: 14px 0; cursor: pointer; list-style: none; }
+.vl summary::-webkit-details-marker { display: none; }
+.vl summary::after { content: '+'; color: var(--muted); font-weight: 800; font-size: 20px; }
+.vl details[open] summary::after { content: '−'; }
+.vl summary .grow { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.vl-topic { display: flex; flex-direction: column; gap: 10px; padding: 12px 0 14px; border-top: 1px solid var(--border); }
+.vl-topic-head { font-weight: 800; font-size: 15px; text-decoration: none; color: inherit; }
 
 .pt-scroll { overflow-x: auto; margin: 0 -16px 10px; padding: 0 16px; }
 .pt { display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); grid-template-rows: repeat(7, auto) 8px repeat(2, auto); gap: 2px; container-type: inline-size; }

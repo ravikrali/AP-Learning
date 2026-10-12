@@ -49,6 +49,7 @@ const EVENT_LABEL: Record<string, string> = {
   bookmark: 'Topics bookmarked',
   glossary: 'Glossary opened',
   periodic_table: 'Periodic table opened',
+  video_links: 'Video links page opened',
   tip: 'Quick tips opened',
   plan_create: 'Study plans made',
   plan_update: 'Study plans changed',

@@ -18,7 +18,7 @@ import { UnitPage } from './pages/Unit'
 import { LessonPage } from './pages/Lesson'
 import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
-import { MorePage, GlossaryPage } from './pages/More'
+import { MorePage, GlossaryPage, VideoLinksPage } from './pages/More'
 import { PeriodicTablePage } from './pages/PeriodicTable'
 import { MePage } from './pages/Me'
 import { FaqPage, FeedbackPage, HelpPage, PrivacyPage } from './pages/Support'
@@ -151,6 +151,7 @@ export default function App() {
             <Route path="/more" element={<MorePage />} />
             <Route path="/more/periodic-table" element={<PeriodicTablePage />} />
             <Route path="/more/glossary" element={<GlossaryPage />} />
+            <Route path="/more/videos" element={<VideoLinksPage />} />
             <Route path="/me" element={<MePage />} />
             <Route path="/me/help" element={<HelpPage />} />
             <Route path="/me/faq" element={<FaqPage />} />

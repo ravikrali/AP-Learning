@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { COURSES, findLesson, glossary, glossaryCard, plainText } from '../content'
+import { COURSES, builtInYoutube, findLesson, glossary, glossaryCard, plainText } from '../content'
 import { openable, useAccount } from '../lib/account'
 import { useApp } from '../lib/app'
+import { contentStore, youtubeOverride } from '../lib/overrides'
 import { renderInline } from '../lib/RichText'
 import { TopBar } from '../components/bits'
 import { track } from '../lib/track'
@@ -36,6 +37,13 @@ export function MorePage() {
           <span className="small muted">
             {terms} key terms · {course.short}
           </span>
+        </Link>
+        <Link to="/more/videos" className="more-btn wide">
+          <span className="more-ico" aria-hidden>
+            ▶️
+          </span>
+          <b>Video links</b>
+          <span className="small muted">Popular YouTube videos for every topic</span>
         </Link>
       </div>
 
@@ -129,6 +137,90 @@ export function GlossaryPage() {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+/** Every topic's YouTube links in one place, grouped by unit and topic. */
+export function VideoLinksPage() {
+  const course = useMainCourse()
+  const { db } = useApp()
+  useEffect(() => track(db, 'video_links', { course: course.id }), [db, course.id])
+  // admins can replace a topic's links, so rebuild when published content changes
+  const published = useSyncExternalStore(contentStore.subscribe, contentStore.get)
+  const [q, setQ] = useState('')
+  const units = useMemo(
+    () =>
+      course.units
+        .map((unit) => ({
+          unit,
+          topics: unit.lessons.map((lesson) => ({ lesson, videos: youtubeOverride(lesson.id) ?? builtInYoutube(lesson.id) })).filter((t) => t.videos.length > 0),
+        }))
+        .filter((u) => u.topics.length > 0),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [course, published],
+  )
+  const total = units.reduce((n, u) => n + u.topics.reduce((m, t) => m + t.videos.length, 0), 0)
+  const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const has = (text: string) => words.every((w) => text.toLowerCase().includes(w))
+  // a topic that matches keeps all its videos; otherwise only the videos that match
+  const shown = words.length
+    ? units
+        .map(({ unit, topics }) => ({
+          unit,
+          topics: topics
+            .map((t) => (has(`${t.lesson.ced.join(' ')} ${t.lesson.title}`) ? t : { ...t, videos: t.videos.filter((v) => has(`${v.title} ${v.channel}`)) }))
+            .filter((t) => t.videos.length > 0),
+        }))
+        .filter((u) => u.topics.length > 0)
+    : units
+
+  return (
+    <div>
+      <TopBar title="Video links" back="/more" />
+      <p className="small muted" style={{ marginTop: 0 }}>
+        {course.title}: {total} popular YouTube videos, by unit and topic. They open on YouTube.
+      </p>
+      <input className="search-input" type="search" placeholder="Find a topic or video" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a topic or video" />
+      {shown.length === 0 && (
+        <div className="empty">
+          <div className="e">▶️</div>
+          <p>No topic or video matches “{q.trim()}”.</p>
+        </div>
+      )}
+      <div className="vl">
+        {shown.map(({ unit, topics }, i) => (
+          <details key={`${unit.id}-${words.length ? 'q' : 'all'}`} open={words.length > 0 || i === 0}>
+            <summary>
+              <span className="grow">
+                <b>{unit.number === 0 ? unit.title : `Unit ${unit.number}: ${unit.title}`}</b>
+                <span className="small muted">
+                  {topics.length} topic{topics.length === 1 ? '' : 's'} · {topics.reduce((n, t) => n + t.videos.length, 0)} videos
+                </span>
+              </span>
+            </summary>
+            {topics.map(({ lesson, videos }) => (
+              <div key={lesson.id} className="vl-topic">
+                <Link to={`/lesson/${lesson.id}`} className="vl-topic-head">
+                  {lesson.ced.length > 0 && <span className="muted">{lesson.ced.join(', ')}</span>} {lesson.title} ›
+                </Link>
+                {videos.map((v) => (
+                  <a key={v.id} className="yt-item" href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer" onClick={() => track(db, 'video', { course: course.id, lesson: lesson.id })}>
+                    <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" width={120} height={68} />
+                    <span className="grow">
+                      <span className="yt-title">{v.title}</span>
+                      <span className="small muted">{v.channel}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            ))}
+          </details>
+        ))}
+      </div>
+      <p className="tiny muted">
+        Outside videos aren't checked line by line like our lessons. If one disagrees with a lesson, trust the lesson and tell us in Feedback.
+      </p>
     </div>
   )
 }
