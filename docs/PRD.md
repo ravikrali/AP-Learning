@@ -161,10 +161,11 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | ID | Requirement | Status |
 |---|---|---|
-| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows two buttons: Periodic table and Glossary. | ✅ |
+| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows three buttons: Periodic table, Glossary and Video links. | ✅ |
 | M-2 | **Periodic table:** an interactive table of all 118 elements. Tapping an element shows quick insights: protons and electrons, molar mass, family, state at room temperature, group and period, electron configuration (flagging exceptions such as Cr and Cu), common oxidation states, valence electrons, the usual ion, diatomic elements and electronegativity. | ✅ |
 | M-3 | The table can be colored by family, electronegativity or state, searched by name, symbol or number, and zoomed. Links lead to the lessons that explain it. | ✅ |
 | M-4 | **Glossary:** the key terms of the course (130 for AP Chemistry) with short definitions, a search box and A–Z jumps. Tapping a term opens the topic where it is explained, at the card that explains it. | ✅ |
+| M-6 | **Video links:** one page with every topic's YouTube links, grouped by unit and then topic, with a search box. Each unit opens and closes; a topic name opens its lesson; videos open on YouTube. Links replaced by an admin show here too. | ✅ |
 | M-5 | The student's profile, badges, plan, settings and help stay reachable from the More page and from the picture at the top of Home. | ✅ |
 
 ### 3.12 Navigation
@@ -290,3 +291,4 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | Oct 8, 2026 | Animated welcome page, bear mascot (Bunsen), cheering messages, profile tiles, dark theme. Cloudflare Workers + D1 backend: sync across devices, admin tools, feedback inbox. |
 | Oct 9, 2026 | Generic welcome animation. Plans (Free 1 course, Trio $5.99, Everything $12.99). 21-course catalog. Admin portal on its own address with a dashboard. Study plans with calendar events. Behavior tracking, tricky topics and quick tips. YouTube links per topic. "Add to Home screen" on Home. |
 | Oct 10, 2026 | Bulb tips on Unit pages. Search on Course, Unit and Topic pages. Bookmarks, shown on the Review page. Notes moved under Review. "More" menu item with Periodic table and Glossary. Icon-only bottom menu. Admin metrics for visitors who have not signed in and for students who are not subscribed; welcome page collects visit sources and optional emails. This document. |
+| Oct 11, 2026 | "Video links" button on the More page: all YouTube links by unit and topic. |
