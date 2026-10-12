@@ -1,0 +1,13 @@
+{
+  "name": "aplearning-explainer-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "music": "node make-music.mjs",
+    "render": "node make-music.mjs && node render.mjs"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "playwright-core": "^1.50.0"
+  }
+}
