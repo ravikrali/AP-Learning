@@ -8,6 +8,7 @@ import { isTelemetry, KEY_PATTERN, maxItemSize, mergeItem, type SyncItem } from 
 import { CATALOG_IDS, checkPickChange, PLANS, trimPicks, type PlanId } from '../shared/catalog'
 import { planToIcs, type StudyPlan } from '../shared/plan'
 import { channelOf, hostOf, VID_PATTERN, VISIT_EVENTS, type VisitBody } from '../shared/visit'
+import { ASSIGNABLE_ROLES, can, covers, normalizePrivs, privsOf, roleFor, ROLES, type Access, type Action, type RoleId, type Section } from '../shared/roles'
 import { PAID_STATUSES, priceId, readSubscription, stripe, StripeError, verifyStripeSignature, type StripeEnv } from './stripe'
 
 interface Env extends StripeEnv {
@@ -144,7 +145,8 @@ async function startSession(env: Env, u: User, req: Request) {
   await env.DB.prepare('INSERT INTO sessions (token_hash, sub, created_at, expires_at) VALUES (?, ?, ?, ?)')
     .bind(await sha256Hex(token), u.sub, t, expires)
     .run()
-  return { token, user: u, isAdmin: await isAdmin(env, u.email) }
+  const access = await accessOf(env, u.email)
+  return { token, user: u, isAdmin: !!access, access }
 }
 
 async function currentUser(req: Request, env: Env): Promise<User> {
@@ -160,15 +162,39 @@ async function currentUser(req: Request, env: Env): Promise<User> {
   return row
 }
 
-async function isAdmin(env: Env, email: string) {
-  if (email.toLowerCase() === env.OWNER_EMAIL.toLowerCase()) return true
-  return !!(await env.DB.prepare('SELECT 1 FROM admins WHERE email = ?').bind(email.toLowerCase()).first())
+function parsePrivs(text: string | null): unknown {
+  try {
+    return text ? JSON.parse(text) : {}
+  } catch {
+    return {}
+  }
 }
 
-async function requireAdmin(req: Request, env: Env) {
+/** What this person may do in the admin portal; null = not a portal user. The owner is the Super Admin. */
+async function accessOf(env: Env, email: string): Promise<Access | null> {
+  const e = email.toLowerCase()
+  if (e === env.OWNER_EMAIL.toLowerCase()) return { role: 'super', privs: privsOf('super'), super: true }
+  const row = await env.DB.prepare('SELECT role, privs FROM admins WHERE email = ?').bind(e).first<{ role: string; privs: string | null }>()
+  if (!row) return null
+  const privs = privsOf(row.role, parsePrivs(row.privs))
+  return { role: roleFor(row.role, privs), privs, super: false }
+}
+
+/** Anyone with a role in the admin portal. */
+async function isAdmin(env: Env, email: string) {
+  return !!(await accessOf(env, email))
+}
+
+const ACTION_WORD: Record<Action, string> = { view: 'view', edit: 'change', delete: 'delete in' }
+
+/** The signed-in portal user, if their role includes this privilege. Checked on every admin request. */
+async function requirePriv(req: Request, env: Env, section: Section, action: Action) {
   const u = await currentUser(req, env)
-  if (!(await isAdmin(env, u.email))) throw new HttpError(403, 'Admins only')
-  return u
+  const access = await accessOf(env, u.email)
+  if (!access) throw new HttpError(403, 'Admins only')
+  if (!can(access.privs, section, action))
+    throw new HttpError(403, `Your role (${ROLES[access.role].name}) is not allowed to ${ACTION_WORD[action]} ${section === 'team' ? 'Admins' : section[0].toUpperCase() + section.slice(1)}.`)
+  return { ...u, access }
 }
 
 // ---------- sync ----------
@@ -635,11 +661,16 @@ async function getContent(env: Env) {
   return json({ items, version, count: items.length })
 }
 
+/** Video and YouTube-link keys belong to the Videos section; every other key is lesson Content. */
+const contentSection = (key: string): Section => (/^(video|yt):/.test(key) ? 'videos' : 'content')
+
 async function putContent(req: Request, env: Env) {
-  const admin = await requireAdmin(req, env)
   const { key, data } = await readJson<{ key: string; data: Record<string, unknown> }>(req)
   if (typeof key !== 'string' || !CONTENT_KEY.test(key)) throw new HttpError(400, 'Bad content key')
   if (typeof data !== 'object' || data === null || Array.isArray(data)) throw new HttpError(400, 'Bad content data')
+  // saving a lesson video with no link is how a video is removed
+  const removal = key.startsWith('video:') && !data.url
+  const admin = await requirePriv(req, env, contentSection(key), removal ? 'delete' : 'edit')
   const text = JSON.stringify(data)
   if (text.length > 60_000) throw new HttpError(413, 'Content too large')
   const t = now()
@@ -654,9 +685,9 @@ async function putContent(req: Request, env: Env) {
 }
 
 async function deleteContent(req: Request, env: Env, url: URL) {
-  const admin = await requireAdmin(req, env)
   const key = url.searchParams.get('key') ?? ''
   if (!CONTENT_KEY.test(key)) throw new HttpError(400, 'Bad content key')
+  const admin = await requirePriv(req, env, contentSection(key), 'delete')
   await env.DB.batch([
     env.DB.prepare('DELETE FROM content WHERE key = ?').bind(key),
     env.DB.prepare('INSERT INTO content_history (key, data, changed_by, changed_at) VALUES (?, NULL, ?, ?)').bind(key, admin.email, now()),
@@ -665,39 +696,97 @@ async function deleteContent(req: Request, env: Env, url: URL) {
 }
 
 async function contentHistory(req: Request, env: Env, url: URL) {
-  await requireAdmin(req, env)
   const key = url.searchParams.get('key')
+  await requirePriv(req, env, key ? contentSection(key) : 'content', 'view')
   const rows = key
     ? await env.DB.prepare('SELECT id, key, data, changed_by, changed_at FROM content_history WHERE key = ? ORDER BY id DESC LIMIT 50').bind(key).all()
     : await env.DB.prepare('SELECT id, key, data, changed_by, changed_at FROM content_history ORDER BY id DESC LIMIT 100').all()
   return json({ items: rows.results })
 }
 
-// ---------- admins ----------
+// ---------- admins: portal users, their roles and privileges ----------
+
+interface AdminRow {
+  email: string
+  role: string
+  privs: string | null
+  added_by: string
+  added_at: string
+  updated_by: string | null
+  updated_at: string | null
+  name: string | null
+  last_seen: string | null
+}
 
 async function listAdmins(req: Request, env: Env) {
-  await requireAdmin(req, env)
-  const rows = await env.DB.prepare('SELECT email, added_by, added_at FROM admins ORDER BY added_at').all<{ email: string; added_by: string; added_at: string }>()
+  await requirePriv(req, env, 'team', 'view')
+  const rows = await env.DB.prepare(
+    `SELECT a.email, a.role, a.privs, a.added_by, a.added_at, a.updated_by, a.updated_at,
+            (SELECT u.name FROM users u WHERE u.email = a.email ORDER BY u.last_seen DESC LIMIT 1) AS name,
+            (SELECT MAX(u.last_seen) FROM users u WHERE u.email = a.email) AS last_seen
+     FROM admins a ORDER BY a.added_at`,
+  ).all<AdminRow>()
   const owner = env.OWNER_EMAIL.toLowerCase()
-  const list = rows.results.map((r) => ({ ...r, owner: r.email === owner }))
-  if (!list.some((a) => a.owner)) list.unshift({ email: owner, added_by: 'system', added_at: '', owner: true })
+  const list = rows.results.map((r) => {
+    if (r.email === owner) return { ...r, role: 'super' as RoleId, privs: privsOf('super'), owner: true }
+    const privs = privsOf(r.role, parsePrivs(r.privs))
+    return { ...r, role: roleFor(r.role, privs), privs, owner: false }
+  })
+  if (!list.some((a) => a.owner))
+    list.unshift({ email: owner, role: 'super', privs: privsOf('super'), added_by: 'system', added_at: '', updated_by: null, updated_at: null, name: null, last_seen: null, owner: true })
+  list.sort((a, b) => Number(b.owner) - Number(a.owner))
   return json({ items: list })
 }
 
+/** Check a role + privilege choice from the portal and return what to store. Nobody can hand out more than they hold. */
+function readAssignment(actor: Access, body: { role?: unknown; privs?: unknown }) {
+  const asked = String(body.role ?? '')
+  if (!ASSIGNABLE_ROLES.includes(asked as RoleId)) throw new HttpError(400, 'Pick a role')
+  // the privileges ticked in the form win; a named role sent without any means that role's own set
+  const privs = body.privs === undefined ? privsOf(asked) : normalizePrivs(body.privs)
+  if (!Object.keys(privs).length) throw new HttpError(400, 'Give this person at least one privilege')
+  if (!covers(actor.privs, privs)) throw new HttpError(403, 'You can only give privileges that you have yourself')
+  const role = roleFor(asked, privs)
+  return { role, privs, stored: role === 'custom' ? JSON.stringify(privs) : null }
+}
+
 async function addAdmin(req: Request, env: Env) {
-  const admin = await requireAdmin(req, env)
-  const { email } = await readJson<{ email: string }>(req)
-  const e = String(email ?? '').trim().toLowerCase()
+  const admin = await requirePriv(req, env, 'team', 'edit')
+  const body = await readJson<{ email: string; role?: string; privs?: unknown }>(req)
+  const e = String(body.email ?? '').trim().toLowerCase()
   if (!EMAIL.test(e)) throw new HttpError(400, 'That does not look like an email address')
-  await env.DB.prepare('INSERT OR IGNORE INTO admins (email, added_by, added_at) VALUES (?, ?, ?)').bind(e, admin.email, now()).run()
-  return json({ ok: true })
+  if (e === env.OWNER_EMAIL.toLowerCase()) throw new HttpError(400, 'The owner is already the Super Admin')
+  const a = readAssignment(admin.access, body)
+  const res = await env.DB.prepare('INSERT OR IGNORE INTO admins (email, role, privs, added_by, added_at) VALUES (?, ?, ?, ?, ?)')
+    .bind(e, a.role, a.stored, admin.email, now())
+    .run()
+  if (!res.meta.changes) throw new HttpError(409, `${e} is already a portal user. Change their role in the list instead.`)
+  return json({ ok: true, role: a.role, privs: a.privs })
+}
+
+/** The person being changed or removed: never the owner, never yourself, never someone with more access than you. */
+async function manageable(env: Env, admin: { email: string; access: Access }, email: string) {
+  if (email === env.OWNER_EMAIL.toLowerCase()) throw new HttpError(400, 'The Super Admin cannot be changed or removed')
+  if (email === admin.email.toLowerCase()) throw new HttpError(400, 'You cannot change or remove yourself')
+  const target = await accessOf(env, email)
+  if (!target) throw new HttpError(404, 'No such portal user')
+  if (!covers(admin.access.privs, target.privs)) throw new HttpError(403, 'This person has privileges you do not have, so you cannot change them')
+}
+
+async function updateAdmin(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'team', 'edit')
+  const body = await readJson<{ email: string; role?: string; privs?: unknown }>(req)
+  const e = String(body.email ?? '').trim().toLowerCase()
+  await manageable(env, admin, e)
+  const a = readAssignment(admin.access, body)
+  await env.DB.prepare('UPDATE admins SET role = ?, privs = ?, updated_by = ?, updated_at = ? WHERE email = ?').bind(a.role, a.stored, admin.email, now(), e).run()
+  return json({ ok: true, role: a.role, privs: a.privs })
 }
 
 async function removeAdmin(req: Request, env: Env, url: URL) {
-  const admin = await requireAdmin(req, env)
+  const admin = await requirePriv(req, env, 'team', 'delete')
   const e = (url.searchParams.get('email') ?? '').toLowerCase()
-  if (e === env.OWNER_EMAIL.toLowerCase()) throw new HttpError(400, 'The owner is always an admin')
-  if (e === admin.email) throw new HttpError(400, 'You cannot remove yourself')
+  await manageable(env, admin, e)
   await env.DB.prepare('DELETE FROM admins WHERE email = ?').bind(e).run()
   return json({ ok: true })
 }
@@ -721,15 +810,23 @@ async function postFeedback(req: Request, env: Env) {
 }
 
 async function listFeedback(req: Request, env: Env) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'feedback', 'view')
   const rows = await env.DB.prepare('SELECT * FROM feedback ORDER BY resolved, id DESC LIMIT 200').all()
   return json({ items: rows.results })
 }
 
 async function resolveFeedback(req: Request, env: Env) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'feedback', 'edit')
   const { id, resolved } = await readJson<{ id: number; resolved: boolean }>(req)
   await env.DB.prepare('UPDATE feedback SET resolved = ? WHERE id = ?').bind(resolved ? 1 : 0, Number(id)).run()
+  return json({ ok: true })
+}
+
+async function deleteFeedback(req: Request, env: Env, url: URL) {
+  await requirePriv(req, env, 'feedback', 'delete')
+  const id = Number(url.searchParams.get('id'))
+  if (!Number.isSafeInteger(id)) throw new HttpError(400, 'Bad feedback id')
+  await env.DB.prepare('DELETE FROM feedback WHERE id = ?').bind(id).run()
   return json({ ok: true })
 }
 
@@ -824,7 +921,7 @@ const PLAN_SQL = `CASE
 
 /** Admin: visitors who have not signed in, where they come from, the welcome-page funnel, leads, and students on the free plan. */
 async function audience(req: Request, env: Env) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'audience', 'view')
   const q = <T>(sql: string, ...args: unknown[]) =>
     env.DB.prepare(sql)
       .bind(...args)
@@ -896,7 +993,7 @@ async function audience(req: Request, env: Env) {
 }
 
 async function metrics(req: Request, env: Env) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'dashboard', 'view')
   const q = <T>(sql: string, ...args: unknown[]) =>
     env.DB.prepare(sql)
       .bind(...args)
@@ -974,7 +1071,7 @@ async function metrics(req: Request, env: Env) {
 }
 
 async function listUsers(req: Request, env: Env, url: URL) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'students', 'view')
   const term = `%${(url.searchParams.get('q') ?? '').trim().toLowerCase()}%`
   const rows = await env.DB.prepare(
     `SELECT u.sub, u.email, u.name, u.country, u.region, u.created_at, u.last_seen,
@@ -990,9 +1087,10 @@ async function listUsers(req: Request, env: Env, url: URL) {
 
 /** Give someone a plan without payment (family, teachers, testers), or take it back. */
 async function grantPlan(req: Request, env: Env) {
-  await requireAdmin(req, env)
   const { sub, plan } = await readJson<{ sub: string; plan: PlanId | null }>(req)
   if (plan !== null && plan !== 'three' && plan !== 'all') throw new HttpError(400, 'Bad plan')
+  // granting a plan is an edit; taking a granted plan back is a delete
+  await requirePriv(req, env, 'students', plan === null ? 'delete' : 'edit')
   const exists = await env.DB.prepare('SELECT 1 FROM users WHERE sub = ?').bind(String(sub)).first()
   if (!exists) throw new HttpError(404, 'No such user')
   const a = await getAccount(env, String(sub))
@@ -1002,7 +1100,7 @@ async function grantPlan(req: Request, env: Env) {
 
 /** Look a YouTube video up (title and channel); fails for missing or private videos. */
 async function youtubeInfo(req: Request, env: Env, url: URL) {
-  await requireAdmin(req, env)
+  await requirePriv(req, env, 'videos', 'edit')
   const id = url.searchParams.get('id') ?? ''
   if (!/^[\w-]{11}$/.test(id)) throw new HttpError(400, 'Bad video id')
   const res = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${id}`)}`)
@@ -1038,7 +1136,8 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   }
   if (p === '/api/me' && m === 'GET') {
     const u = await currentUser(req, env)
-    return json({ user: u, isAdmin: await isAdmin(env, u.email) })
+    const access = await accessOf(env, u.email)
+    return json({ user: u, isAdmin: !!access, access })
   }
   if (p === '/api/sync' && m === 'POST') return sync(req, env)
   if (p === '/api/insights' && m === 'GET') return myInsights(req, env)
@@ -1069,9 +1168,11 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/admin/history' && m === 'GET') return contentHistory(req, env, url)
   if (p === '/api/admin/admins' && m === 'GET') return listAdmins(req, env)
   if (p === '/api/admin/admins' && m === 'POST') return addAdmin(req, env)
+  if (p === '/api/admin/admins' && m === 'PUT') return updateAdmin(req, env)
   if (p === '/api/admin/admins' && m === 'DELETE') return removeAdmin(req, env, url)
   if (p === '/api/admin/feedback' && m === 'GET') return listFeedback(req, env)
   if (p === '/api/admin/feedback' && m === 'POST') return resolveFeedback(req, env)
+  if (p === '/api/admin/feedback' && m === 'DELETE') return deleteFeedback(req, env, url)
 
   throw new HttpError(404, 'Not found')
 }

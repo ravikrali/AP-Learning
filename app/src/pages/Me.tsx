@@ -155,7 +155,7 @@ export function MePage() {
           <span className="grow">
             <b>Admin portal</b>
             <span className="small muted" style={{ display: 'block' }}>
-              Dashboard, content, videos, users, feedback and admins
+              Dashboard, content, videos, students, feedback and admins, as your role allows
             </span>
           </span>
           <span className="muted">↗</span>

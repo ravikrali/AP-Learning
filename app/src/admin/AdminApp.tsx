@@ -1,15 +1,17 @@
 // The admin portal (admin.aplearning.app): its own sign-in, then dashboard and tools.
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ComponentType } from 'react'
 import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { clearSession, GOOGLE_CLIENT_ID, loadSession, renderGoogleButton, saveSession, type User } from '../lib/auth'
 import { api } from '../lib/api'
 import { refreshContent } from '../lib/overrides'
+import { can, ROLES, SECTIONS, type Access, type Section } from '../../shared/roles'
 import { AdminContext } from './context'
 import { Dashboard } from './Dashboard'
 import { UsersTab } from './Users'
 import { AudienceTab } from './Audience'
-import { AdminsTab, ContentTab, FeedbackTab, VideosTab } from './Tools'
+import { ContentTab, FeedbackTab, VideosTab } from './Tools'
+import { TeamTab } from './Team'
 
 const APP_URL = import.meta.env.DEV ? '/' : 'https://www.aplearning.app/'
 
@@ -55,25 +57,37 @@ function SignIn({ onUser, note }: { onUser: (u: User) => void; note?: string }) 
   )
 }
 
-const TABS = [
-  { to: '/', label: '📊 Dashboard', end: true },
-  { to: '/audience', label: '🧭 Audience' },
-  { to: '/content', label: '📝 Content' },
-  { to: '/videos', label: '🎬 Videos' },
-  { to: '/users', label: '👥 Students' },
-  { to: '/feedback', label: '💬 Feedback' },
-  { to: '/admins', label: '🔑 Admins' },
-]
+// One tab per section; a tab is only shown to people whose role can view that section.
+const PATHS: Record<Section, string> = {
+  dashboard: '/dashboard',
+  audience: '/audience',
+  content: '/content',
+  videos: '/videos',
+  students: '/users',
+  feedback: '/feedback',
+  team: '/admins',
+}
+const PAGES: Record<Section, ComponentType> = {
+  dashboard: Dashboard,
+  audience: AudienceTab,
+  content: ContentTab,
+  videos: VideosTab,
+  students: UsersTab,
+  feedback: FeedbackTab,
+  team: TeamTab,
+}
 
 export function AdminApp() {
   const [user, setUser] = useState<User | null>(() => loadSession())
   const [note, setNote] = useState<string | undefined>()
+  const [access, setAccess] = useState<Access | null>(null)
 
-  // Confirm the session is still valid and still an admin.
+  // Confirm the session is still valid and still an admin, and load this person's role.
   useEffect(() => {
     if (!user?.token) return
-    api<{ isAdmin: boolean }>('/api/me')
+    api<{ isAdmin: boolean; access: Access | null }>('/api/me')
       .then((r) => {
+        setAccess(r.access)
         if (!r.isAdmin) {
           setNote(`${user.email} is not an admin.`)
           clearSession()
@@ -84,7 +98,7 @@ export function AdminApp() {
         if (e?.status === 401) {
           clearSession()
           setUser(null)
-        }
+        } else setNote("Couldn't reach the server. Check your connection and reload.")
       })
     refreshContent().catch(() => undefined)
   }, [user])
@@ -98,24 +112,43 @@ export function AdminApp() {
             setNote(u.token ? `${u.email} is not an admin.` : "Couldn't reach the server to sign in. Try again.")
             clearSession()
             setUser(null)
-          } else setUser(u)
+          } else {
+            setNote(undefined)
+            setAccess(null)
+            setUser(u)
+          }
         }}
       />
     )
 
+  if (!access)
+    return (
+      <div className="admin-login">
+        <div className="logo">🛠️</div>
+        <p className="muted">{note ?? 'Loading…'}</p>
+      </div>
+    )
+
+  const tabs = SECTIONS.filter((s) => can(access.privs, s.id, 'view'))
+  const home = tabs.length ? PATHS[tabs[0].id] : '/'
+
   const signOut = () => {
     void api('/api/auth/logout', { body: {} }).catch(() => undefined)
     clearSession()
+    setAccess(null)
     setUser(null)
   }
 
   return (
-    <AdminContext.Provider value={{ user, signOut }}>
+    <AdminContext.Provider value={{ user, signOut, access, can: (s, a) => can(access.privs, s, a) }}>
       <HashRouter>
         <div className="admin">
           <header className="admin-top">
             <b className="grow">🛠️ AP Learning Admin</b>
             <span className="small muted hide-narrow">{user.email}</span>
+            <span className="weight" title={ROLES[access.role].about}>
+              {ROLES[access.role].name}
+            </span>
             <a className="btn ghost" href={APP_URL}>
               App ↗
             </a>
@@ -124,22 +157,22 @@ export function AdminApp() {
             </button>
           </header>
           <nav className="admin-nav">
-            {TABS.map((t) => (
-              <NavLink key={t.to} to={t.to} end={t.end} className={({ isActive }) => (isActive ? 'on' : '')}>
-                {t.label}
+            {tabs.map((t) => (
+              <NavLink key={t.id} to={PATHS[t.id]} className={({ isActive }) => (isActive ? 'on' : '')}>
+                {t.icon} {t.label}
               </NavLink>
             ))}
           </nav>
           <main className="admin-main">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/audience" element={<AudienceTab />} />
-              <Route path="/content" element={<ContentTab />} />
-              <Route path="/videos" element={<VideosTab />} />
-              <Route path="/users" element={<UsersTab />} />
-              <Route path="/feedback" element={<FeedbackTab />} />
-              <Route path="/admins" element={<AdminsTab />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {tabs.map((t) => {
+                const Page = PAGES[t.id]
+                return <Route key={t.id} path={PATHS[t.id]} element={<Page />} />
+              })}
+              <Route
+                path="*"
+                element={tabs.length ? <Navigate to={home} replace /> : <div className="empty">Your role has no sections yet. Ask an admin to give you access.</div>}
+              />
             </Routes>
           </main>
         </div>

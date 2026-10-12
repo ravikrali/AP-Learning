@@ -82,6 +82,12 @@ table.data { width: 100%; border-collapse: collapse; font-size: 14px; font-varia
 table.data th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
 table.data td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
 table.data select { min-width: 9em; padding: 6px 8px; }
+fieldset.card { min-width: 0; margin: 0; }
+table.privs { font-weight: 500; }
+table.privs th { text-transform: capitalize; letter-spacing: 0; }
+table.privs th:not(:first-child), table.privs td:not(:first-child) { text-align: center; width: 4.5em; vertical-align: middle; }
+table.privs input { width: 20px; height: 20px; accent-color: var(--primary); }
+table.privs input:disabled { opacity: 0.35; }
 .acc { font-weight: 800; }
 .acc.low { color: var(--oops); }
 .acc.mid { color: var(--warm); }
