@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AP Learning explainer (55 s)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  /* Colors are the app's light theme (app/src/index.css). The stage is a fixed 1920x1080 canvas;
+     every motion is a Web Animation on one 55 s timeline, so render.mjs can seek frame by frame. */
+  :root {
+    --bg: #f6f7fb; --surface: #ffffff; --surface-2: #eef1f8; --text: #1d2433; --muted: #5d6679; --border: #dfe3ec;
+    --primary: #5b5bd6; --primary-soft: #e8e8fb; --accent: #13a89e; --accent-soft: #dcf5f2;
+    --warm: #f2994a; --warm-soft: #fdeedd; --good: #1f9d55; --good-soft: #def5e7;
+    --oops: #c9573a; --oops-soft: #fbe6df; --gold: #e0a400; --hack: #8e44ad; --hack-soft: #f2e6f8;
+    --shadow: 0 2px 4px rgba(20, 30, 60, 0.06), 0 12px 36px rgba(20, 30, 60, 0.10);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0e1017; overflow: hidden; }
+  #stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0;
+    background: var(--bg); color: var(--text); font-family: 'Nunito', system-ui, 'Segoe UI', sans-serif; font-weight: 700;
+  }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .abs { position: absolute; }
+
+  /* background */
+  .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.85; animation: drift 9s ease-in-out infinite alternate; }
+  .b1 { width: 760px; height: 760px; left: -200px; top: -260px; background: #dcdcfb; }
+  .b2 { width: 700px; height: 700px; right: -180px; top: 120px; background: #cdf3ee; animation-duration: 11s; animation-direction: alternate-reverse; }
+  .b3 { width: 720px; height: 720px; left: 420px; bottom: -420px; background: #fde3c8; animation-duration: 13s; }
+  .b4 { width: 420px; height: 420px; right: 380px; top: -220px; background: #fff1c2; animation-duration: 10s; animation-direction: alternate-reverse; }
+  @keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(60px, 40px) scale(1.12); } }
+  #gloom { position: absolute; inset: 0; background: linear-gradient(180deg, #e6e9f1, #d9deea); }
+  .doodle { position: absolute; font-size: 54px; opacity: 0.16; animation: bob 5s ease-in-out infinite alternate; }
+  @keyframes bob { from { transform: translateY(-14px) rotate(-6deg); } to { transform: translateY(14px) rotate(6deg); } }
+  #wipe { position: absolute; left: 960px; top: 540px; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; border-radius: 50%;
+    background: radial-gradient(circle, #8d8df0 0%, #5b5bd6 60%, #13a89e 100%); transform: scale(0); }
+
+  /* type */
+  .h1 { position: absolute; left: 0; right: 0; top: 74px; text-align: center; font-size: 92px; font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; }
+  .sub { position: absolute; left: 0; right: 0; text-align: center; font-size: 46px; font-weight: 800; color: var(--muted); }
+  .hot { color: var(--oops); }
+  .pri { color: var(--primary); }
+  .grad { background: linear-gradient(90deg, #5b5bd6, #13a89e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* scene 1 */
+  .bubble { position: absolute; background: #fff; border-radius: 34px; padding: 20px 34px; font-size: 40px; font-weight: 800; box-shadow: var(--shadow); white-space: nowrap; }
+  .bubble::after { content: ''; position: absolute; bottom: -16px; width: 34px; height: 34px; background: #fff; transform: rotate(45deg); border-radius: 6px; }
+  .bubble.l::after { right: 60px; } .bubble.r::after { left: 60px; }
+  .book { position: absolute; height: 74px; border-radius: 12px; display: flex; align-items: center; padding-left: 30px; color: #fff; font-size: 30px; font-weight: 900; letter-spacing: 2px; box-shadow: 0 6px 0 rgba(0,0,0,0.12); }
+  .book::after { content: ''; position: absolute; right: 18px; top: 12px; bottom: 12px; width: 26px; border-radius: 6px; background: rgba(255,255,255,0.75); }
+  .paper { position: absolute; width: 190px; height: 230px; background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 26px 22px; }
+  .paper i { display: block; height: 10px; border-radius: 5px; background: #d5dae6; margin-bottom: 16px; }
+  .caltile { position: absolute; width: 220px; background: #fff; border-radius: 26px; box-shadow: var(--shadow); overflow: hidden; text-align: center; }
+  .caltile b { display: block; background: var(--oops); color: #fff; font-size: 30px; font-weight: 900; padding: 8px 0; letter-spacing: 3px; }
+  .caltile span { display: block; font-size: 44px; font-weight: 900; padding: 20px 0 24px; line-height: 1.05; }
+  .wobble { animation: wobble 0.9s ease-in-out infinite alternate; transform-origin: 50% 90%; }
+  @keyframes wobble { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
+  .spin { animation: spin 1.1s linear infinite; transform-origin: 50% 50%; transform-box: view-box; }
+  .spin.slow { animation-duration: 6.6s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* scene 2 */
+  .way { position: absolute; top: 290px; width: 520px; height: 540px; background: #fff; border-radius: 40px; box-shadow: var(--shadow); padding: 44px 44px 0; }
+  .way .ico { font-size: 108px; line-height: 1; }
+  .way h3 { margin: 22px 0 6px; font-size: 54px; font-weight: 900; }
+  .way p { margin: 0; font-size: 34px; color: var(--muted); line-height: 1.3; }
+  .way .track { position: absolute; left: 44px; right: 44px; bottom: 110px; height: 22px; border-radius: 11px; background: var(--surface-2); overflow: hidden; }
+  .way .track i { display: block; height: 100%; width: 0; border-radius: 11px; background: var(--oops); }
+  .way .time { position: absolute; left: 44px; right: 44px; bottom: 40px; height: 50px; font-size: 36px; font-weight: 900; color: var(--oops); }
+  .way .time span { position: absolute; left: 56px; top: 0; opacity: 0; white-space: nowrap; }
+  .way .time svg { position: absolute; left: 0; top: 1px; }
+  .zzz { position: absolute; font-size: 80px; }
+
+  /* scene 3 */
+  .logo { display: inline-block; vertical-align: middle; }
+  .wordmark { font-size: 150px; font-weight: 900; letter-spacing: -3px; }
+  .spark { position: absolute; color: #f2c443; font-size: 70px; }
+
+  /* phone */
+  #phone { position: absolute; left: 190px; top: 64px; width: 468px; height: 952px; border-radius: 68px; background: #1d2433; padding: 16px;
+    box-shadow: 0 30px 80px rgba(40, 45, 110, 0.28), 0 4px 10px rgba(20, 30, 60, 0.2); }
+  #phone .glass { position: relative; width: 100%; height: 100%; border-radius: 54px; background: var(--bg); overflow: hidden; }
+  #phone .notch { position: absolute; left: 50%; top: 12px; width: 120px; height: 30px; margin-left: -60px; border-radius: 15px; background: #1d2433; z-index: 5; }
+  .screen { position: absolute; inset: 0 0 96px 0; padding: 66px 24px 0; opacity: 0; font-size: 23px; line-height: 1.4; }
+  .bar { display: flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 900; margin-bottom: 18px; }
+  .bar .back { color: var(--muted); font-size: 32px; line-height: 1; }
+  .dots { display: flex; gap: 6px; margin-bottom: 18px; }
+  .dots i { flex: 1; height: 8px; border-radius: 4px; background: var(--border); }
+  .dots i.on { background: var(--primary); }
+  .card { background: #fff; border-radius: 26px; box-shadow: 0 2px 4px rgba(20,30,60,0.05), 0 8px 22px rgba(20,30,60,0.07); padding: 22px; }
+  .tag { display: inline-block; border-radius: 999px; padding: 4px 14px; font-size: 19px; font-weight: 900; }
+  .btn { background: var(--primary); color: #fff; border-radius: 20px; text-align: center; padding: 16px; font-size: 25px; font-weight: 900; }
+  .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: #fff; border-top: 2px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 14px 10px; }
+  .nav .it { position: relative; width: 84px; height: 62px; display: grid; place-items: center; color: #9aa3b5; }
+  .nav .it .pill { position: absolute; inset: 0; border-radius: 22px; background: var(--primary-soft); opacity: 0; }
+  .nav .it svg { position: relative; }
+  .nav .it .on { position: absolute; inset: 0; display: grid; place-items: center; color: var(--primary); opacity: 0; }
+  .navlabel { position: absolute; bottom: 112px; width: 150px; margin-left: -75px; text-align: center; background: var(--primary); color: #fff; border-radius: 18px; padding: 8px 0; font-size: 26px; font-weight: 900; opacity: 0; z-index: 6; }
+  .tap { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: rgba(91, 91, 214, 0.28); border: 4px solid rgba(91, 91, 214, 0.55); opacity: 0; z-index: 7; }
+
+  .flip { position: relative; height: 330px; perspective: 1400px; }
+  .flip .face { position: absolute; inset: 0; border-radius: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 26px; backface-visibility: hidden; box-shadow: 0 8px 22px rgba(20,30,60,0.10); }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+  .cal .d { position: relative; aspect-ratio: 1; border-radius: 14px; background: var(--surface-2); display: grid; place-items: center; font-size: 19px; color: var(--muted); font-weight: 800; }
+  .cal .hd { text-align: center; font-size: 17px; color: var(--muted); font-weight: 900; }
+  .cal .d .ok { position: absolute; inset: 0; border-radius: 14px; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 22px; opacity: 0; }
+  .cal .d .ex { position: absolute; inset: 0; border-radius: 14px; background: var(--gold); display: grid; place-items: center; font-size: 26px; opacity: 0; }
+  .row { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 20px; padding: 15px 16px; margin-bottom: 11px; box-shadow: 0 2px 6px rgba(20,30,60,0.05); font-size: 22px; font-weight: 800; line-height: 1.2; }
+  .row .n { flex: none; width: 40px; height: 40px; border-radius: 13px; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 19px; font-weight: 900; }
+  .row .t { flex: 1; }
+  .bm { position: relative; flex: none; width: 30px; height: 36px; }
+  .bm svg { position: absolute; inset: 0; }
+
+  /* right panel */
+  .panel { position: absolute; left: 790px; top: 0; width: 1040px; height: 1080px; display: flex; flex-direction: column; justify-content: center; opacity: 0; }
+  .kick { align-self: flex-start; border-radius: 999px; padding: 10px 30px; font-size: 34px; font-weight: 900; letter-spacing: 4px; margin-bottom: 30px; }
+  .panel h2 { margin: 0; font-size: 92px; font-weight: 900; line-height: 1.08; letter-spacing: -1.5px; }
+  .panel p { margin: 30px 0 0; font-size: 46px; color: var(--muted); font-weight: 800; line-height: 1.3; }
+  .chip { display: flex; align-items: center; gap: 22px; background: #fff; border-radius: 30px; box-shadow: var(--shadow); padding: 20px 32px; margin-top: 24px; font-size: 40px; font-weight: 800; align-self: flex-start; }
+  .chip .e { font-size: 52px; line-height: 1; }
+  .chip small { color: var(--muted); font-size: 40px; font-weight: 800; }
+
+  /* outro */
+  .url { position: absolute; left: 50%; top: 790px; transform: translateX(-50%); }
+  .url span { display: block; background: var(--primary); color: #fff; border-radius: 999px; padding: 22px 70px; font-size: 68px; font-weight: 900; box-shadow: 0 16px 40px rgba(91, 91, 214, 0.35); }
+  .conf { position: absolute; left: 960px; top: 360px; width: 22px; height: 30px; border-radius: 6px; opacity: 0; }
+  .legal { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font-size: 25px; color: var(--muted); font-weight: 700; }
+
+  /* preview player chrome (not part of the video) */
+  #play { position: fixed; inset: 0; display: flex; flex-wrap: wrap; gap: 14px; align-content: center; justify-content: center; background: rgba(14, 16, 23, 0.55); z-index: 99; }
+  #play button { background: #fff; color: #1d2433; font: 800 22px 'Nunito', system-ui, sans-serif; border: 0; border-radius: 999px; padding: 16px 34px; cursor: pointer; }
+  .capture #play { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bgl">
+    <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i>
+    <span class="doodle" style="left:90px;top:860px">⚗️</span>
+    <span class="doodle" style="left:1760px;top:90px;animation-delay:-2s">📐</span>
+    <span class="doodle" style="left:1700px;top:900px;animation-delay:-1s">🧬</span>
+    <span class="doodle" style="left:120px;top:110px;animation-delay:-3s">📊</span>
+    <div id="gloom"></div>
+  </div>
+
+  <!-- 1 · the pain (0–6 s) -->
+  <div class="scene" id="s1">
+    <div class="h1" id="s1h">AP classes are <span class="hot">tough.</span></div>
+    <div class="abs" id="clock1" style="left:1500px;top:250px">
+      <svg width="170" height="170" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#1d2433" stroke-width="6"/><g class="spin slow"><path d="M50 50V26" stroke="#1d2433" stroke-width="6" stroke-linecap="round"/></g><g class="spin"><path d="M50 50V16" stroke="#c9573a" stroke-width="4" stroke-linecap="round"/></g><circle cx="50" cy="50" r="5" fill="#1d2433"/></svg>
+    </div>
+    <div class="book" id="bk1" style="left:300px;top:806px;width:400px;background:#5b5bd6">UNITS 1–3</div>
+    <div class="book" id="bk2" style="left:326px;top:728px;width:370px;background:#13a89e">UNITS 4–6</div>
+    <div class="book" id="bk3" style="left:290px;top:650px;width:390px;background:#f2994a">UNITS 7–9</div>
+    <div class="book" id="bk4" style="left:330px;top:572px;width:340px;background:#8e44ad">FORMULAS</div>
+    <div class="paper" id="pp1" style="left:1250px;top:640px;transform:rotate(-8deg)"><i></i><i style="width:70%"></i><i></i><i style="width:55%"></i><i></i><i style="width:80%"></i></div>
+    <div class="paper" id="pp2" style="left:1390px;top:670px"><i style="width:60%"></i><i></i><i style="width:85%"></i><i></i><i style="width:45%"></i><i></i></div>
+    <div class="caltile" id="cal1" style="left:1560px;top:560px"><b>MAY</b><span>AP<br/>EXAM</span></div>
+    <div class="abs" id="kid" style="left:740px;top:330px">
+      <svg width="440" height="560" viewBox="0 0 440 560">
+        <path d="M70 560 Q70 380 220 380 Q370 380 370 560Z" fill="#8d8df0"/>
+        <path d="M185 380 Q220 420 255 380" fill="none" stroke="#5b5bd6" stroke-width="10" stroke-linecap="round"/>
+        <g class="wobble">
+          <path d="M108 190 Q96 60 220 56 Q344 60 332 190 Q300 120 220 118 Q140 120 108 190Z" fill="#2c3242"/>
+          <circle cx="220" cy="220" r="118" fill="#f1c7a3"/>
+          <path d="M104 200 Q110 92 220 88 Q330 92 336 200 Q300 138 220 140 Q140 138 104 200Z" fill="#2c3242"/>
+          <path d="M150 196 l34 14 M290 196 l-34 14" stroke="#2c3242" stroke-width="9" stroke-linecap="round"/>
+          <path d="M152 236 l26 -12 M152 224 l26 12 M262 224 l26 12 M262 236 l26 -12" stroke="#2c3242" stroke-width="8" stroke-linecap="round"/>
+          <path d="M184 290 q9 -12 18 0 q9 12 18 0 q9 -12 18 0" fill="none" stroke="#2c3242" stroke-width="8" stroke-linecap="round"/>
+          <ellipse cx="140" cy="266" rx="18" ry="11" fill="#ff8f8f" opacity=".5"/><ellipse cx="300" cy="266" rx="18" ry="11" fill="#ff8f8f" opacity=".5"/>
+          <path id="sweat" d="M352 150 q-18 30 0 40 q18 -10 0 -40z" fill="#5fb0f0"/>
+        </g>
+      </svg>
+    </div>
+    <div class="abs" style="left:560px;top:880px;width:800px;height:26px;border-radius:13px;background:#c3c9d8"></div>
+    <div class="bubble l" id="bub1" style="left:330px;top:300px">Where do I even start?</div>
+    <div class="bubble r" id="bub2" style="left:1150px;top:430px">Test on Friday! 😰</div>
+    <div class="sub" id="s1sub" style="top:950px">Big units. Hard concepts. Never enough time.</div>
+  </div>
+
+  <!-- 2 · the slow old ways (6–13 s) -->
+  <div class="scene" id="s2">
+    <div class="h1" id="s2h">The usual ways to study take <span class="hot">forever.</span></div>
+    <div class="way" style="left:130px"><div class="ico">📚</div><h3>Textbooks</h3><p>Pages and pages before you reach the point.</p>
+      <div class="track"><i></i></div><div class="time"><svg width="44" height="44" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#c9573a" stroke-width="10"/><g class="spin"><path d="M50 50V22" stroke="#c9573a" stroke-width="10" stroke-linecap="round"/></g></svg><span>30 min…</span><span>1 hour…</span><span>2 hours…</span><span>still reading…</span></div></div>
+    <div class="way" style="left:700px"><div class="ico">🎬</div><h3>Long videos</h3><p>Hard to find the one part you actually need.</p>
+      <div class="track"><i></i></div><div class="time"><svg width="44" height="44" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#c9573a" stroke-width="10"/><g class="spin"><path d="M50 50V22" stroke="#c9573a" stroke-width="10" stroke-linecap="round"/></g></svg><span>20 min…</span><span>45 min…</span><span>1 hour…</span><span>still watching…</span></div></div>
+    <div class="way" style="left:1270px"><div class="ico">📝</div><h3>Piles of notes</h3><p>Scattered everywhere, and easy to forget.</p>
+      <div class="track"><i></i></div><div class="time"><svg width="44" height="44" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#c9573a" stroke-width="10"/><g class="spin"><path d="M50 50V22" stroke="#c9573a" stroke-width="10" stroke-linecap="round"/></g></svg><span>re-reading…</span><span>and again…</span><span>and again…</span><span>still re-reading…</span></div></div>
+    <div class="zzz" id="zzz" style="left:1100px;top:250px">💤</div>
+    <div class="sub" id="s2sub" style="top:900px;font-size:54px;color:var(--text)">Hours go in. <span class="hot">Not much sticks.</span></div>
+  </div>
+
+  <div id="wipe"></div>
+
+  <!-- 3 · meet the app (13–18 s) -->
+  <div class="scene" id="s3">
+    <div class="abs" id="bear3" style="left:820px;top:50px"></div>
+    <span class="spark" id="sp1" style="left:650px;top:170px">✦</span>
+    <span class="spark" id="sp2" style="left:1210px;top:130px;font-size:50px">✦</span>
+    <span class="spark" id="sp3" style="left:1270px;top:330px;font-size:40px">✦</span>
+    <div class="abs" style="left:0;right:0;top:440px;text-align:center;white-space:nowrap">
+      <span class="logo" id="logo3"><svg width="150" height="150" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#5b5bd6"/><path d="M26 12h12v4h-2v12l11 18a4 4 0 0 1-3.4 6H20.4A4 4 0 0 1 17 46l11-18V16h-2z" fill="#fff"/><path d="M22 40h20l3 6a2 2 0 0 1-1.7 3H20.7a2 2 0 0 1-1.7-3z" fill="#13a89e"/><circle cx="29" cy="44" r="2" fill="#fff"/><circle cx="35" cy="42" r="1.4" fill="#fff"/></svg></span>
+      <span class="wordmark logo" id="word3" style="margin-left:34px">AP Learning</span>
+    </div>
+    <div class="abs" id="tag3" style="left:0;right:0;top:668px;text-align:center;font-size:88px;font-weight:900;letter-spacing:-1px">From <span style="color:var(--warm)">“huh?”</span> to <span class="grad">AP expert</span></div>
+    <div class="sub" id="sub3" style="top:820px;font-size:52px">Tough courses, one small step at a time.</div>
+  </div>
+
+  <!-- 4–6 · the app in action (18–48.5 s) -->
+  <div class="scene" id="s4">
+    <div id="phone"><div class="glass">
+      <div class="notch"></div>
+
+      <!-- lesson: real-life hook -->
+      <div class="screen" id="scA">
+        <div class="bar"><span class="back">‹</span> The Ideal Gas Law</div>
+        <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="card">
+          <span class="tag" style="background:var(--warm-soft);color:#b8621a">🌍 Real life</span>
+          <div style="margin:14px 0 6px;text-align:center">
+            <svg width="330" height="170" viewBox="0 0 330 170">
+              <path d="M20 120 q10 -46 60 -52 l40 -40 h96 q34 6 52 40 q36 6 42 52 z" fill="#5b5bd6"/>
+              <path d="M126 36 h84 q24 6 38 32 h-150z" fill="#cfe8fb"/>
+              <circle cx="88" cy="124" r="26" fill="#1d2433"/><circle cx="88" cy="124" r="11" fill="#dfe3ec"/>
+              <circle cx="246" cy="124" r="26" fill="#1d2433"/><circle cx="246" cy="124" r="11" fill="#dfe3ec"/>
+              <circle id="airbag" cx="176" cy="60" r="34" fill="#fff" stroke="#f2994a" stroke-width="5" style="transform-box:fill-box;transform-origin:20% 60%"/>
+            </svg>
+          </div>
+          <div>A car airbag inflates in about <b>30 milliseconds</b>. Engineers work out exactly how much gas it needs with one equation:</div>
+          <div id="pv" style="margin-top:12px;text-align:center;font-size:48px;font-weight:900;color:var(--primary)">PV = nRT</div>
+        </div>
+        <div class="btn" style="margin-top:18px">Next →</div>
+      </div>
+
+      <!-- review: flashcard -->
+      <div class="screen" id="scB">
+        <div class="bar">🧠 Today's review</div>
+        <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        <div class="flip">
+          <div class="face" id="ffront" style="background:#fff"><span class="tag" style="background:var(--primary-soft);color:var(--primary)">Question</span><div style="font-size:32px;font-weight:900;margin-top:18px;line-height:1.25">In PV = nRT, what unit must T be in?</div><div style="color:var(--muted);margin-top:16px">Tap to flip</div></div>
+          <div class="face" id="fback" style="background:var(--accent);color:#fff"><span class="tag" style="background:rgba(255,255,255,0.25)">Answer</span><div style="font-size:54px;font-weight:900;margin-top:10px">Kelvin</div><div style="font-size:30px;font-weight:800">K = °C + 273.15</div></div>
+        </div>
+        <div class="card" id="hack" style="margin-top:18px;background:var(--hack-soft);box-shadow:none"><span class="tag" style="background:#fff;color:var(--hack)">🪄 Trick</span><div style="margin-top:8px;font-weight:800">See °C in a gas problem? Convert to kelvin first.</div></div>
+        <div style="display:flex;gap:12px;margin-top:18px"><div class="btn" style="flex:1;background:var(--surface-2);color:var(--muted)">Again</div><div class="btn" id="gotit" style="flex:1;background:var(--good)">Got it ✓</div></div>
+      </div>
+
+      <!-- study plan -->
+      <div class="screen" id="scC">
+        <div class="bar">📅 My study plan</div>
+        <div class="card" style="display:flex;align-items:center;gap:14px;padding:16px 20px;margin-bottom:16px"><span style="font-size:40px">🎯</span><div style="line-height:1.25"><div style="font-weight:900;font-size:25px">AP exam in May</div><div style="color:var(--muted)">4 short sessions a week</div></div></div>
+        <div class="cal" id="calgrid"></div>
+        <div class="card" id="today" style="margin-top:16px;display:flex;align-items:center;gap:14px;padding:16px 20px;border:3px solid var(--accent)"><span style="font-size:36px">⏰</span><div style="line-height:1.25"><div style="color:var(--accent);font-weight:900;font-size:19px;letter-spacing:1px">TODAY</div><div style="font-weight:900;white-space:nowrap">Ideal Gas Law · 9 min</div></div></div>
+      </div>
+
+      <!-- bookmarks -->
+      <div class="screen" id="scD">
+        <div class="bar"><span class="back">‹</span> Unit 3 · Lessons</div>
+        <div class="row"><span class="n">⚗️</span><span class="t">Solids, Liquids &amp; Gases</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="row"><span class="n">⚗️</span><span class="t">Solutions &amp; Molarity</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="row" id="bmrow"><span class="n">⚗️</span><span class="t">The Ideal Gas Law</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg><svg id="bmon" viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="#f2c443" stroke="#e0a400" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="row"><span class="n">⚗️</span><span class="t">Kinetic Molecular Theory</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="row"><span class="n">⚗️</span><span class="t">Solubility: Like Dissolves Like</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="row"><span class="n">⚗️</span><span class="t">Beer–Lambert Law</span><span class="bm"><svg viewBox="0 0 30 36"><path d="M5 3h20v29l-10-8-10 8z" fill="none" stroke="#b7bfce" stroke-width="3.4" stroke-linejoin="round"/></svg></span></div>
+        <div class="abs" id="toast" style="left:24px;right:24px;bottom:18px;background:#1d2433;color:#fff;border-radius:20px;padding:16px 20px;font-weight:800;text-align:center">🔖 Saved to Review → Bookmarks</div>
+      </div>
+
+      <!-- notes -->
+      <div class="screen" id="scE">
+        <div class="bar">📝 My notes</div>
+        <div class="card" style="min-height:300px">
+          <div style="color:var(--muted);font-size:20px;font-weight:900;letter-spacing:1px">THE IDEAL GAS LAW</div>
+          <div style="font-size:30px;font-weight:800;line-height:1.35;margin-top:12px">
+            <div class="type" id="ty1" style="white-space:nowrap">T must be in kelvin!</div>
+            <div class="type" id="ty2" style="white-space:nowrap">Add 273 to °C first.</div>
+            <div class="type" id="ty3" style="white-space:nowrap">Ask about R Monday 🙋</div>
+          </div>
+          <div id="saved" style="margin-top:22px;color:var(--good);font-weight:900">✓ Saved</div>
+        </div>
+        <div class="card" style="margin-top:14px;opacity:.75"><div style="color:var(--muted);font-size:20px;font-weight:900;letter-spacing:1px">INTERMOLECULAR FORCES</div><div style="margin-top:6px;font-weight:800">Geckos = weak forces, lots of them</div></div>
+        <div class="card" style="margin-top:14px;opacity:.5"><div style="color:var(--muted);font-size:20px;font-weight:900;letter-spacing:1px">SOLUTIONS &amp; MOLARITY</div><div style="margin-top:6px;font-weight:800">M = moles ÷ liters</div></div>
+      </div>
+
+      <!-- home -->
+      <div class="screen" id="scF">
+        <div class="bar" style="font-size:30px">Welcome back 👋</div>
+        <div class="card" style="background:var(--primary);color:#fff"><div style="opacity:.85;font-weight:900;font-size:19px;letter-spacing:1px">NEXT LESSON</div><div style="font-size:30px;font-weight:900;margin:4px 0 14px">The Ideal Gas Law</div><div class="btn" style="background:#fff;color:var(--primary)">Continue →</div></div>
+        <div style="display:flex;gap:12px;margin-top:14px"><div class="card" style="flex:1;text-align:center"><div style="font-size:38px">🔥</div><div style="font-weight:900">Streak</div></div><div class="card" style="flex:1;text-align:center"><div style="font-size:38px">⭐</div><div style="font-weight:900">Level up</div></div></div>
+        <div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px"><span style="font-size:36px">🧠</span><div style="font-weight:900">Today's review is ready</div></div>
+        <div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px"><span style="font-size:36px">📅</span><div style="font-weight:900">This week's plan</div></div>
+      </div>
+
+      <div class="nav" id="nav"></div>
+      <div class="navlabel" style="left:13.5%">Home</div><div class="navlabel" style="left:37.8%">Learn</div><div class="navlabel" style="left:62.2%">Review</div><div class="navlabel" style="left:86.5%">More</div>
+      <div class="tap" id="tap1"></div><div class="tap" id="tap2"></div><div class="tap" id="tap3"></div>
+    </div></div>
+
+    <div class="panel" id="pA"><span class="kick" style="background:var(--warm-soft);color:#b8621a">LEARN</span>
+      <h2>Bite-size lessons that start with <span class="pri">real life</span></h2>
+      <div class="chip"><span class="e">🚗</span>Airbags <small>→ the ideal gas law</small></div>
+      <div class="chip"><span class="e">🦎</span>Geckos on ceilings <small>→ molecular forces</small></div>
+      <div class="chip"><span class="e">💎</span>Diamond vs. pencil <small>→ structure</small></div>
+    </div>
+    <div class="panel" id="pB"><span class="kick" style="background:var(--hack-soft);color:var(--hack)">REMEMBER</span>
+      <h2>Simple to learn.<br/>Easy to <span class="pri">memorize.</span></h2>
+      <div class="chip"><span class="e">🪄</span>Teacher tricks and common traps</div>
+      <div class="chip"><span class="e">🧠</span>Flashcards return before you forget</div>
+      <div class="chip"><span class="e">🏆</span>Practice built like the real exam</div>
+    </div>
+    <div class="panel" id="pC"><span class="kick" style="background:var(--accent-soft);color:#0c7d75">PLAN</span>
+      <h2>Set a <span class="pri">schedule</span> that fits your week</h2>
+      <p>Pick your exam date. Get a day-by-day plan, right in your calendar.</p>
+    </div>
+    <div class="panel" id="pD"><span class="kick" style="background:#fff3cf;color:#9a7200">BOOKMARK</span>
+      <h2><span class="pri">Bookmark</span> tricky topics</h2>
+      <p>One tap, and they wait for you when it's time to revise.</p>
+    </div>
+    <div class="panel" id="pE"><span class="kick" style="background:var(--good-soft);color:var(--good)">NOTES</span>
+      <h2>Add your <span class="pri">own notes</span></h2>
+      <p>On any lesson. All in one place for revision later.</p>
+    </div>
+    <div class="panel" id="pF"><span class="kick" style="background:var(--primary-soft);color:var(--primary)">SIMPLE</span>
+      <h2>Easy to navigate.<br/><span class="pri">Four buttons.</span></h2>
+      <p>Everything is one tap away, on any phone.</p>
+    </div>
+  </div>
+
+  <!-- 7 · free to start (48.5–55 s) -->
+  <div class="scene" id="s7">
+    <div id="confetti"></div>
+    <div class="abs" id="bear7" style="left:835px;top:36px"></div>
+    <div class="abs" id="free7" style="left:0;right:0;top:372px;text-align:center;font-size:190px;font-weight:900;letter-spacing:-5px;line-height:1.1"><span class="grad">Free to start</span></div>
+    <div class="sub" id="sub7" style="top:630px;font-size:54px">One course free. No card needed.</div>
+    <div class="url" id="url7"><span>aplearning.app</span></div>
+    <div class="legal" id="legal7">AP® is a trademark of College Board, which is not affiliated with this app.</div>
+  </div>
+</div>
+
+<div id="play"><button data-m="ukulele">▶ Sunny ukulele</button><button data-m="bounce">▶ Bouncy pop</button><button data-m="lofi">▶ Calm lo-fi</button></div>
+<audio id="music" preload="auto"></audio>
+
+<script>
+const DUR = 55000
+const $ = (s) => document.querySelector(s)
+const $$ = (s) => [...document.querySelectorAll(s)]
+const BACK = 'cubic-bezier(.34,1.56,.64,1)'
+const OUT = 'cubic-bezier(.16,1,.3,1)'
+
+// Storyboard seconds -> film seconds. The storyboard below was written as a brisk 32 s cut; the film gives
+// every scene more time to read. Each pair is a scene cut: [storyboard, film].
+const CUTS = [[0, 0], [4, 6], [8, 13], [12, 18], [15, 24], [18, 30], [21, 35], [23.5, 39.5], [26, 44], [28, 48.5], [32, 55]]
+function w(t) {
+  let i = 1
+  while (i < CUTS.length - 1 && t > CUTS[i][0]) i++
+  const [a, A] = CUTS[i - 1], [b, B] = CUTS[i]
+  return A + ((t - a) * (B - A)) / (b - a)
+}
+const SNAP = 1.2 // how much a single move (a pop, a slide) is slowed; holds between moves take up the rest
+
+/** One animation over the whole film. frames: [storyboard seconds, css props, easing to the next frame].
+ *  A frame that repeats the previous frame's props is a hold and lands on the stretched clock; a frame that
+ *  changes them within a second is a move and keeps its snap. raw = times are already film seconds. */
+function at(target, frames, raw = false) {
+  const els = typeof target === 'string' ? $$(target) : [target]
+  let f = frames.slice().sort((a, b) => a[0] - b[0])
+  if (!raw) {
+    let prevNew = 0
+    f = f.map(([t, props, easing], i) => {
+      const gap = i ? t - f[i - 1][0] : 0
+      const move = i && gap <= 1 && JSON.stringify(props) !== JSON.stringify(f[i - 1][1])
+      prevNew = move ? prevNew + gap * SNAP : w(t)
+      return [prevNew, props, easing]
+    })
+  }
+  const kfs = []
+  if (f[0][0] > 0) kfs.push({ ...f[0][1], offset: 0 })
+  for (const [t, props, easing] of f) kfs.push({ ...props, offset: Math.min(1, (t * 1000) / DUR), ...(easing ? { easing } : {}) })
+  if (f.at(-1)[0] * 1000 < DUR) kfs.push({ ...f.at(-1)[1], offset: 1 })
+  for (const el of els) el.animate(kfs, { duration: DUR, fill: 'both' })
+}
+const show = (s, t0, t1, fin = 0.35, fout = 0.3) => at(s, [[t0, { opacity: 0 }], [t0 + fin, { opacity: 1 }], [t1 - fout, { opacity: 1 }], [t1, { opacity: 0 }]])
+const pop = (s, t, d = 0.5) => at(s, [[t, { opacity: 0, transform: 'scale(.4)' }, BACK], [t + d, { opacity: 1, transform: 'scale(1)' }]])
+const rise = (s, t, dy = 50, d = 0.6) => at(s, [[t, { opacity: 0, transform: `translateY(${dy}px)` }, OUT], [t + d, { opacity: 1, transform: 'translateY(0px)' }]])
+const slide = (s, t, dx = 80, d = 0.6) => at(s, [[t, { opacity: 0, transform: `translateX(${dx}px)` }, OUT], [t + d, { opacity: 1, transform: 'translateX(0px)' }]])
+const drop = (s, t, rot = 0) => at(s, [[t, { opacity: 0, transform: `translateY(-700px) rotate(${rot - 14}deg)` }, 'cubic-bezier(.5,0,.9,.6)'], [t + 0.02, { opacity: 1, transform: `translateY(-690px) rotate(${rot - 14}deg)` }, 'cubic-bezier(.5,0,.9,.6)'], [t + 0.36, { opacity: 1, transform: `translateY(0px) rotate(${rot}deg)` }, 'ease-out'], [t + 0.46, { opacity: 1, transform: `translateY(-22px) rotate(${rot + 2}deg)` }, 'ease-in'], [t + 0.56, { opacity: 1, transform: `translateY(0px) rotate(${rot}deg)` }]])
+const type = (s, t0, t1, n = 22) => at(s, [[t0, { clipPath: 'inset(0 100% 0 0)' }, `steps(${n}, end)`], [t1, { clipPath: 'inset(0 0% 0 0)' }]])
+const tap = (s, x, y, t) => { $(s).style.left = x + 'px'; $(s).style.top = y + 'px'; at(s, [[t - 0.25, { opacity: 0, transform: 'scale(1.5)' }, 'ease-out'], [t, { opacity: 1, transform: 'scale(.7)' }, 'ease-out'], [t + 0.35, { opacity: 0, transform: 'scale(1.3)' }]]) }
+
+// The study-buddy bear (Bunsen), ported from app/src/components/Mascot.tsx.
+function bear(mood, size) {
+  const fur = '#b9773f', line = '#6b3f1d', ear = '#f0b98a', muz = '#f6dcb6', nose = '#3b2314'
+  const arm = (side) => { const sx = 100 + side * 36, px = 100 + side * 76; return `<path d="M${sx} 176 L${px} 124" stroke="${line}" stroke-width="30" stroke-linecap="round"/><path d="M${sx} 176 L${px} 124" stroke="${fur}" stroke-width="22" stroke-linecap="round"/><circle cx="${px}" cy="122" r="9" fill="${ear}" opacity=".9"/>` }
+  const paw = (cx) => `<circle cx="${cx}" cy="186" r="15" fill="${fur}" stroke="${line}" stroke-width="4"/>`
+  const cheer = mood === 'cheer'
+  return `<svg viewBox="0 -8 200 262" width="${size}" height="${(size * 262) / 200}" style="overflow:visible">
+    <ellipse cx="100" cy="204" rx="58" ry="46" fill="${fur}" stroke="${line}" stroke-width="4"/><ellipse cx="100" cy="208" rx="34" ry="30" fill="${muz}"/>
+    <path d="M94 180 h12 v9 l10 17 q2 4 -3 4 h-26 q-5 0 -3 -4 l10 -17z" fill="#fff" stroke="${line}" stroke-width="2.5"/><path d="M88 200 h24 l3 6 q1 3 -3 3 h-24 q-4 0 -3 -3z" fill="#3cc7bc"/>
+    ${cheer ? arm(-1) + arm(1) : paw(56) + paw(144)}
+    ${[52, 148].map((x) => `<circle cx="${x}" cy="46" r="26" fill="${fur}" stroke="${line}" stroke-width="4"/><circle cx="${x}" cy="46" r="14" fill="${ear}"/>`).join('')}
+    <ellipse cx="100" cy="98" rx="72" ry="64" fill="${fur}" stroke="${line}" stroke-width="4"/>
+    ${cheer ? `<g fill="none" stroke="${nose}" stroke-width="4.5" stroke-linecap="round"><path d="M63 100 Q72 89 81 100"/><path d="M119 100 Q128 89 137 100"/></g>` : [72, 128].map((x) => `<circle cx="${x}" cy="97" r="8.5" fill="${nose}"/><circle cx="${x + 3}" cy="94" r="3" fill="#fff"/>`).join('')}
+    <ellipse cx="52" cy="118" rx="11" ry="7" fill="#ff8f8f" opacity=".5"/><ellipse cx="148" cy="118" rx="11" ry="7" fill="#ff8f8f" opacity=".5"/>
+    <ellipse cx="100" cy="124" rx="30" ry="22" fill="${muz}"/><path d="M90 113 Q100 107 110 113 Q107 122 100 123 Q93 122 90 113Z" fill="${nose}"/><ellipse cx="97" cy="112" rx="3.5" ry="2" fill="#fff" opacity=".55"/>
+    ${cheer ? `<path d="M100 123 L100 128" stroke="${nose}" stroke-width="3.5" stroke-linecap="round"/><path d="M87 129 Q100 148 113 129 Z" fill="#7a2e2e" stroke="${nose}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="100" cy="138" rx="6" ry="4" fill="#ff8fa0"/>` : `<g fill="none" stroke="${nose}" stroke-width="3.5" stroke-linecap="round"><path d="M100 123 L100 129"/><path d="M88 129 Q94 136 100 129 Q106 136 112 129"/></g>`}
+    <path d="M31 84 Q100 30 169 84" fill="none" stroke="#3d4a5c" stroke-width="7" stroke-linecap="round"/><path d="M96 60 h8" stroke="#3d4a5c" stroke-width="6"/>
+    ${[80, 120].map((x) => `<circle cx="${x}" cy="60" r="16" fill="#a8e1f5" stroke="#3d4a5c" stroke-width="5"/><path d="M${x - 8} 56 q4 -6 10 -6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('')}
+  </svg>`
+}
+$('#bear3').innerHTML = bear('happy', 280)
+$('#bear7').innerHTML = bear('cheer', 250)
+
+// bottom menu: Home / Learn / Review / More
+const ICONS = [
+  '<path d="M4 13 16 3l12 10v14a2 2 0 0 1-2 2h-6v-9h-8v9H6a2 2 0 0 1-2-2z"/>',
+  '<path d="M3 6c5-2 9-1 13 2 4-3 8-4 13-2v19c-5-2-9-1-13 2-4-3-8-4-13-2z"/><path d="M16 8v19"/>',
+  '<rect x="4" y="9" width="19" height="19" rx="4"/><path d="M9 5h15a4 4 0 0 1 4 4v15"/>',
+  '<circle cx="8" cy="8" r="3.4"/><circle cx="24" cy="8" r="3.4"/><circle cx="8" cy="24" r="3.4"/><circle cx="24" cy="24" r="3.4"/>',
+]
+const svgIcon = (p) => `<svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${p}</svg>`
+$('#nav').innerHTML = ICONS.map((p) => `<div class="it"><i class="pill"></i>${svgIcon(p)}<span class="on">${svgIcon(p)}</span></div>`).join('')
+// which tab is lit, and when: [tab, from, to]
+const NAV = [[1, 12, 15], [2, 15, 18], [0, 18, 21], [1, 21, 23.5], [2, 23.5, 26.1], [0, 26.1, 26.6], [1, 26.6, 27.05], [2, 27.05, 27.5], [3, 27.5, 28.2]]
+for (let i = 0; i < 4; i++) {
+  const fr = [[0, { opacity: 0 }]]
+  for (const [tab, a, b] of NAV) if (tab === i) fr.push([a, { opacity: 0 }], [a + 0.12, { opacity: 1 }], [b, { opacity: 1 }], [b + 0.12, { opacity: 0 }])
+  at($$('#nav .pill')[i], fr)
+  at($$('#nav .on')[i], fr)
+}
+
+// calendar
+const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+const STUDY = [0, 2, 3, 5] // four sessions a week
+$('#calgrid').innerHTML = DAYS.map((d) => `<div class="hd">${d}</div>`).join('') +
+  Array.from({ length: 28 }, (_, i) => `<div class="d">${i + 1}${i === 27 ? '<span class="ex">🎯</span>' : STUDY.includes(i % 7) ? '<span class="ok">✓</span>' : ''}</div>`).join('')
+
+// confetti (seeded, so every render is identical)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646
+const CONF = ['#5b5bd6', '#13a89e', '#f2994a', '#f2c443', '#c58ee0', '#5fb0f0', '#ff8fa0']
+$('#confetti').innerHTML = Array.from({ length: 90 }, (_, i) => `<i class="conf" style="background:${CONF[i % CONF.length]}${i % 3 === 0 ? ';border-radius:50%;height:22px' : ''}"></i>`).join('')
+
+// ------------------------------------------------------------------ timeline
+at('#gloom', [[0, { opacity: 1 }], [7.9, { opacity: 1 }], [8.1, { opacity: 0 }]])
+at('.doodle', [[7.9, { opacity: 0 }], [8.6, { opacity: 0.16 }]])
+
+// 1 · tough classes
+show('#s1', 0, 4.15, 0.3, 0.3)
+rise('#s1h', 0.15, 60)
+pop('#kid', 0.3, 0.55)
+drop('#bk1', 0.7); drop('#bk2', 0.95); drop('#bk3', 1.2); drop('#bk4', 1.45, -3)
+pop('#clock1', 1.0)
+drop('#pp1', 1.55, -8); drop('#pp2', 1.8, 6)
+pop('#bub1', 1.7, 0.45)
+at('#cal1', [[2.15, { opacity: 0, transform: 'scale(.4) rotate(0deg)' }, BACK], [2.6, { opacity: 1, transform: 'scale(1) rotate(6deg)' }], [2.75, { opacity: 1, transform: 'scale(1.08) rotate(-4deg)' }], [2.9, { opacity: 1, transform: 'scale(1) rotate(5deg)' }]])
+pop('#bub2', 2.35, 0.45)
+at('#sweat', [[0.8, { opacity: 0, transform: 'translateY(-10px)' }], [1.1, { opacity: 1, transform: 'translateY(0px)' }], [2.0, { opacity: 0, transform: 'translateY(90px)' }], [2.2, { opacity: 0, transform: 'translateY(-10px)' }], [2.5, { opacity: 1, transform: 'translateY(0px)' }], [3.4, { opacity: 0, transform: 'translateY(90px)' }], [3.6, { opacity: 0, transform: 'translateY(-10px)' }], [3.9, { opacity: 1, transform: 'translateY(0px)' }], [4.8, { opacity: 0, transform: 'translateY(90px)' }]])
+rise('#s1sub', 2.55, 40)
+
+// 2 · slow old ways
+show('#s2', 3.95, 8.05, 0.35, 0.2)
+rise('#s2h', 4.05, 60)
+$$('.way').forEach((w, i) => {
+  const t = 4.35 + i * 0.3
+  at(w, [[t, { opacity: 0, transform: 'translateY(120px) rotate(0deg)' }, OUT], [t + 0.6, { opacity: 1, transform: `translateY(0px) rotate(${[-1.5, 1, -0.8][i]}deg)` }]])
+  at(w.querySelector('.track i'), [[t + 0.4, { width: '0%' }, 'ease-out'], [8, { width: `${[13, 19, 9][i]}%` }]])
+  w.querySelectorAll('.time span').forEach((sp, k) => {
+    const a = t + 0.5 + k * 0.72, b = k === 3 ? 9 : a + 0.72
+    at(sp, [[a - 0.01, { opacity: 0 }], [a + 0.1, { opacity: 1 }], [b - 0.1, { opacity: 1 }], [b, { opacity: 0 }]])
+  })
+})
+at('#zzz', [[6.1, { opacity: 0, transform: 'translate(0px,40px) scale(.5)' }, 'ease-out'], [6.6, { opacity: 1, transform: 'translate(20px,0px) scale(1)' }], [7.9, { opacity: 0.9, transform: 'translate(50px,-50px) scale(1.15)' }]])
+pop('#s2sub', 6.5, 0.5)
+
+// colour wipe into the app
+at('#wipe', [[7.6, { transform: 'scale(0)', opacity: 1 }, 'cubic-bezier(.6,0,.4,1)'], [8.05, { transform: 'scale(1)', opacity: 1 }, 'ease-out'], [8.55, { transform: 'scale(1.05)', opacity: 0 }]])
+
+// 3 · meet AP Learning
+show('#s3', 8.0, 12.1, 0.1, 0.3)
+at('#bear3', [[8.15, { opacity: 0, transform: 'translateY(260px) scale(.6)' }, BACK], [8.75, { opacity: 1, transform: 'translateY(0px) scale(1)' }], [9.6, { opacity: 1, transform: 'translateY(0px) scale(1)' }, 'ease-out'], [9.8, { opacity: 1, transform: 'translateY(-34px) scale(1.03)' }, 'ease-in'], [10.0, { opacity: 1, transform: 'translateY(0px) scale(1)' }, 'ease-out'], [10.2, { opacity: 1, transform: 'translateY(-20px) scale(1.02)' }, 'ease-in'], [10.4, { opacity: 1, transform: 'translateY(0px) scale(1)' }]])
+pop('#logo3', 8.45); slide('#word3', 8.6, 90)
+pop('#sp1', 8.9); pop('#sp2', 9.05); pop('#sp3', 9.2)
+rise('#tag3', 9.3, 50)
+rise('#sub3', 10.1, 40)
+
+// 4–6 · the app in action
+show('#s4', 11.9, 28.2, 0.3, 0.3)
+at('#phone', [[11.9, { transform: 'translateY(1100px) rotate(8deg)' }, OUT], [12.75, { transform: 'translateY(0px) rotate(0deg)' }], [27.85, { transform: 'translateY(0px) rotate(0deg)' }, 'ease-in'], [28.2, { transform: 'translateX(-900px) rotate(-10deg)' }]])
+const acts = [['A', 12, 15], ['B', 15, 18], ['C', 18, 21], ['D', 21, 23.5], ['E', 23.5, 26], ['F', 26, 28.3]]
+for (const [k, a, b] of acts) {
+  show('#sc' + k, a, b + 0.15, 0.25, 0.25)
+  show('#p' + k, a + 0.1, b + 0.05, 0.3, 0.25)
+  slide(`#p${k} .kick`, a + 0.1, 60, 0.5)
+  rise(`#p${k} h2`, a + 0.18, 50, 0.55)
+  $$(`#p${k} p`).forEach((p) => rise(p, a + 0.45, 40, 0.55))
+  $$(`#p${k} .chip`).forEach((c, i) => slide(c, a + 0.75 + i * 0.4, 90, 0.5))
+}
+// A · airbag
+at('#airbag', [[12.9, { transform: 'scale(0)' }, BACK], [13.35, { transform: 'scale(1)' }], [13.6, { transform: 'scale(.94)' }], [13.9, { transform: 'scale(1)' }]])
+pop('#pv', 13.5, 0.5)
+// B · flashcard flip, then "Got it"
+at('#ffront', [[16.0, { transform: 'rotateY(0deg)' }, 'cubic-bezier(.5,0,.3,1)'], [16.55, { transform: 'rotateY(180deg)' }]])
+at('#fback', [[16.0, { transform: 'rotateY(-180deg)' }, 'cubic-bezier(.5,0,.3,1)'], [16.55, { transform: 'rotateY(0deg)' }]])
+tap('#tap1', 216, 300, 15.95)
+rise('#hack', 16.7, 30, 0.45)
+tap('#tap2', 322, 706, 17.35)
+at('#gotit', [[17.3, { transform: 'scale(1)' }], [17.42, { transform: 'scale(.9)' }, BACK], [17.7, { transform: 'scale(1)' }]])
+// C · the plan fills in up to exam day
+$$('#calgrid .ok').forEach((el, i) => pop(el, 18.7 + i * 0.085, 0.3))
+pop('#calgrid .ex', 20.15, 0.45)
+rise('#today', 18.5, 30, 0.5)
+// D · bookmark
+tap('#tap3', 381, 318, 21.95)
+at('#bmon', [[21.95, { opacity: 0, transform: 'scale(.3)' }, BACK], [22.35, { opacity: 1, transform: 'scale(1.25)' }, 'ease-out'], [22.55, { opacity: 1, transform: 'scale(1)' }]])
+at('#bmrow', [[21.9, { background: '#ffffff' }], [22.3, { background: '#fff6d6' }]])
+rise('#toast', 22.45, 80, 0.45)
+// E · typing a note
+type('#ty1', 24.0, 24.65, 20); type('#ty2', 24.7, 25.3, 20); type('#ty3', 25.3, 25.75, 22)
+pop('#saved', 25.75, 0.3)
+// F · four buttons
+$$('.navlabel').forEach((el, i) => { const a = [26.1, 26.6, 27.05, 27.5][i], b = [26.6, 27.05, 27.5, 28.1][i]; at(el, [[a, { opacity: 0, transform: 'translateY(16px) scale(.7)' }, BACK], [a + 0.2, { opacity: 1, transform: 'translateY(0px) scale(1)' }], [b - 0.05, { opacity: 1, transform: 'translateY(0px) scale(1)' }], [b + 0.08, { opacity: 0, transform: 'translateY(0px) scale(1)' }]]) })
+
+// 7 · free to start
+show('#s7', 28.0, 33, 0.3, 0.01)
+at('#bear7', [[28.15, { opacity: 0, transform: 'translateY(200px) scale(.5)' }, BACK], [28.7, { opacity: 1, transform: 'translateY(0px) scale(1)' }], [29.3, { opacity: 1, transform: 'translateY(0px) scale(1)' }, 'ease-out'], [29.5, { opacity: 1, transform: 'translateY(-30px) scale(1)' }, 'ease-in'], [29.7, { opacity: 1, transform: 'translateY(0px) scale(1)' }, 'ease-out'], [29.9, { opacity: 1, transform: 'translateY(-30px) scale(1)' }, 'ease-in'], [30.1, { opacity: 1, transform: 'translateY(0px) scale(1)' }]])
+pop('#free7', 28.35, 0.6)
+rise('#sub7', 28.9, 40)
+at('#url7 span', [[29.3, { opacity: 0, transform: 'scale(.4)' }, BACK], [29.8, { opacity: 1, transform: 'scale(1)' }], [30.4, { opacity: 1, transform: 'scale(1)' }, 'ease-in-out'], [30.7, { opacity: 1, transform: 'scale(1.06)' }, 'ease-in-out'], [31.0, { opacity: 1, transform: 'scale(1)' }, 'ease-in-out'], [31.3, { opacity: 1, transform: 'scale(1.06)' }, 'ease-in-out'], [31.6, { opacity: 1, transform: 'scale(1)' }]])
+at('#legal7', [[29.8, { opacity: 0 }], [30.3, { opacity: 1 }]])
+$$('.conf').forEach((el) => {
+  const t = w(28.35) + rnd() * 0.35, ang = rnd() * Math.PI * 2, r = 350 + rnd() * 650
+  const x = Math.cos(ang) * r * 1.35, y = Math.sin(ang) * r * 0.6 - 160, rot = rnd() * 720 - 360
+  at(el, [[t, { opacity: 0, transform: 'translate(0px,0px) rotate(0deg) scale(.4)' }, 'cubic-bezier(.1,.8,.3,1)'], [t + 0.05, { opacity: 1, transform: 'translate(0px,0px) rotate(0deg) scale(.6)' }, 'cubic-bezier(.1,.8,.3,1)'], [t + 0.8, { opacity: 1, transform: `translate(${x}px,${y}px) rotate(${rot}deg) scale(1)` }, 'cubic-bezier(.4,0,.9,.6)'], [t + 3.8, { opacity: 1, transform: `translate(${x * 1.15}px,${y + 1700}px) rotate(${rot * 3}deg) scale(1)` }]], true)
+})
+
+// ------------------------------------------------------------------ playback
+const anims = () => document.getAnimations()
+/** Freeze the film at `ms`. render.mjs calls this once per frame. */
+window.seek = (ms) => { for (const a of anims()) { a.pause(); a.currentTime = ms } }
+window.DUR = DUR
+const capture = new URLSearchParams(location.search).has('capture')
+if (capture) document.documentElement.classList.add('capture')
+const fit = () => { const k = Math.min(innerWidth / 1920, innerHeight / 1080); const st = $('#stage').style; st.transform = `scale(${k})`; st.left = (innerWidth - 1920 * k) / 2 + 'px'; st.top = (innerHeight - 1080 * k) / 2 + 'px' }
+if (!capture) { fit(); addEventListener('resize', fit) }
+const t0 = Number(new URLSearchParams(location.search).get('t') ?? (capture ? 0 : 52))
+window.seek(t0 * 1000)
+for (const b of $$('#play button')) b.onclick = () => {
+  $('#play').style.display = 'none'
+  const m = $('#music'); m.src = `music-${b.dataset.m}.wav`; m.currentTime = 0; m.play().catch(() => {})
+  for (const a of anims()) { a.currentTime = 0; a.play() }
+  setTimeout(() => { window.seek(DUR - 1); $('#play').style.display = '' }, DUR + 400)
+}
+</script>
+</body>
+</html>
