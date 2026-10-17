@@ -16,6 +16,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.1',
       ced: ['4.1', '4.4'],
+      cedVersion: 'Fall 2024',
       title: 'Physical vs. Chemical Changes',
       level: 'foundation',
       minutes: 6,
@@ -85,6 +86,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.5a',
       ced: ['4.5'],
+      cedVersion: 'Fall 2024',
       title: 'Stoichiometry: The Mole Ratio',
       level: 'foundation',
       minutes: 9,
@@ -188,6 +190,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.7a',
       ced: ['4.7'],
+      cedVersion: 'Fall 2024',
       title: 'Types of Reactions & Precipitation',
       level: 'core',
       minutes: 8,
@@ -278,6 +281,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.2',
       ced: ['4.2'],
+      cedVersion: 'Fall 2024',
       title: 'Net Ionic Equations',
       level: 'core',
       minutes: 9,
@@ -384,6 +388,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.3',
       ced: ['4.3'],
+      cedVersion: 'Fall 2024',
       title: 'Particle Diagrams of Reactions',
       level: 'core',
       minutes: 6,
@@ -461,6 +466,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.5b',
       ced: ['4.5'],
+      cedVersion: 'Fall 2024',
       title: 'Limiting Reactant',
       level: 'core',
       minutes: 9,
@@ -564,6 +570,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.5c',
       ced: ['4.5'],
+      cedVersion: 'Fall 2024',
       title: 'Stoichiometry with Gases & Solutions',
       level: 'core',
       minutes: 8,
@@ -655,6 +662,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.6',
       ced: ['4.6'],
+      cedVersion: 'Fall 2024',
       title: 'Introduction to Titration',
       level: 'core',
       minutes: 8,
@@ -756,6 +764,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.8',
       ced: ['4.8'],
+      cedVersion: 'Fall 2024',
       title: 'Acids & Bases: Proton Transfer',
       level: 'core',
       minutes: 8,
@@ -844,6 +853,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.7b',
       ced: ['4.7'],
+      cedVersion: 'Fall 2024',
       title: 'Oxidation Numbers & Spotting Redox',
       level: 'core',
       minutes: 9,
@@ -959,6 +969,7 @@ export const unit4: Unit = {
     {
       id: 'chem-4.9',
       ced: ['4.9'],
+      cedVersion: 'Fall 2024',
       title: 'Balancing Redox with Half-Reactions',
       level: 'advanced',
       minutes: 10,

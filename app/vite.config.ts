@@ -1,12 +1,21 @@
 /// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { BRAND, TRADEMARK_NOTICE } from './shared/brand.ts'
+
+/** Fills the product name into index.html and admin.html (%BRAND_NAME% and friends) from shared/brand.ts. */
+const brandHtml = (): Plugin => ({
+  name: 'brand-html',
+  transformIndexHtml: (html) =>
+    html.replaceAll('%BRAND_NAME%', BRAND.name).replaceAll('%BRAND_DESCRIPTION%', BRAND.description).replaceAll('%TRADEMARK_NOTICE%', TRADEMARK_NOTICE),
+})
 
 // `vite build --mode artifact` makes a single-file preview build (no service worker, wasm inlined)
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    brandHtml(),
     VitePWA({
       disable: mode === 'artifact',
       registerType: 'autoUpdate',
@@ -29,9 +38,9 @@ export default defineConfig(({ mode }) => ({
         navigateFallbackDenylist: [/^\/api\//, /^\/admin/],
       },
       manifest: {
-        name: 'AP Learning',
-        short_name: 'AP Learning',
-        description: 'Short, friendly lessons, practice and study plans for AP courses.',
+        name: BRAND.name,
+        short_name: BRAND.name,
+        description: `${BRAND.description} ${TRADEMARK_NOTICE}`,
         theme_color: '#12141c',
         background_color: '#12141c',
         display: 'standalone',

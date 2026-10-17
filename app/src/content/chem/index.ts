@@ -1,4 +1,5 @@
 import type { Course } from '../types'
+import { CED_VERSION } from './ced'
 import { unit0 } from './u0'
 import { unit1 } from './u1'
 import { unit2 } from './u2'
@@ -12,8 +13,9 @@ import { unit9 } from './u9'
 
 export const chemistry: Course = {
   id: 'chem',
-  title: 'AP Chemistry',
-  short: 'AP Chem',
+  title: 'AP® Chemistry',
+  short: 'AP® Chem',
   emoji: '⚗️',
+  cedVersion: CED_VERSION,
   units: [unit0, unit1, unit2, unit3, unit4, unit5, unit6, unit7, unit8, unit9],
 }

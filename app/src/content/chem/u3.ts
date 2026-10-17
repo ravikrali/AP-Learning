@@ -16,6 +16,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.3',
       ced: ['3.3'],
+      cedVersion: 'Fall 2024',
       title: 'Solids, Liquids & Gases',
       level: 'foundation',
       minutes: 6,
@@ -96,6 +97,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.1a',
       ced: ['3.1'],
+      cedVersion: 'Fall 2024',
       title: 'Intermolecular Forces: The Four Types',
       level: 'foundation',
       minutes: 9,
@@ -191,6 +193,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.7',
       ced: ['3.7'],
+      cedVersion: 'Fall 2024',
       title: 'Solutions & Molarity',
       level: 'foundation',
       minutes: 7,
@@ -296,6 +299,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.1b',
       ced: ['3.1', '3.2'],
+      cedVersion: 'Fall 2024',
       title: 'Comparing IMFs: Boiling Points & Vapor Pressure',
       level: 'core',
       minutes: 9,
@@ -400,6 +404,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.2',
       ced: ['3.2'],
+      cedVersion: 'Fall 2024',
       title: 'Types of Solids & Their Properties',
       level: 'core',
       minutes: 7,
@@ -483,6 +488,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.4',
       ced: ['3.4'],
+      cedVersion: 'Fall 2024',
       title: 'The Ideal Gas Law',
       level: 'core',
       minutes: 9,
@@ -593,6 +599,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.5',
       ced: ['3.5'],
+      cedVersion: 'Fall 2024',
       title: 'Kinetic Molecular Theory',
       level: 'core',
       minutes: 7,
@@ -688,6 +695,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.8',
       ced: ['3.8'],
+      cedVersion: 'Fall 2024',
       title: 'Drawing Solutions at the Particle Level',
       level: 'core',
       minutes: 6,
@@ -766,6 +774,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.10',
       ced: ['3.10'],
+      cedVersion: 'Fall 2024',
       title: 'Solubility: Like Dissolves Like',
       level: 'core',
       minutes: 6,
@@ -840,6 +849,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.9',
       ced: ['3.9'],
+      cedVersion: 'Fall 2024',
       title: 'Separating Mixtures: Chromatography & Distillation',
       level: 'core',
       minutes: 7,
@@ -933,6 +943,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.11',
       ced: ['3.11'],
+      cedVersion: 'Fall 2024',
       title: 'Spectroscopy & the EM Spectrum',
       level: 'core',
       minutes: 6,
@@ -998,6 +1009,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.12',
       ced: ['3.12'],
+      cedVersion: 'Fall 2024',
       title: 'Properties of Photons',
       level: 'core',
       minutes: 7,
@@ -1099,6 +1111,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.13',
       ced: ['3.13'],
+      cedVersion: 'Fall 2024',
       title: 'Beer–Lambert Law',
       level: 'core',
       minutes: 7,
@@ -1192,6 +1205,7 @@ export const unit3: Unit = {
     {
       id: 'chem-3.6',
       ced: ['3.6'],
+      cedVersion: 'Fall 2024',
       title: 'Real Gases vs. Ideal Gases',
       level: 'advanced',
       minutes: 7,

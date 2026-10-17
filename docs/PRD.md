@@ -58,13 +58,16 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | ID | Requirement | Status |
 |---|---|---|
-| L-1 | An animated welcome page shows the journey from beginner to "AP expert", with the mascot climbing five steps (Basics, Get it, Practice, Remember, Expert). | ✅ |
+| L-1 | An animated welcome page shows the journey from “huh?” to “I’ve got this”, with the mascot climbing five steps (Basics, Get it, Practice, Remember, Ready). The page describes the path and never promises a score or result (see Q-copy in section 4). | ✅ |
 | L-2 | The animation is generic, not about one subject: the subject shown rotates through several AP courses. | ✅ |
 | L-3 | The page explains how the app works, lists all 21 courses (marking the ones that are ready), and shows the three plans with prices. | ✅ |
 | L-4 | Sign in with Google. | ✅ |
 | L-5 | A "Tell me when my course is ready" form collects an email, an optional first name and an optional course. This is the only place a visitor who has not signed in gives personal details. | ✅ |
+| L-5a | The form asks “I am a parent or guardian / I am a student” and has a required “I am 13 or older” tick; the server refuses the form without both. Marketing email may go to parents only. A student gets one email: the day the course they asked for is ready. | ✅ |
 | L-6 | Visits are counted anonymously: a random ID kept in the browser, the country and region, the device type, the browser language, the site or link that brought the visitor, campaign tags on the link (`utm_source`, `utm_medium`, `utm_campaign`), and which parts of the page were reached. | ✅ |
 | L-7 | Browsers that send "Do Not Track" or Global Privacy Control are not counted. Bots and link previews are not counted. | ✅ |
+| L-7a | Visitors in the EU, the rest of the EEA and the UK are not counted at all, using the country Cloudflare reports: no browser ID is made and nothing is stored. This stands in until a consent banner is decided (open item 4). | ✅ |
+| L-9 | A public **Corrections** (errata) list is linked from the foot of the page, with no sign-in needed. | ✅ |
 | L-8 | The page says that visits are counted and links to the privacy summary. It carries the College Board trademark notice. | ✅ |
 
 *Note on L-5/L-6: a website cannot read a visitor's name or email from cookies. Names and emails come only from the form (L-5) or from Google sign-in.*
@@ -77,6 +80,9 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | A-2 | One address for everyone: `aplearning.app` redirects to `www.aplearning.app` so Google sign-in works in every browser. | ✅ |
 | A-3 | The country and region at first sign-in are recorded for the dashboard. | ✅ |
 | A-4 | The owner's email (`devt309@gmail.com`) is the Super Admin: full access, and nobody can change or remove them. Other people get into the admin portal only when someone with the Admins privilege adds them with a role (see D-9 to D-12). | ✅ |
+| A-5 | **Age question at sign-up.** A new student is asked their birth month and year before the account is made. Under 13: no account, nothing about them is stored, and the browser shows a “13 and older for now” message for 30 days. 13 and over: the account is made and only the birth year is saved. In the birthday month the birthday is counted as not reached yet. Portal users added by an admin are not asked. Students who signed up before this have no birth year on file. | ✅ |
+| A-6 | The campaign tags on the link a new student arrived by (`utm_source`, `utm_medium`, `utm_campaign`) are saved with the account, for sign-ups by campaign. | ✅ |
+| A-7 | “Sign out on all my devices” (Me page) ends every session for the account. | ✅ |
 
 ### 3.3 Courses and catalog
 
@@ -107,7 +113,9 @@ AP Learning helps high-school students learn an AP course from the foundations u
 |---|---|---|
 | S-1 | Lessons are short (about 5–11 minutes) and built from small cards: a hook, key ideas with diagrams, a worked example revealed one step at a time, a "your turn" question, a smart trick, a common trap, FRQ tips, a summary, then quick-check questions. | ✅ |
 | S-2 | A wrong answer gets a hint and a second try before the full explanation. Multiple-choice options are shuffled every time. | ✅ |
-| S-3 | Each lesson shows the CED topic numbers it covers. | ✅ |
+| S-3 | Each lesson shows the CED topic numbers it covers and the CED edition it was checked against (for example “CED 1.1 (Fall 2024)”). | ✅ |
+| S-3a | Every lesson carries a hand-written CED edition tag, and the course carries the edition it follows. A test fails if any lesson’s tag differs from its course’s, so a new CED edition cannot go live with lessons nobody re-checked. | ✅ |
+| S-8 | **Report an error:** every lesson card, quick-check question and lesson video has a “Report an error” button. The report goes to the admin Feedback inbox tagged with the lesson and card. It works without signing in (then it carries no name or email). | ✅ |
 | S-4 | An optional video can be attached to a lesson (by link). | ✅ |
 | S-5 | Two popular YouTube videos are linked for each topic, with a "search YouTube" link. They open on YouTube and carry a note that outside videos are not checked line by line. | ✅ |
 | S-6 | Finishing a lesson shows an effort-praising message from the mascot, XP earned, any new badge, and the next step. | ✅ |
@@ -161,7 +169,8 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | ID | Requirement | Status |
 |---|---|---|
-| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows three buttons: Periodic table, Glossary and Video links. | ✅ |
+| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows four buttons: Periodic table, Glossary, Video links and Corrections. | ✅ |
+| M-7 | **Corrections (errata):** a public list of mistakes found in lessons and what was changed, newest first, with the lesson, CED topic and card. Shown under More and on the welcome page. | ✅ |
 | M-2 | **Periodic table:** an interactive table of all 118 elements. Tapping an element shows quick insights: protons and electrons, molar mass, family, state at room temperature, group and period, electron configuration (flagging exceptions such as Cr and Cu), common oxidation states, valence electrons, the usual ion, diatomic elements and electronegativity. | ✅ |
 | M-3 | The table can be colored by family, electronegativity or state, searched by name, symbol or number, and zoomed. Links lead to the lessons that explain it. | ✅ |
 | M-4 | **Glossary:** the key terms of the course (130 for AP Chemistry) with short definitions, a search box and A–Z jumps. Tapping a term opens the topic where it is explained, at the card that explains it. | ✅ |
@@ -223,11 +232,13 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | D-5 | **Content:** edit any lesson card, quick-check question or flashcard, with a history of changes. | ✅ |
 | D-6 | **Videos:** attach a lesson video and replace a topic's YouTube links (each link is checked to exist). | ✅ |
 | D-7 | **Students:** search students, see their plan and courses, grant or remove a plan. | ✅ |
-| D-8 | **Feedback** inbox (mark done, reopen, delete a message) and **Admins** (portal users). | ✅ |
-| D-9 | **Privileges:** every section of the portal (Dashboard, Audience, Content, Videos, Students, Feedback, Admins) has View, Edit and Delete privileges (Dashboard and Audience are view-only). A person sees only the sections they may view, and only the buttons they may use. The server checks the privilege on every request. | ✅ |
+| D-8 | **Feedback** inbox (mark done, reopen, delete a message) and **Admins** (portal users). Error reports show their lesson and card with a link that opens the lesson at that card, and can be filtered. “Add to corrections” publishes a note to the public Corrections list and marks the report done; a published correction can be removed. | ✅ |
+| D-9 | **Privileges:** every section of the portal (Dashboard, Audience, Content, Videos, Students, Feedback, Admins) has View, Edit and Delete privileges (Audience is view-only; on the Dashboard, Edit means entering ad spend). A person sees only the sections they may view, and only the buttons they may use. The server checks the privilege on every request. | ✅ |
 | D-10 | **Roles** are named sets of privileges: Super Admin (owner only, everything), Admin (everything, including adding other admins), Curator (view/edit/delete in Content and Videos only), Support (Students view/edit, Feedback view/edit/delete), Analyst (Dashboard and Audience, view only), Viewer (view everything, change nothing), Custom (any mix). | ✅ |
 | D-11 | **Adding a user:** the role and privileges are chosen in the same form as the email. Picking a role ticks its privileges; changing a tick makes a Custom set. | ✅ |
 | D-12 | **User administration** (Admins tab): list portal users with role, privileges, who added them and when they were last seen; change a person's role or privileges; remove a person. Nobody can give privileges they do not hold, change someone who holds more than they do, change themselves, or change the Super Admin. | ✅ |
+| D-13 | **Business numbers** on the Dashboard: free-to-paid conversion (overall and by sign-up month); monthly churn, shown month by month so the drop after the May exams stands out (the month in progress is marked “so far”); sign-ups by campaign tag; and ad spend typed in per month and source, giving cost per sign-up. “Paid” always means a paid invoice, never a granted plan. | ✅ |
+| D-14 | **Audience** shows, for each email left on the welcome page, whether it came from a parent or a student and whether marketing email is allowed. “Copy emails” copies parent emails only. | ✅ |
 
 *D-1 setup still needed: add `https://admin.aplearning.app` to the Google sign-in client's authorized origins.*
 
@@ -245,13 +256,15 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | Area | Requirement |
 |---|---|
-| **Accuracy** | `npm test` runs 63 automated checks. They re-compute every numeric answer and worked-example number, check that every chemical equation balances in atoms and charge, that every CED topic is taught, that every glossary term points at a lesson that really uses it, and that periodic-table data is consistent (electron counts, masses matching the lessons, positions). Element data comes from PubChem (U.S. National Institutes of Health, public domain). |
-| **Privacy** | No ads and no data sales. Visitors are counted without name, email or IP address. Do Not Track and Global Privacy Control are honored. Card details are handled only by Stripe. A parent or guardian makes purchases. |
-| **Security** | Google tokens are verified on the server. Sessions are stored as hashes. Admin routes check the person's role and privilege on every request. Stripe webhooks are signature-checked and safe to receive twice. |
+| **Accuracy** | `npm test` runs 90 automated checks. They re-compute every numeric answer and worked-example number, check that every chemical equation balances in atoms and charge, that every CED topic is taught, that every glossary term points at a lesson that really uses it, and that periodic-table data is consistent (electron counts, masses matching the lessons, positions). Element data comes from PubChem (U.S. National Institutes of Health, public domain). |
+| **Privacy** | No ads and no data sales. Visitors are counted without name, email or IP address, and not at all in the EU, EEA and UK. Do Not Track and Global Privacy Control are honored. Accounts are for ages 13 and up; only the birth year is kept. Marketing email goes to parents only. Card details are handled only by Stripe. A parent or guardian makes purchases. |
+| **Security** | Google tokens are verified on the server. Sessions are stored as hashes. Admin routes check the person's role and privilege on every request. Stripe webhooks are signature-checked and safe to receive twice. Every `/api/*` route is rate-limited per network address (600 a minute overall, 60 for sign-in, 120 for the public forms). Every response carries security headers: a Content Security Policy, HSTS, no-sniff, no framing, a referrer policy and a permissions policy. Secrets are rotated on the schedule in `docs/security.md`. |
 | **Phone use** | Every screen fits a 375-pixel-wide phone without sideways scrolling (the zoomed periodic table scrolls inside its own box). |
 | **Offline** | Lessons, practice, review, search, glossary and the periodic table work without internet after the first load. |
 | **Accessibility** | Icon-only buttons have spoken labels and tooltips. The welcome animation respects the phone's "reduce motion" setting. |
-| **Copyright** | Lessons, questions and artwork are original. Code libraries and the font allow commercial use. Outside videos are linked, not copied. The College Board trademark notice is shown. |
+| **Copyright** | Lessons, questions and artwork are original. Code libraries and the font allow commercial use. Outside videos are linked, not copied. |
+| **Copy (Q-copy)** | “AP” carries its ® in course names and screen text. The notice “AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, AP Learning.” is on the welcome page, Learn, Plans, FAQ, Privacy, Me, Corrections, the admin portal and the page description. Nothing promises a score, grade or result. A test checks all three. |
+| **Brand** | The app name, logo mark, domain and contact email live in one file, `app/shared/brand.ts`. A test fails if the name or domain is typed anywhere else. Renaming is a one-line change; moving to another domain also needs the Cloudflare routes, Google sign-in origins and Stripe webhook address updated. |
 
 ---
 
@@ -276,7 +289,9 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | 1 | Add `https://admin.aplearning.app` to Google sign-in's authorized origins | Owner |
 | 2 | Set up Stripe (secret key, webhook, customer portal) | Owner |
 | 3 | Decide the next course to write | Owner |
-| 4 | Lawyer review: use of "AP" in the name and domain; Terms of Use; privacy rules for younger students and for visitors from the EU and UK (visit counting may need a consent banner there) | Owner |
+| 4 | Lawyer review: use of "AP" in the name and domain; Terms of Use; privacy rules for younger students (under-13s are blocked for now; a parent-consent route is the alternative) and for visitors from the EU and UK (visit counting is off there until a consent banner is decided) | Owner |
+| 8 | Rotate secrets on the schedule in `docs/security.md` (Stripe keys once Stripe is set up) | Owner |
+| 9 | Email sending is not built yet. When it is, it must use the “marketing email” flag (parents only) and include an unsubscribe link | Owner |
 | 5 | Decide on App Store / Google Play versions | Owner |
 | 6 | Try "Add to Home screen" on a real iPhone and a real Android phone | Owner |
 | 7 | Confirm the GitHub repository is private | Owner |
@@ -292,3 +307,4 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | Oct 9, 2026 | Generic welcome animation. Plans (Free 1 course, Trio $5.99, Everything $12.99). 21-course catalog. Admin portal on its own address with a dashboard. Study plans with calendar events. Behavior tracking, tricky topics and quick tips. YouTube links per topic. "Add to Home screen" on Home. |
 | Oct 10, 2026 | Bulb tips on Unit pages. Search on Course, Unit and Topic pages. Bookmarks, shown on the Review page. Notes moved under Review. "More" menu item with Periodic table and Glossary. Icon-only bottom menu. Admin metrics for visitors who have not signed in and for students who are not subscribed; welcome page collects visit sources and optional emails. This document. |
 | Oct 11, 2026 | "Video links" button on the More page: all YouTube links by unit and topic. |
+| Oct 11, 2026 | Launch hardening: “Report an error” on every lesson card with a public Corrections page; age question at sign-up (under-13s blocked, birth year saved); parent/student choice and 13+ tick on the email form, marketing to parents only; visit counting off for the EU, EEA and UK; brand name and domain in one file; copy audit (® on AP, “does not endorse” notice, no score promises); rate limits, security headers and a secret-rotation runbook; CED edition tags on lessons with a test; business numbers on the dashboard (conversion, churn by month, sign-ups by campaign tag, ad spend and cost per sign-up). |

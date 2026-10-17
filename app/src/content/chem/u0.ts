@@ -14,6 +14,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.1',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Scientific Notation & Significant Figures',
       level: 'foundation',
       minutes: 6,
@@ -105,6 +106,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.2',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Dimensional Analysis: Units Are Your GPS',
       level: 'foundation',
       minutes: 7,
@@ -216,6 +218,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.3',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Atoms, Isotopes & Ions',
       level: 'foundation',
       minutes: 6,
@@ -305,6 +308,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.4',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Naming Compounds & Polyatomic Ions',
       level: 'foundation',
       minutes: 8,
@@ -400,6 +404,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.5',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Balancing Chemical Equations',
       level: 'foundation',
       minutes: 7,
@@ -495,6 +500,7 @@ export const unit0: Unit = {
     {
       id: 'chem-0.6',
       ced: [],
+      cedVersion: 'Fall 2024',
       title: 'Logs & Exponents for Chemistry',
       level: 'core',
       minutes: 6,

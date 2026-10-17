@@ -13,6 +13,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.1',
       ced: ['6.1', '6.2'],
+      cedVersion: 'Fall 2024',
       title: 'Endothermic vs. Exothermic',
       level: 'foundation',
       minutes: 7,
@@ -83,6 +84,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.3',
       ced: ['6.3'],
+      cedVersion: 'Fall 2024',
       title: 'Heat Transfer & Thermal Equilibrium',
       level: 'foundation',
       minutes: 5,
@@ -157,6 +159,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.4',
       ced: ['6.4'],
+      cedVersion: 'Fall 2024',
       title: 'Heat Capacity & Calorimetry',
       level: 'core',
       minutes: 10,
@@ -260,6 +263,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.5',
       ced: ['6.5'],
+      cedVersion: 'Fall 2024',
       title: 'Energy of Phase Changes',
       level: 'core',
       minutes: 7,
@@ -348,6 +352,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.6',
       ced: ['6.6'],
+      cedVersion: 'Fall 2024',
       title: 'Enthalpy of Reaction',
       level: 'core',
       minutes: 7,
@@ -431,6 +436,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.7',
       ced: ['6.7'],
+      cedVersion: 'Fall 2024',
       title: 'Bond Enthalpies',
       level: 'core',
       minutes: 8,
@@ -510,6 +516,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.8',
       ced: ['6.8'],
+      cedVersion: 'Fall 2024',
       title: 'Enthalpy of Formation',
       level: 'core',
       minutes: 8,
@@ -597,6 +604,7 @@ export const unit6: Unit = {
     {
       id: 'chem-6.9',
       ced: ['6.9'],
+      cedVersion: 'Fall 2024',
       title: 'Hess\'s Law',
       level: 'advanced',
       minutes: 9,

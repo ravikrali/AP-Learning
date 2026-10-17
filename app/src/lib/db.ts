@@ -4,6 +4,7 @@
 
 import initSqlJs, { type Database, type SqlValue } from 'sql.js'
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
+import { BRAND } from '../../shared/brand'
 
 const IDB_NAME = 'ap-learning'
 const IDB_STORE = 'sqlite'
@@ -353,7 +354,7 @@ export class LocalDB {
       if (!ok.length) throw new Error('missing meta')
     } catch {
       incoming?.close()
-      throw new Error('This file is not an AP Learning backup.')
+      throw new Error(`This file is not a backup made by ${BRAND.name}.`)
     }
     prepareSchema(incoming)
     this.db.close()

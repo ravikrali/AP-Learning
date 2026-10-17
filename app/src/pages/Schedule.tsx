@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { catalogCourse } from '../../shared/catalog'
+import { BRAND } from '../../shared/brand'
 import { planToIcs, sessionMinutes, type PlanSession, type StudyPlan } from '../../shared/plan'
 import { planExtras } from '../content'
 import type { Course } from '../content/types'
@@ -76,7 +77,7 @@ function Wizard({ course, initial, onDone }: { course: Course; initial: StudyPla
           {official && (
             <p className="small muted">
               College Board's 2027 date for {course.title}: <b>{fmt(official.date, { weekday: 'long', month: 'long', day: 'numeric' })}</b>,{' '}
-              {official.time === '08:00' ? '8 AM' : '12 PM'} local time. Your AP coordinator confirms the exact time and room.
+              {official.time === '08:00' ? '8 AM' : '12 PM'} local time. Your AP® coordinator confirms the exact time and room.
             </p>
           )}
         </>
@@ -366,7 +367,7 @@ function PlanView({ course, plan, onEdit }: { course: Course; plan: StudyPlan; o
               </a>
               <a
                 className="btn secondary block"
-                href={`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(cal.url)}&name=${encodeURIComponent('AP Learning')}`}
+                href={`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(cal.url)}&name=${encodeURIComponent(BRAND.name)}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -455,7 +456,7 @@ export function TodayPlan() {
             <div className="row">
               <b className="grow">🗓️ {isToday ? "Today's plan" : `Next session · ${fmt(s.date)}`}</b>
               <Link to={`/plan/${plan.course}`} className="small">
-                {plan.courseTitle.replace(/^AP /, '')} ›
+                {plan.courseTitle.replace(/^AP®? /, '')} ›
               </Link>
             </div>
             <div className="stack" style={{ gap: 6, marginTop: 8 }}>

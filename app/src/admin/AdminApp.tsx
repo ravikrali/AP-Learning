@@ -6,6 +6,7 @@ import { clearSession, GOOGLE_CLIENT_ID, loadSession, renderGoogleButton, saveSe
 import { api } from '../lib/api'
 import { refreshContent } from '../lib/overrides'
 import { can, ROLES, SECTIONS, type Access, type Section } from '../../shared/roles'
+import { ADMIN_NAME, APP_URL as BRAND_APP_URL, TRADEMARK_NOTICE } from '../../shared/brand'
 import { AdminContext } from './context'
 import { Dashboard } from './Dashboard'
 import { UsersTab } from './Users'
@@ -13,14 +14,21 @@ import { AudienceTab } from './Audience'
 import { ContentTab, FeedbackTab, VideosTab } from './Tools'
 import { TeamTab } from './Team'
 
-const APP_URL = import.meta.env.DEV ? '/' : 'https://www.aplearning.app/'
+const APP_URL = import.meta.env.DEV ? '/' : `${BRAND_APP_URL}/`
 
 function SignIn({ onUser, note }: { onUser: (u: User) => void; note?: string }) {
   const btn = useRef<HTMLDivElement>(null)
   const [err, setErr] = useState<string | null>(null)
   const [email, setEmail] = useState('devt309@gmail.com')
   useEffect(() => {
-    if (btn.current && GOOGLE_CLIENT_ID) renderGoogleButton(btn.current, onUser).catch((e) => setErr(String(e.message ?? e)))
+    if (btn.current && GOOGLE_CLIENT_ID)
+      renderGoogleButton(btn.current, onUser, {
+        // only someone who is not a portal user and has no account yet is asked their age; accounts are not made here
+        askAge: async () => {
+          setErr('That Google account is not an admin.')
+          return null
+        },
+      }).catch((e) => setErr(String(e.message ?? e)))
   }, [onUser])
 
   async function devSignIn() {
@@ -37,7 +45,7 @@ function SignIn({ onUser, note }: { onUser: (u: User) => void; note?: string }) 
   return (
     <div className="admin-login">
       <div className="logo">🛠️</div>
-      <h1>AP Learning Admin</h1>
+      <h1>{ADMIN_NAME}</h1>
       <p className="muted">Sign in with an admin Google account.</p>
       {note && <p className="notice small">{note}</p>}
       {GOOGLE_CLIENT_ID && <div ref={btn} className="gbtn" />}
@@ -144,7 +152,7 @@ export function AdminApp() {
       <HashRouter>
         <div className="admin">
           <header className="admin-top">
-            <b className="grow">🛠️ AP Learning Admin</b>
+            <b className="grow">🛠️ {ADMIN_NAME}</b>
             <span className="small muted hide-narrow">{user.email}</span>
             <span className="weight" title={ROLES[access.role].about}>
               {ROLES[access.role].name}
@@ -174,6 +182,9 @@ export function AdminApp() {
                 element={tabs.length ? <Navigate to={home} replace /> : <div className="empty">Your role has no sections yet. Ask an admin to give you access.</div>}
               />
             </Routes>
+            <p className="tiny muted" style={{ marginTop: 24 }}>
+              {TRADEMARK_NOTICE}
+            </p>
           </main>
         </div>
       </HashRouter>

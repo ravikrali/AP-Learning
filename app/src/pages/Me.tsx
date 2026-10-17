@@ -8,6 +8,9 @@ import { minutesByDay } from '../lib/track'
 import { setDismissed, useInstall } from '../lib/install'
 import type { Course } from '../content/types'
 import { useApp } from '../lib/app'
+import { api } from '../lib/api'
+import { ADMIN_URL as BRAND_ADMIN_URL, BRAND, BRAND_SLUG } from '../../shared/brand'
+import { Trademark } from '../components/Legal'
 import { Progress, TopBar } from '../components/bits'
 import { MASCOTS, Mascot } from '../components/Mascot'
 import { useMascotLook } from '../components/Cheer'
@@ -23,7 +26,7 @@ import {
   type BadgeProgress,
 } from '../lib/progress'
 
-const ADMIN_URL = import.meta.env.DEV ? '/admin.html' : 'https://admin.aplearning.app/'
+const ADMIN_URL = import.meta.env.DEV ? '/admin.html' : `${BRAND_ADMIN_URL}/`
 
 export function MePage() {
   const { db, user, signOut } = useApp()
@@ -56,18 +59,29 @@ export function MePage() {
     const total = course.units.reduce((n, u) => n + u.lessons.length, 0)
     const st = streak(db).days
     const text =
-      `I'm learning ${course.title} on AP Learning! 📚 ${lessonsDone} of ${total} lessons done, ` +
+      `I'm learning ${course.title} on ${BRAND.name}! 📚 ${lessonsDone} of ${total} lessons done, ` +
       `Level ${lv.level} (${lv.title})${st > 1 ? `, ${st}-day streak 🔥` : ''}.`
     const url = window.location.origin
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'My AP Learning progress', text, url })
+        await navigator.share({ title: `My ${BRAND.name} progress`, text, url })
         return
       }
       await navigator.clipboard.writeText(`${text} ${url}`)
       flash('Copied! Paste it into a message. 📋')
     } catch (e) {
       if ((e as Error).name !== 'AbortError') flash("Couldn't share from this browser.")
+    }
+  }
+
+  /** Lost a phone, or signed in on a shared computer: end every session, so each device has to sign in with Google again. */
+  async function signOutEverywhere() {
+    if (!confirm('Sign out on every phone and computer? Your progress stays saved in your account.')) return
+    try {
+      await api('/api/auth/logout-all', { body: {} })
+      signOut()
+    } catch (e) {
+      flash((e as Error).message)
     }
   }
 
@@ -81,7 +95,7 @@ export function MePage() {
     const blob = new Blob([bytes.slice().buffer as ArrayBuffer], { type: 'application/x-sqlite3' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = `ap-learning-backup-${new Date().toISOString().slice(0, 10)}.sqlite`
+    a.download = `${BRAND_SLUG}-backup-${new Date().toISOString().slice(0, 10)}.sqlite`
     a.click()
     setTimeout(() => URL.revokeObjectURL(a.href), 1000)
     setMsg('Backup saved to your downloads. ✓')
@@ -277,18 +291,21 @@ export function MePage() {
       <div className="section-title">About the content</div>
       <div className="card small">
         <p style={{ marginTop: 0 }}>
-          Lessons follow the official <b>AP Chemistry Course and Exam Description (effective Fall 2024)</b> from College Board. Each
-          lesson lists the CED topic it covers. Constants match the AP Chemistry Equations &amp; Constants sheet. Every answer
+          Lessons follow the official <b>AP® Chemistry Course and Exam Description (effective Fall 2024)</b> from College Board. Each
+          lesson lists the CED topic it covers. Constants match the AP® Chemistry Equations &amp; Constants sheet. Every answer
           that involves a calculation is re-checked automatically by the app's test suite.
         </p>
-        <p className="muted" style={{ marginBottom: 0 }}>
-          AP® is a trademark of College Board, which is not affiliated with this app.
-        </p>
+        <Trademark className="muted" />
       </div>
 
       <button className="btn ghost block" style={{ marginTop: 16 }} onClick={signOut}>
         Sign out
       </button>
+      {user.token && (
+        <button className="btn ghost block small" onClick={signOutEverywhere}>
+          Sign out on all my devices
+        </button>
+      )}
     </div>
   )
 }

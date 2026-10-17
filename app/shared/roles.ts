@@ -9,7 +9,7 @@ export type Action = 'view' | 'edit' | 'delete'
 export const ACTIONS: readonly Action[] = ['view', 'edit', 'delete']
 
 export const SECTIONS = [
-  { id: 'dashboard', label: 'Dashboard', icon: '📊', actions: ['view'], about: 'Sign-ups, subscriptions, revenue, engagement' },
+  { id: 'dashboard', label: 'Dashboard', icon: '📊', actions: ['view', 'edit'], about: 'Sign-ups, subscriptions, revenue, engagement; edit = enter ad spend' },
   { id: 'audience', label: 'Audience', icon: '🧭', actions: ['view'], about: 'Visitors, where they come from, emails left on the welcome page' },
   { id: 'content', label: 'Content', icon: '📝', actions: ['view', 'edit', 'delete'], about: 'Edit lesson text, quick checks and flashcards; delete = revert an edit' },
   { id: 'videos', label: 'Videos', icon: '🎬', actions: ['view', 'edit', 'delete'], about: 'Lesson videos and YouTube links; delete = remove a video or custom list' },

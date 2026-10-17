@@ -20,6 +20,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.1',
       ced: ['9.1'],
+      cedVersion: 'Fall 2024',
       title: 'Introduction to Entropy',
       level: 'foundation',
       minutes: 7,
@@ -85,6 +86,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.2',
       ced: ['9.2'],
+      cedVersion: 'Fall 2024',
       title: 'Calculating ΔS°',
       level: 'core',
       minutes: 6,
@@ -158,6 +160,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.3',
       ced: ['9.3'],
+      cedVersion: 'Fall 2024',
       title: 'Gibbs Free Energy & Favorability',
       level: 'core',
       minutes: 11,
@@ -259,6 +262,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.4',
       ced: ['9.4'],
+      cedVersion: 'Fall 2024',
       title: 'Thermodynamic vs. Kinetic Control',
       level: 'core',
       minutes: 5,
@@ -318,6 +322,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.5',
       ced: ['9.5'],
+      cedVersion: 'Fall 2024',
       title: 'Free Energy & Equilibrium',
       level: 'core',
       minutes: 8,
@@ -394,6 +399,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.8',
       ced: ['9.8'],
+      cedVersion: 'Fall 2024',
       title: 'Galvanic & Electrolytic Cells',
       level: 'core',
       minutes: 10,
@@ -478,6 +484,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.9',
       ced: ['9.9'],
+      cedVersion: 'Fall 2024',
       title: 'Cell Potential & Free Energy',
       level: 'core',
       minutes: 9,
@@ -566,6 +573,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.11',
       ced: ['9.11'],
+      cedVersion: 'Fall 2024',
       title: 'Electrolysis & Faraday\'s Law',
       level: 'core',
       minutes: 9,
@@ -647,6 +655,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.6',
       ced: ['9.6'],
+      cedVersion: 'Fall 2024',
       title: 'Free Energy of Dissolution',
       level: 'advanced',
       minutes: 6,
@@ -717,6 +726,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.7',
       ced: ['9.7'],
+      cedVersion: 'Fall 2024',
       title: 'Coupled Reactions',
       level: 'advanced',
       minutes: 6,
@@ -785,6 +795,7 @@ export const unit9: Unit = {
     {
       id: 'chem-9.10',
       ced: ['9.10'],
+      cedVersion: 'Fall 2024',
       title: 'Cell Potential Under Nonstandard Conditions',
       level: 'advanced',
       minutes: 9,

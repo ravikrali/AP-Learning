@@ -4,9 +4,11 @@ import { findLesson } from '../content'
 import { catalogCourse, PLANS, type PlanId } from '../../shared/catalog'
 import { addMonths, fillMonths, forecast, monthKey } from './forecast'
 import { Columns, Line, Ranked, Split } from './charts'
+import { Business, type BusinessData } from './Business'
 
 interface Metrics {
   generatedAt: string
+  business: BusinessData
   users: { users: number; new7: number; new30: number; byDay: { day: string; n: number }[]; byCountry: { country: string; n: number }[] }
   plans: {
     byPlan: { plan: PlanId; paid: PlanId; n: number }[]
@@ -54,6 +56,7 @@ const EVENT_LABEL: Record<string, string> = {
   plan_create: 'Study plans made',
   plan_update: 'Study plans changed',
   plan_rebuild: 'Plans re-planned from today',
+  age_block: 'Sign-ups stopped by the age question (under 13)',
   calendar_link: 'Calendar subscriptions',
   calendar_download: 'Calendar files downloaded',
 }
@@ -240,6 +243,8 @@ export function Dashboard() {
           Forecast: {derived.method} Revenue is money actually collected (after discounts, before Stripe fees and refunds).
         </p>
       </section>
+
+      <Business data={m.business} students={m.users.users} reload={() => void load()} />
 
       <section className="card">
         <h3>Engagement · last 60 days</h3>

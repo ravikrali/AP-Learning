@@ -1,8 +1,10 @@
 // Anonymous visit counting for the welcome page (people who have not signed in).
 // A random ID is kept in this browser; nothing here knows who the visitor is. Browsers that ask
-// not to be tracked (Do Not Track or Global Privacy Control) are never counted.
+// not to be tracked (Do Not Track or Global Privacy Control) are never counted, and neither are
+// visitors in the EU, EEA or UK (no consent banner yet): for them no ID is made at all.
 
 import { hostOf, type VisitBody, type VisitEvent } from '../../shared/visit'
+import { BRAND } from '../../shared/brand'
 
 const VID_KEY = 'ap-learning-visitor'
 const TOUCH_KEY = 'ap-learning-first-touch'
@@ -12,6 +14,32 @@ type Touch = Pick<VisitBody, 'source' | 'medium' | 'campaign' | 'referrer'>
 export function trackingAllowed(): boolean {
   const n = navigator as Navigator & { globalPrivacyControl?: boolean }
   return !(n.globalPrivacyControl === true || n.doNotTrack === '1')
+}
+
+let countingHere: Promise<boolean> | null = null
+
+/**
+ * May this visit be counted? Asks the server once per page load, because only the server knows
+ * the visitor's country. Where the answer is no, anything an earlier visit left behind is removed.
+ */
+export function countingAllowed(): Promise<boolean> {
+  if (!trackingAllowed()) return Promise.resolve(false)
+  if (!countingHere)
+    countingHere = fetch('/api/geo')
+      .then((r) => (r.ok ? (r.json() as Promise<{ count?: boolean }>) : { count: false }))
+      .then((d) => d.count === true)
+      .catch(() => false)
+      .then((ok) => {
+        if (!ok)
+          try {
+            localStorage.removeItem(VID_KEY)
+            localStorage.removeItem(TOUCH_KEY)
+          } catch {
+            /* nothing was stored */
+          }
+        return ok
+      })
+  return countingHere
 }
 
 function visitorId(): string | null {
@@ -38,7 +66,7 @@ export function readTouch(search: string, referrer: string, ownHost: string): To
     medium: clip(p.get('utm_medium')),
     campaign: clip(p.get('utm_campaign')),
     // sign-in round trips and our own pages are not referrers
-    referrer: ref && ref !== ownHost.replace(/^www\./, '') && !ref.endsWith('aplearning.app') && ref !== 'accounts.google.com' ? ref : undefined,
+    referrer: ref && ref !== ownHost.replace(/^www\./, '') && !ref.endsWith(BRAND.domain) && ref !== 'accounts.google.com' ? ref : undefined,
   }
 }
 
@@ -64,14 +92,33 @@ const sent = new Set<string>()
 /** Report one welcome-page event (each kind at most once per page load). Never throws. */
 export function trackVisit(event: VisitEvent, token?: string) {
   if (sent.has(event) || !trackingAllowed()) return
-  const vid = visitorId()
-  if (!vid) return
   sent.add(event)
-  const body: VisitBody = { vid, event, ...firstTouch(), device: device(), lang: clip(navigator.language, 12) }
-  const headers: Record<string, string> = { 'content-type': 'application/json' }
-  if (token) headers.authorization = `Bearer ${token}`
-  void fetch('/api/visit', { method: 'POST', headers, body: JSON.stringify(body), keepalive: true }).catch(() => undefined)
+  void countingAllowed().then((ok) => {
+    const vid = ok ? visitorId() : null
+    if (!vid) return
+    const body: VisitBody = { vid, event, ...firstTouch(), device: device(), lang: clip(navigator.language, 12) }
+    const headers: Record<string, string> = { 'content-type': 'application/json' }
+    if (token) headers.authorization = `Bearer ${token}`
+    return fetch('/api/visit', { method: 'POST', headers, body: JSON.stringify(body), keepalive: true }).catch(() => undefined)
+  })
 }
 
 /** The visitor ID to attach to a "tell me when it's ready" sign-up, when counting is allowed. */
-export const leadVisitor = () => (trackingAllowed() ? visitorId() : null)
+export const leadVisitor = () => countingAllowed().then((ok) => (ok ? visitorId() : null))
+
+/**
+ * The campaign tags (utm_source, utm_medium, utm_campaign) to record with a new account.
+ * Uses the first-touch tags when this browser has them, otherwise the tags on the current link.
+ * Reads only: nothing is stored here.
+ */
+export function signupTags(): Pick<Touch, 'source' | 'medium' | 'campaign'> {
+  let t: Touch | null = null
+  try {
+    const saved = localStorage.getItem(TOUCH_KEY)
+    if (saved) t = JSON.parse(saved) as Touch
+  } catch {
+    /* fall through to the link */
+  }
+  t ??= readTouch(window.location.search, document.referrer, window.location.hostname)
+  return { source: t.source, medium: t.medium, campaign: t.campaign }
+}

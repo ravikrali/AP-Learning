@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { catalogCourse } from '../../shared/catalog'
+import { BRAND_SLUG } from '../../shared/brand'
 import { Columns, Ranked } from './charts'
 import { Tile, countryName, int, lastDays } from './Dashboard'
 
@@ -22,8 +23,14 @@ interface Lead {
   channel: string | null
   source: string | null
   created_at: string
+  /** parent | student; null for emails left before the form asked */
+  role: string | null
+  /** 1 = may get marketing email (parents only) */
+  marketing: number
   signed_up: number
 }
+
+const roleName = (l: Lead) => (l.role === 'parent' ? 'Parent' : l.role === 'student' ? 'Student' : 'Not asked')
 
 interface Audience {
   generatedAt: string
@@ -77,8 +84,8 @@ function Sources({ rows, name = (l) => l ?? 'None' }: { rows: Group[]; name?: (l
 
 function csv(rows: Lead[]): string {
   const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`
-  const head = ['email', 'name', 'course', 'country', 'channel', 'source', 'date', 'has_account']
-  return [head.join(','), ...rows.map((l) => [l.email, l.name, l.course ? (catalogCourse(l.course)?.title ?? l.course) : '', l.country, l.channel, l.source, l.created_at.slice(0, 10), l.signed_up ? 'yes' : 'no'].map(cell).join(','))].join('\r\n')
+  const head = ['email', 'name', 'who', 'marketing_ok', 'course', 'country', 'channel', 'source', 'date', 'has_account']
+  return [head.join(','), ...rows.map((l) => [l.email, l.name, roleName(l), l.marketing ? 'yes' : 'no', l.course ? (catalogCourse(l.course)?.title ?? l.course) : '', l.country, l.channel, l.source, l.created_at.slice(0, 10), l.signed_up ? 'yes' : 'no'].map(cell).join(','))].join('\r\n')
 }
 
 export function AudienceTab() {
@@ -106,12 +113,14 @@ export function AudienceTab() {
     const url = URL.createObjectURL(new Blob([csv(a!.leads.items)], { type: 'text/csv' }))
     const link = document.createElement('a')
     link.href = url
-    link.download = `ap-learning-leads-${new Date().toISOString().slice(0, 10)}.csv`
+    link.download = `${BRAND_SLUG}-leads-${new Date().toISOString().slice(0, 10)}.csv`
     link.click()
     URL.revokeObjectURL(url)
   }
+  // marketing email goes to parents only, so that is the list the copy button gives
+  const marketingList = a.leads.items.filter((l) => l.marketing)
   async function copyEmails() {
-    await navigator.clipboard.writeText(a!.leads.items.map((l) => l.email).join(', '))
+    await navigator.clipboard.writeText(marketingList.map((l) => l.email).join(', '))
     setCopied(true)
     window.setTimeout(() => setCopied(false), 2000)
   }
@@ -127,7 +136,8 @@ export function AudienceTab() {
       </div>
       <p className="small muted" style={{ margin: 0 }}>
         People who open the welcome page before signing in. Each browser gets a random ID: there is no name or email unless the visitor leaves one
-        in the “Tell me when it’s ready” form. Browsers that ask not to be tracked, and bots, are not counted.
+        in the “Tell me when it’s ready” form. Browsers that ask not to be tracked, and bots, are not counted. Visitors in the EU, EEA and UK
+        are not counted either until there is a consent banner, so these numbers leave them out.
       </p>
 
       <div className="tiles">
@@ -200,8 +210,8 @@ export function AudienceTab() {
           <h3 className="grow" style={{ margin: 0 }}>Emails left on the welcome page</h3>
           {a.leads.items.length > 0 && (
             <>
-              <button className="btn secondary" onClick={() => void copyEmails()}>
-                {copied ? 'Copied ✓' : 'Copy emails'}
+              <button className="btn secondary" disabled={!marketingList.length} onClick={() => void copyEmails()}>
+                {copied ? 'Copied ✓' : `Copy parent emails (${marketingList.length})`}
               </button>
               <button className="btn secondary" onClick={download}>
                 Download CSV
@@ -209,6 +219,10 @@ export function AudienceTab() {
             </>
           )}
         </div>
+        <p className="small muted" style={{ margin: '8px 0 0' }}>
+          Marketing email may only go to people marked “Yes” (parents). Students, and emails left before the form asked, get one message: the
+          day the course they asked for is ready.
+        </p>
         {a.leads.items.length ? (
           <div className="table-wrap" style={{ marginTop: 10 }}>
             <table className="data">
@@ -216,6 +230,8 @@ export function AudienceTab() {
                 <tr>
                   <th>Email</th>
                   <th>Name</th>
+                  <th>Who</th>
+                  <th>Marketing email</th>
                   <th>Waiting for</th>
                   <th>Country</th>
                   <th>Came from</th>
@@ -228,6 +244,8 @@ export function AudienceTab() {
                   <tr key={l.email}>
                     <td>{l.email}</td>
                     <td>{l.name ?? ''}</td>
+                    <td>{roleName(l)}</td>
+                    <td>{l.marketing ? 'Yes' : 'No'}</td>
                     <td>{l.course ? (catalogCourse(l.course)?.title ?? l.course) : 'Any new course'}</td>
                     <td>{l.country ? countryName(l.country) : ''}</td>
                     <td>{[l.channel, l.source].filter(Boolean).join(' · ')}</td>

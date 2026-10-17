@@ -28,9 +28,10 @@ describe('roles & privileges', () => {
   })
 
   test('input from outside is cleaned up', () => {
-    expect(normalizePrivs({ content: ['delete'], dashboard: ['view', 'edit'], bogus: ['view'], videos: 'view', feedback: [] })).toEqual({
+    expect(normalizePrivs({ content: ['delete'], audience: ['view', 'edit'], dashboard: ['edit', 'delete'], bogus: ['view'], videos: 'view', feedback: [] })).toEqual({
       content: ['view', 'delete'], // delete needs view
-      dashboard: ['view'], // nothing to edit on the dashboard
+      audience: ['view'], // nothing to edit in Audience
+      dashboard: ['view', 'edit'], // edit = enter ad spend; nothing to delete
     })
     expect(normalizePrivs(null)).toEqual({})
     expect(normalizePrivs('["view"]')).toEqual({})

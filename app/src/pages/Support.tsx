@@ -4,12 +4,15 @@ import { Mascot } from '../components/Mascot'
 import { useMascotLook } from '../components/Cheer'
 import { useApp } from '../lib/app'
 import { api, type ApiError } from '../lib/api'
+import { BRAND, TRADEMARK_NOTICE } from '../../shared/brand'
+import { MIN_AGE } from '../../shared/age'
+import { Trademark } from '../components/Legal'
 
-/** Where feedback goes until the app has its own server. */
-export const FEEDBACK_EMAIL = 'devt309@gmail.com'
+/** Where feedback goes when the server can't be reached, and where data requests are sent. */
+export const FEEDBACK_EMAIL = BRAND.email
 
 const HOW_IT_WORKS: { e: string; t: string; d: string }[] = [
-  { e: '🗺️', t: 'Follow the map', d: 'Learn → AP Chemistry shows every unit. Each unit goes Foundation → Core → Advanced. Nothing is locked, so you can jump to whatever your class is on.' },
+  { e: '🗺️', t: 'Follow the map', d: 'Learn → AP® Chemistry shows every unit. Each unit goes Foundation → Core → Advanced. Nothing is locked, so you can jump to whatever your class is on.' },
   { e: '📖', t: 'Short lessons', d: 'Each lesson is a few small cards: a key idea, a worked example (tap to reveal one step at a time), a smart trick, a common trap, then a quick check.' },
   { e: '💡', t: 'Hints before answers', d: 'Wrong answer in a lesson? You get a hint and another try first. Only then is the full explanation shown.' },
   { e: '🃏', t: 'Daily review', d: 'Finishing a lesson adds its flashcards to Review. Cards you know come back later and later (1, 3, 7, 14, 30, then 60 days); ones you miss come back tomorrow. At most 15 a day.' },
@@ -64,7 +67,7 @@ export function HelpPage() {
 const FAQ: { q: string; a: string }[] = [
   {
     q: 'Is the content accurate?',
-    a: "Lessons follow College Board's official AP Chemistry Course and Exam Description (effective Fall 2024), and each lesson lists the CED topics it covers. Every calculated answer and every chemical equation is re-checked by automated tests before each update. If you ever spot something that looks wrong, please tell us through Feedback.",
+    a: "Lessons follow College Board's official AP® Chemistry Course and Exam Description (effective Fall 2024), and each lesson lists the CED topics it covers. Every calculated answer and every chemical equation is re-checked by automated tests before each update. If you ever spot something that looks wrong, tap \"Report an error\" under that lesson card. Fixes are listed under More → Corrections.",
   },
   {
     q: 'Do I have to do the units in order?',
@@ -88,7 +91,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Can I use a calculator on the real exam?',
-    a: 'Yes. A calculator is allowed on both sections of the AP Chemistry exam, and you get the equations and constants sheet and a periodic table.',
+    a: 'Yes. A calculator is allowed on both sections of the AP® Chemistry exam, and you get the equations and constants sheet and a periodic table.',
   },
   {
     q: 'Why do flashcards come back on different days?',
@@ -104,15 +107,23 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Which courses are coming?',
-    a: 'All 21 AP courses listed under Learn. AP Chemistry is ready now. Tap a "coming soon" course to tell us you want it; the most-wanted courses are written first.',
+    a: 'All 21 AP® courses listed under Learn. AP® Chemistry is ready now. Tap a "coming soon" course to tell us you want it; the most-wanted courses are written first.',
   },
   {
     q: 'What do you do with my study data?',
     a: 'We record which questions you answer and how long you spend on each topic so the app can spot tricky topics, offer tips and show your study time. Combined totals across all students help us find lessons that need improving. We never sell data or show ads. See More → your profile → Privacy & terms.',
   },
   {
-    q: 'Is this app made by College Board?',
-    a: 'No. AP® is a trademark of College Board, which is not affiliated with this app.',
+    q: 'Will this app get me a certain score?',
+    a: 'No app can promise a score, and this one does not. It gives you clear lessons, practice and a plan; the result depends on your own work and on exam day.',
+  },
+  {
+    q: 'How old do I have to be?',
+    a: `${MIN_AGE} or older to make an account. We ask for your birth month and year when you first sign in, and keep only the year.`,
+  },
+  {
+    q: 'Is this app made by the College Board?',
+    a: `No. ${TRADEMARK_NOTICE}`,
   },
 ]
 
@@ -128,6 +139,7 @@ export function FaqPage() {
           </details>
         ))}
       </div>
+      <Trademark style={{ marginTop: 14 }} />
     </div>
   )
 }
@@ -167,14 +179,14 @@ export function FeedbackPage() {
       }
     }
     setVia('email')
-    const subject = `AP Learning feedback: ${kind.replace(/^\S+\s/, '')}`
+    const subject = `${BRAND.name} feedback: ${kind.replace(/^\S+\s/, '')}`
     const body = [
       text.trim(),
       '',
       `Type: ${kind}`,
       mood ? `Feeling: ${mood}` : '',
       `From: ${user.name}`,
-      `Sent from the AP Learning app, ${new Date().toLocaleDateString()}`,
+      `Sent from the ${BRAND.name} app, ${new Date().toLocaleDateString()}`,
     ]
       .filter((l, i) => i === 1 || l)
       .join('\n')
@@ -261,7 +273,12 @@ export function PrivacyText() {
       <div className="card small stack">
         <b>What we keep</b>
         <ul className="rich" style={{ paddingLeft: 20, margin: 0 }}>
-          <li>Your Google name, email and profile picture (to sign you in), and the country you signed up from.</li>
+          <li>Your Google name, email and profile picture (to sign you in), the country you signed up from, and the campaign tags on the link you arrived by, if it had any.</li>
+          <li>
+            Your birth year. We ask for the month and year when you make an account, to check you are {MIN_AGE} or older, and keep only the
+            year. If you are younger, no account is made and nothing about you is stored.
+          </li>
+          <li>Error reports you send from a lesson, with the lesson and card they are about. Signed in, they carry your name and email; as a guest they carry neither.</li>
           <li>Your progress: lessons, answers, flashcards, notes, settings and study plans, so they sync to your devices.</li>
           <li>Learning statistics: how long you actively study each topic and how often you get questions right, so the app can spot tricky topics and offer tips.</li>
           <li>Your plan and payment status. Card details are handled by Stripe and never reach us.</li>
@@ -269,6 +286,14 @@ export function PrivacyText() {
             Before you sign in: an anonymous visit count. A random ID is kept in your browser, with your country, the kind of device, the site or
             link that brought you here and which parts of the welcome page you saw. It holds no name or email unless you type them into the
             "Tell me when my course is ready" form. Browsers that send a "Do Not Track" or Global Privacy Control signal are not counted.
+          </li>
+          <li>
+            In the European Union, the rest of the European Economic Area and the United Kingdom, that visit count is switched off: no ID is
+            made in your browser and nothing is stored about your visit.
+          </li>
+          <li>
+            The "Tell me when my course is ready" form: your email, whether you are a parent or a student, and that you said you are {MIN_AGE} or
+            older. Students get one email, when their course is ready. Only parents may be sent news about {BRAND.name}.
           </li>
         </ul>
         <b>How it is used</b>
@@ -286,7 +311,9 @@ export function PrivacyText() {
           Paid plans renew monthly until cancelled. Cancel anytime from Plans; you keep access until the end of the month you paid for.
           A parent or guardian should make the purchase.
         </p>
-        <p className="muted" style={{ margin: 0 }}>AP® is a trademark of College Board, which is not affiliated with this app.</p>
+        <b>No promised results</b>
+        <p style={{ margin: 0 }}>{BRAND.name} is a study aid. It does not promise any exam score, grade or college credit.</p>
+        <Trademark />
       </div>
   )
 }
