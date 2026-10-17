@@ -62,7 +62,7 @@ export interface Plan {
 }
 
 export const PLANS: Record<PlanId, Plan> = {
-  free: { id: 'free', name: 'Free', price: 0, courses: 1, blurb: 'Any 1 course, every lesson and practice exam' },
+  free: { id: 'free', name: 'Free', price: 0, courses: 2, blurb: 'Any 2 courses, every lesson and practice exam' },
   three: { id: 'three', name: 'Trio', price: 5.99, courses: 3, blurb: 'Any 3 courses' },
   all: { id: 'all', name: 'Everything', price: 12.99, courses: null, blurb: 'Every course, including new ones as they arrive' },
 }

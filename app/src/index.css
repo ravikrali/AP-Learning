@@ -410,6 +410,8 @@ textarea.admin-input { resize: vertical; }
 .btn.danger { background: var(--oops); color: #fff; }
 .btn:disabled { opacity: 0.55; }
 .pill.good { color: var(--good); border-color: var(--good); }
+a.pill { color: var(--text); text-decoration: none; }
+a.pill.on { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
 .pill.warn { color: var(--warm); border-color: var(--warm); }
 .chips .chip.soon { border-style: dashed; color: var(--muted); }
 .chips .chip.soon small { font-size: 11px; opacity: 0.8; margin-left: 4px; }
@@ -605,3 +607,9 @@ textarea.admin-input { resize: vertical; }
 .lead-form label.check input { width: 20px; height: 20px; flex-shrink: 0; padding: 0; accent-color: var(--primary); }
 .trademark { line-height: 1.4; }
 .zoom-btn { padding: 8px 14px; font-size: 14px; border-radius: 12px; }
+
+/* Formulas & tables (Statistics) */
+.row.wrap { flex-wrap: wrap; align-items: flex-end; }
+.calc-field { display: flex; flex-direction: column; gap: 2px; }
+.calc-field input { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); }
+.calc-out { padding-bottom: 6px; line-height: 1.5; }

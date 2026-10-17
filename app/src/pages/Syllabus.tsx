@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
-import { COURSES } from '../content'
-import { CED_TOPICS, CED_UNITS } from '../content/chem/ced'
+import { Link, useParams } from 'react-router-dom'
+import { COURSES, cedInfo } from '../content'
 import { useApp } from '../lib/app'
 import { TopBar } from '../components/bits'
 import { lessonStatuses } from '../lib/progress'
@@ -8,17 +7,22 @@ import { lessonStatuses } from '../lib/progress'
 /** Every official College Board topic, the lesson(s) that teach it, and whether it's done. */
 export function SyllabusPage() {
   const { db } = useApp()
+  const { courseId } = useParams()
+  const course = COURSES.find((c) => c.id === courseId)
+  const ced = cedInfo(course?.id)
   const statuses = lessonStatuses(db)
-  const lessons = COURSES[0].units.flatMap((u) => u.lessons)
+  if (!course || !ced) return <TopBar title="Not found" back="/learn" />
+  const { topics: CED_TOPICS, units: CED_UNITS } = ced
+  const lessons = course.units.flatMap((u) => u.lessons)
   const byTopic = (t: string) => lessons.filter((l) => l.ced.includes(t))
   const topics = Object.keys(CED_TOPICS)
   const doneTopics = topics.filter((t) => byTopic(t).length && byTopic(t).every((l) => statuses.get(l.id) === 'done')).length
 
   return (
     <div>
-      <TopBar title="Syllabus checklist" back="/course/chem" />
+      <TopBar title="Syllabus checklist" back={`/course/${course.id}`} />
       <p className="small muted" style={{ marginTop: 0 }}>
-        All {topics.length} topics from the official AP® Chemistry Course and Exam Description (College Board, effective Fall 2024),
+        All {topics.length} topics from the official {course.title} Course and Exam Description (College Board, effective {ced.version}),
         each linked to the lesson that teaches it. {doneTopics} of {topics.length} topics completed.
       </p>
       {CED_UNITS.map((u) => (

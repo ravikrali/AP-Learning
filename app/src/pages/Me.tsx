@@ -158,7 +158,7 @@ export function MePage() {
               ? 'Every course included'
               : account.courses.length
                 ? account.courses.map(courseTitle).join(', ')
-                : 'Choose your free course'}
+                : 'Choose your free courses'}
           </span>
         </span>
         <span className="muted">›</span>
@@ -291,8 +291,9 @@ export function MePage() {
       <div className="section-title">About the content</div>
       <div className="card small">
         <p style={{ marginTop: 0 }}>
-          Lessons follow the official <b>AP® Chemistry Course and Exam Description (effective Fall 2024)</b> from College Board. Each
-          lesson lists the CED topic it covers. Constants match the AP® Chemistry Equations &amp; Constants sheet. Every answer
+          Lessons follow College Board's official Course and Exam Descriptions: <b>AP® Chemistry (effective Fall 2024)</b> and the
+          redesigned <b>AP® Statistics (effective Fall 2026)</b>. Each lesson lists the CED topic it covers. Chemistry constants match
+          the AP® Chemistry Equations &amp; Constants sheet; Statistics formulas match the AP® Statistics formula sheet. Every answer
           that involves a calculation is re-checked automatically by the app's test suite.
         </p>
         <Trademark className="muted" />

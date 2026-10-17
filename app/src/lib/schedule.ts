@@ -21,6 +21,8 @@ export interface PlanAnswers {
 export interface PlanExtras {
   exams?: { id: string; name: string; minutes: number }[]
   frqs?: { id: string; title: string }[]
+  /** base path of the course's practice exams (default /exam) */
+  path?: string
 }
 
 const CARDS_MIN = 5 // flashcard review at the start of each session (sessions of 20+ minutes)
@@ -108,10 +110,10 @@ export function buildPlan(course: Course, a: PlanAnswers, done: Set<string>, ext
     const items: PlanItem[] = []
     const slot = r % 3
     const e = examFor(a.minutes)
-    if (slot === 0 && e) items.push({ k: 'exam', id: e.id, t: `Practice exam: ${e.name}`, m: e.minutes, to: `/exam/mc/${e.id}` })
+    if (slot === 0 && e) items.push({ k: 'exam', id: e.id, t: `Practice exam: ${e.name}`, m: e.minutes, to: `${extras.path ?? '/exam'}/mc/${e.id}` })
     else if (slot === 1 && frqs.length) {
       const f = frqs[Math.floor(r / 3) % frqs.length]
-      items.push({ k: 'frq', id: f.id, t: `Free response: ${f.title}`, m: FRQ_MIN, to: `/exam/frq/${f.id}` })
+      items.push({ k: 'frq', id: f.id, t: `Free response: ${f.title}`, m: FRQ_MIN, to: `${extras.path ?? '/exam'}/frq/${f.id}` })
     } else if (units.length) {
       const u = units[r % units.length]
       items.push({ k: 'review', id: u.id, t: `Review Unit ${u.number}: ${u.title} (checkpoint)`, m: CHECKPOINT_MIN, to: `/course/${course.id}/unit/${u.id}/checkpoint` })

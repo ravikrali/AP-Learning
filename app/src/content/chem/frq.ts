@@ -1,23 +1,9 @@
 // Original AP-style free-response practice (format per the CED: 3 long × 10 pts, 4 short × 4 pts).
 // Each rubric item is worth 1 point. Numbers are re-checked by the test suite via `verify`.
 import { CONST, molarMass } from '../../lib/chem'
+import type { Frq } from '../types'
 
-export interface FrqPart {
-  label: string
-  prompt: string
-  answer: string
-  rubric: string[]
-  verify?: { stated: number; compute: () => number; tol?: number }[]
-}
-
-export interface Frq {
-  id: string
-  title: string
-  kind: 'long' | 'short'
-  units: number[]
-  intro: string
-  parts: FrqPart[]
-}
+export type { Frq, FrqPart } from '../types'
 
 const R = CONST.R_Latm
 const F = CONST.F
