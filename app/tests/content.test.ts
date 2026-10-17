@@ -1,11 +1,9 @@
 // Content verification: run with `npm test`. A build should never ship if any of these fail.
 import { describe, expect, it } from 'vitest'
-import { COURSES } from '../src/content'
+import { COURSES, cedInfo, examInfo } from '../src/content'
 import type { Card, Lesson, Question } from '../src/content/types'
-import { CED_TOPICS } from '../src/content/chem/ced'
 import { checkBalanced, parseFormula, stripSpecies } from '../src/lib/chem'
 
-const chem = COURSES.find((c) => c.id === 'chem')!
 const lessons: Lesson[] = COURSES.flatMap((c) => c.units.flatMap((u) => u.lessons))
 
 function allQuestions(): { q: Question; where: string }[] {
@@ -165,30 +163,60 @@ describe('chemistry notation', () => {
 })
 
 describe('College Board coverage', () => {
+  it('every built course has its CED topic list, exam info and edition', () => {
+    for (const c of COURSES) {
+      expect(cedInfo(c.id), c.id).toBeDefined()
+      expect(examInfo(c.id), c.id).toBeDefined()
+      expect(cedInfo(c.id)!.version, c.id).toBe(c.cedVersion)
+    }
+  })
+
   it('only real CED topic numbers are referenced', () => {
-    for (const l of chem.units.flatMap((u) => u.lessons)) for (const t of l.ced) expect(CED_TOPICS[t], `${l.id} → ${t}`).toBeDefined()
+    for (const c of COURSES) {
+      const topics = cedInfo(c.id)!.topics
+      for (const l of c.units.flatMap((u) => u.lessons)) for (const t of l.ced) expect(topics[t], `${l.id} → ${t}`).toBeDefined()
+    }
   })
 
   it('every CED topic in each included unit is taught', () => {
-    const covered = new Set(chem.units.flatMap((u) => u.lessons.flatMap((l) => l.ced)))
-    const included = new Set(chem.units.map((u) => u.number))
-    const missing = Object.keys(CED_TOPICS).filter((t) => included.has(Number(t.split('.')[0])) && !covered.has(t))
-    expect(missing).toEqual([])
+    for (const c of COURSES) {
+      const covered = new Set(c.units.flatMap((u) => u.lessons.flatMap((l) => l.ced)))
+      const included = new Set(c.units.map((u) => u.number))
+      const missing = Object.keys(cedInfo(c.id)!.topics).filter((t) => included.has(Number(t.split('.')[0])) && !covered.has(t))
+      expect(missing, c.id).toEqual([])
+    }
+  })
+
+  it('unit weights match the CED', () => {
+    for (const c of COURSES)
+      for (const u of c.units.filter((x) => x.number > 0)) {
+        const official = cedInfo(c.id)!.units.find((x) => x.number === u.number)
+        expect(official, `${u.id}`).toBeDefined()
+        expect(u.weight, u.id).toBe(official!.weight)
+        expect(u.title, u.id).toBe(official!.title)
+      }
   })
 })
 
-import { CHEM_FRQS } from '../src/content/chem/frq'
+const POINTS: Record<string, number> = { long: 10, short: 4, q1: 10, q2: 10, q3: 10, q4: 10 }
+const allFrqs = COURSES.flatMap((c) => examInfo(c.id)!.frqs)
 
 describe('free-response practice', () => {
-  it('long FRQs are worth 10 points and short ones 4, like the real exam', () => {
-    for (const f of CHEM_FRQS) {
-      const pts = f.parts.reduce((n, p) => n + p.rubric.length, 0)
-      expect(pts, f.id).toBe(f.kind === 'long' ? 10 : 4)
-    }
+  it('each FRQ is worth what that question type is worth on the real exam', () => {
+    for (const c of COURSES)
+      for (const f of examInfo(c.id)!.frqs) {
+        const pts = f.parts.reduce((n, p) => n + p.rubric.length, 0)
+        expect(examInfo(c.id)!.frqKinds[f.kind], `${f.id} kind`).toBeDefined()
+        expect(pts, f.id).toBe(POINTS[f.kind])
+      }
+  })
+  it('FRQ ids are unique across courses', () => {
+    const ids = allFrqs.map((f) => f.id)
+    expect(ids.length).toBe(new Set(ids).size)
   })
   it('FRQ numbers match their computation and equations balance', () => {
     const problems: string[] = []
-    for (const f of CHEM_FRQS) {
+    for (const f of allFrqs) {
       for (const p of f.parts) {
         for (const v of p.verify ?? []) {
           const truth = v.compute()

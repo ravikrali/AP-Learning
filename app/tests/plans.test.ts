@@ -19,18 +19,19 @@ describe('catalog & plans', () => {
   })
 
   test('pick limits and opening', () => {
-    expect(pickLimit('free')).toBe(1)
+    expect(pickLimit('free')).toBe(2)
     expect(pickLimit('three')).toBe(3)
     expect(canOpen({ plan: 'free', courses: ['chem'] }, 'chem')).toBe(true)
     expect(canOpen({ plan: 'free', courses: ['chem'] }, 'bio')).toBe(false)
     expect(canOpen({ plan: 'all', courses: [] }, 'bio')).toBe(true)
-    expect(trimPicks('free', ['chem', 'bio', 'stats'])).toEqual(['chem'])
+    expect(trimPicks('free', ['chem', 'bio', 'stats'])).toEqual(['chem', 'bio'])
   })
 
   test('changing picked courses', () => {
     const now = new Date('2026-10-09T00:00:00Z')
     expect(checkPickChange('free', [], ['chem'], null, now)).toBeNull()
-    expect(checkPickChange('free', ['chem'], ['chem', 'bio'], null, now)).toMatch(/Upgrade/)
+    expect(checkPickChange('free', ['chem'], ['chem', 'stats'], null, now)).toBeNull()
+    expect(checkPickChange('free', ['chem', 'stats'], ['chem', 'stats', 'bio'], null, now)).toMatch(/Upgrade/)
     expect(checkPickChange('three', ['chem'], ['chem', 'bio', 'stats'], null, now)).toBeNull()
     expect(checkPickChange('three', ['chem'], ['nope'], null, now)).toBe('Unknown course')
     expect(checkPickChange('free', ['chem'], ['chem', 'chem'], null, now)).toMatch(/twice/)

@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
-import { BUILT, CATALOG, COURSES } from '../content'
-import { CATEGORIES } from '../../shared/catalog'
+import { BUILT, CATALOG, COURSES, examInfo } from '../content'
+import { CATEGORIES, pickLimit } from '../../shared/catalog'
 import { openable, toggleInterest, useAccount } from '../lib/account'
 import { getPlan } from '../lib/plans'
 import { CourseGate } from './Plans'
@@ -18,6 +18,7 @@ export function LearnPage() {
   const mine = COURSES.filter((c) => openable(a, c.id))
   const ready = CATALOG.filter((c) => BUILT.has(c.id) && !mine.some((m) => m.id === c.id))
   const soon = CATALOG.filter((c) => !BUILT.has(c.id))
+  const slots = a.plan === 'all' ? 0 : pickLimit(a.plan) - a.courses.length
   return (
     <div>
       <TopBar title="Learn" />
@@ -49,7 +50,7 @@ export function LearnPage() {
       {mine.length === 0 && (
         <div className="card notice">
           <b>Pick your first course</b>
-          <div className="small">Your free plan includes any one course. Tap a course under Ready now to start.</div>
+          <div className="small">Your free plan includes any two courses. Tap a course under Ready now to start.</div>
         </div>
       )}
 
@@ -62,7 +63,7 @@ export function LearnPage() {
                 <span className="cat-emoji">{c.emoji}</span>
                 <span className="grow">
                   <b>{c.title}</b>
-                  <span className="small muted">Tap to start</span>
+                  <span className="small muted">{slots > 0 ? `Tap to add · ${slots} free slot${slots === 1 ? '' : 's'} left` : 'Tap to see how to add it'}</span>
                 </span>
                 <span className="muted">›</span>
               </Link>
@@ -141,7 +142,7 @@ function CourseMap({ course }: { course: Course }) {
         <span className="muted">›</span>
       </Link>
       <div className="row" style={{ marginBottom: 14 }}>
-        <Link to="/exam" className="btn secondary grow">🎓 Practice exams</Link>
+        <Link to={examInfo(course.id)?.path ?? '/exam'} className="btn secondary grow">🎓 Practice exams</Link>
         <Link to={`/course/${course.id}/syllabus`} className="btn secondary grow">📋 Syllabus</Link>
       </div>
       <div className="stack">

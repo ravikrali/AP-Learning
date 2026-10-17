@@ -107,3 +107,22 @@ export interface GlossaryEntry {
   /** text the lesson must contain (defaults to the term); checked by the test suite */
   find?: string
 }
+
+export interface FrqPart {
+  label: string
+  prompt: string
+  answer: string
+  /** one point each */
+  rubric: string[]
+  verify?: { stated: number; compute: () => number; tol?: number }[]
+}
+
+export interface Frq {
+  id: string
+  title: string
+  /** question type, e.g. 'long' / 'short' (Chemistry) or 'q1' … 'q4' (Statistics); labels come from the course's exam info */
+  kind: string
+  units: number[]
+  intro: string
+  parts: FrqPart[]
+}

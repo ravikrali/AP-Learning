@@ -52,7 +52,7 @@ export function CourseGate({ courseId, children }: { courseId: string; children:
             <p>
               {a.plan === 'free' ? (
                 <>
-                  Your free plan includes <b>one course</b>. Make <b>{title}</b> yours?
+                  Your free plan includes <b>two courses</b>{a.courses.length ? <> and you have {limit - a.courses.length} left</> : null}. Add <b>{title}</b>?
                 </>
               ) : (
                 <>

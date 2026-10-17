@@ -24,13 +24,32 @@ import { loadVideos, type VideoEntry } from '../components/bits'
 // ---------- lesson picker ----------
 
 function useLessonPicker() {
-  const course = COURSES[0]
+  const [courseId, setCourseId] = useState(COURSES[0].id)
+  const course = COURSES.find((c) => c.id === courseId) ?? COURSES[0]
   const [unitId, setUnitId] = useState(course.units[0].id)
   const unit = course.units.find((u) => u.id === unitId) ?? course.units[0]
   const [lessonId, setLessonId] = useState(unit.lessons[0].id)
   const lesson = unit.lessons.find((l) => l.id === lessonId) ?? unit.lessons[0]
   const picker = (
     <div className="card stack">
+      <label className="field">
+        <span>Course</span>
+        <select
+          value={course.id}
+          onChange={(e) => {
+            const c = COURSES.find((x) => x.id === e.target.value)!
+            setCourseId(c.id)
+            setUnitId(c.units[0].id)
+            setLessonId(c.units[0].lessons[0].id)
+          }}
+        >
+          {COURSES.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.title}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="field">
         <span>Unit</span>
         <select

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { COURSES, builtInYoutube, findLesson, glossary, glossaryCard, plainText } from '../content'
 import { openable, useAccount } from '../lib/account'
 import { useApp } from '../lib/app'
@@ -8,34 +8,70 @@ import { renderInline } from '../lib/RichText'
 import { TopBar } from '../components/bits'
 import { track } from '../lib/track'
 
-/** The course whose glossary to show: her first course, or the first one that is built. */
-function useMainCourse() {
+/** Her courses (or the first built one, before she picks any). */
+function useMyCourses() {
   const a = useAccount()
-  return COURSES.find((c) => openable(a, c.id)) ?? COURSES[0]
+  const mine = COURSES.filter((c) => openable(a, c.id))
+  return mine.length ? mine : [COURSES[0]]
+}
+
+/** The course whose glossary or videos to show: ?course=… if it is one of hers, else her first course. */
+function useMainCourse() {
+  const mine = useMyCourses()
+  const [sp] = useSearchParams()
+  return mine.find((c) => c.id === sp.get('course')) ?? mine[0]
+}
+
+/** Course chips when she has more than one course. */
+function CourseSwitch({ path }: { path: string }) {
+  const mine = useMyCourses()
+  const current = useMainCourse()
+  if (mine.length < 2) return null
+  return (
+    <div className="row" style={{ gap: 8, flexWrap: 'wrap', marginBottom: 10 }} role="tablist">
+      {mine.map((c) => (
+        <Link key={c.id} to={`${path}?course=${c.id}`} replace className={`pill${c.id === current.id ? ' on' : ''}`} role="tab" aria-selected={c.id === current.id}>
+          {c.emoji} {c.short}
+        </Link>
+      ))}
+    </div>
+  )
 }
 
 export function MorePage() {
   const { user } = useApp()
-  const course = useMainCourse()
-  const terms = glossary(course.id).length
+  const mine = useMyCourses()
+  const has = (id: string) => mine.some((c) => c.id === id)
+  const terms = mine.reduce((n, c) => n + glossary(c.id).length, 0)
   return (
     <div>
       <TopBar title="More" />
       <div className="more-grid">
-        <Link to="/more/periodic-table" className="more-btn">
-          <span className="more-ico" aria-hidden>
-            <PeriodicIcon />
-          </span>
-          <b>Periodic table</b>
-          <span className="small muted">Tap any element for quick facts</span>
-        </Link>
-        <Link to="/more/glossary" className="more-btn">
+        {has('chem') && (
+          <Link to="/more/periodic-table" className="more-btn">
+            <span className="more-ico" aria-hidden>
+              <PeriodicIcon />
+            </span>
+            <b>Periodic table</b>
+            <span className="small muted">Tap any element for quick facts</span>
+          </Link>
+        )}
+        {has('stats') && (
+          <Link to="/more/stats-tables" className="more-btn">
+            <span className="more-ico" aria-hidden>
+              📈
+            </span>
+            <b>Formulas & tables</b>
+            <span className="small muted">The AP® formula sheet, plus z, t and χ² calculators</span>
+          </Link>
+        )}
+        <Link to="/more/glossary" className={`more-btn${(Number(has('chem')) + Number(has('stats'))) % 2 === 0 ? ' wide' : ''}`}>
           <span className="more-ico" aria-hidden>
             📖
           </span>
           <b>Glossary</b>
           <span className="small muted">
-            {terms} key terms · {course.short}
+            {terms} key terms · {mine.map((c) => c.short).join(' · ')}
           </span>
         </Link>
         <Link to="/more/videos" className="more-btn wide">
@@ -99,6 +135,7 @@ export function GlossaryPage() {
   return (
     <div>
       <TopBar title="Glossary" back="/more" />
+      <CourseSwitch path="/more/glossary" />
       <p className="small muted" style={{ marginTop: 0 }}>
         {course.title}: {all.length} key terms. Tap a term to open the topic that explains it.
       </p>
@@ -185,6 +222,7 @@ export function VideoLinksPage() {
   return (
     <div>
       <TopBar title="Video links" back="/more" />
+      <CourseSwitch path="/more/videos" />
       <p className="small muted" style={{ marginTop: 0 }}>
         {course.title}: {total} popular YouTube videos, by unit and topic. They open on YouTube.
       </p>

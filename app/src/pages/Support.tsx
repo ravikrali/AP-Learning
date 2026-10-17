@@ -67,7 +67,7 @@ export function HelpPage() {
 const FAQ: { q: string; a: string }[] = [
   {
     q: 'Is the content accurate?',
-    a: "Lessons follow College Board's official AP® Chemistry Course and Exam Description (effective Fall 2024), and each lesson lists the CED topics it covers. Every calculated answer and every chemical equation is re-checked by automated tests before each update. If you ever spot something that looks wrong, tap \"Report an error\" under that lesson card. Fixes are listed under More → Corrections.",
+    a: "Lessons follow College Board's official Course and Exam Description for each course (AP® Chemistry: effective Fall 2024; AP® Statistics: the redesigned course, effective Fall 2026), and each lesson lists the CED topics it covers. Every calculated answer, every chemical equation and every statistics result is re-checked by automated tests before each update. If you ever spot something that looks wrong, tap \"Report an error\" under that lesson card. Fixes are listed under More → Corrections.",
   },
   {
     q: 'Do I have to do the units in order?',
@@ -87,11 +87,11 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'How are the practice exams built?',
-    a: 'Multiple-choice questions are drawn from every unit in proportion to the official exam weighting (for example, Unit 3 carries 18–22%). The free-response questions are scored with a point-by-point rubric, like the real exam.',
+    a: 'Multiple-choice questions are drawn from every unit in proportion to the official exam weighting (for example, Unit 3 of AP® Chemistry carries 18–22%). The free-response questions are scored with a point-by-point rubric, like the real exam.',
   },
   {
     q: 'Can I use a calculator on the real exam?',
-    a: 'Yes. A calculator is allowed on both sections of the AP® Chemistry exam, and you get the equations and constants sheet and a periodic table.',
+    a: 'Yes, on both sections of the AP® Chemistry exam (with the equations and constants sheet and a periodic table) and of the AP® Statistics exam, where a graphing calculator with statistics features is expected and you get a formula sheet and z, t and χ² tables. In the app, More → Formulas & tables has the Statistics sheet and calculators.',
   },
   {
     q: 'Why do flashcards come back on different days?',
@@ -99,7 +99,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What do the plans include?',
-    a: 'Free: any 1 course. Trio ($5.99/month): any 3 courses. Everything ($12.99/month): every course, including new ones as they are added. Every plan includes all lessons, checkpoints, practice exams, study plans and sync. Cancel anytime; you keep access until the end of the month you paid for.',
+    a: 'Free: any 2 courses. Trio ($5.99/month): any 3 courses. Everything ($12.99/month): every course, including new ones as they are added. Every plan includes all lessons, checkpoints, practice exams, study plans and sync. Cancel anytime; you keep access until the end of the month you paid for.',
   },
   {
     q: 'Can I change which courses I picked?',
@@ -107,7 +107,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Which courses are coming?',
-    a: 'All 21 AP® courses listed under Learn. AP® Chemistry is ready now. Tap a "coming soon" course to tell us you want it; the most-wanted courses are written first.',
+    a: 'All 21 AP® courses listed under Learn. AP® Chemistry and AP® Statistics are ready now. Tap a "coming soon" course to tell us you want it; the most-wanted courses are written first.',
   },
   {
     q: 'What do you do with my study data?',

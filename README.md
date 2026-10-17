@@ -1,33 +1,34 @@
 # AP Learning: AP study app (PWA)
 
-A friendly, gamified study app for AP courses. AP Chemistry is complete; the catalog lists all 21 courses that are planned (`app/shared/catalog.ts`), and the rest show as "coming soon". It is a Progressive Web App (PWA), so it can be installed on a phone like a regular app, and it works offline once loaded.
+A friendly, gamified study app for AP courses. AP Chemistry and AP Statistics are complete; the catalog lists all 21 courses that are planned (`app/shared/catalog.ts`), and the rest show as "coming soon". It is a Progressive Web App (PWA), so it can be installed on a phone like a regular app, and it works offline once loaded.
 
 ## What's inside
 
 | | |
 |---|---|
-| **Course content** | Unit 0 "Chemistry Toolkit" (prerequisites) + Units 1–9, **98 lessons** covering **all 91 topics** of the College Board *AP Chemistry Course and Exam Description* (effective Fall 2024). Each unit is ordered Foundation → Core → Advanced. |
+| **Course content** | **AP Chemistry:** Unit 0 "Chemistry Toolkit" (prerequisites) + Units 1–9, **98 lessons** covering **all 91 topics** of the College Board *AP Chemistry Course and Exam Description* (effective Fall 2024). **AP Statistics:** Unit 0 "Statistics Toolkit" + Units 1–5, **63 lessons** covering **all 55 topics** of the redesigned *AP Statistics Course and Exam Description* (effective Fall 2026). Each unit is ordered Foundation → Core → Advanced. |
 | **Each lesson** (5–11 min) | Hook → key idea (with diagrams) → step-by-step worked example → "your turn" question → smart tricks → common traps → FRQ tips → summary → quick-check questions. |
-| **Practice** | 391 questions with explanations, a checkpoint quiz per unit (1–3 stars), mock multiple-choice sections (15 / 30 / 60 questions, weighted like the real exam, optional timer), and 7 self-scored free-response questions in the real exam format. |
-| **Memory** | 262 flashcards with spaced review (Leitner boxes), capped at 15 a day so it never piles up. |
+| **Practice** | Questions with explanations (391 Chemistry, 244 Statistics), a checkpoint quiz per unit (1–3 stars), mock multiple-choice sections weighted like the real exam with an optional timer (Chemistry 15 / 30 / 60, Statistics 14 / 21 / 42 questions), and self-scored free-response questions in each exam's real format (Chemistry: 7, long 10 / short 4 points; Statistics: 8, two of each of the four 10-point question types). |
+| **Memory** | 399 flashcards (262 Chemistry, 137 Statistics) with spaced review (Leitner boxes), capped at 15 a day so it never piles up. |
 | **Motivation** | XP and levels, a kind streak (one missed day never breaks it), a weekly goal, and 25 badges. |
 | **Review page** | One place for everything to look at again: today's flashcards, **bookmarked topics** (tap the bookmark at the top of any topic) and all **notes** (a notes button on every lesson; searchable). |
 | **Search** | 🔍 on the Course, Unit and Topic pages searches the lessons (whole course, one unit, or one topic) and opens the exact card. Glossary terms match first. |
 | **Unit tips** | 💡 at the top right of every unit page lists all the smart tricks, shortcuts and traps for that unit. |
-| **More** | An interactive **periodic table** (tap an element for quick insights; color by family, electronegativity or state) a **glossary** of 130 key terms that link to the card that explains each one, and **Video links**: every topic's YouTube links on one page, by unit and topic. |
+| **More** | Per course: an interactive **periodic table** for Chemistry (tap an element for quick insights; color by family, electronegativity or state) and **Formulas & tables** for Statistics (the AP formula sheet plus normal, t and χ² calculators), a **glossary** (130 Chemistry / 131 Statistics terms) that links to the card that explains each term, and **Video links**: every topic's YouTube links on one page, by unit and topic. Students with several courses switch between them with chips at the top. |
 | **Study plans** | Six questions (exam date, study days, session length, time, start unit, review weeks) build a day-by-day plan that spreads the remaining lessons evenly and fills the final weeks with practice exams, FRQs and checkpoint retakes. Subscribe in Google/Apple/Outlook Calendar (a private feed at `/api/cal/<token>.ics` that updates itself) or download an .ics file. |
 | **Tricky topics & tips** | Active study time (visible tab + recent touch) and first-try accuracy are tracked per lesson. Struggling topics get a "Quick tip" button and a Home card with the lesson's own smart tricks and traps (never generated text), a step back and videos. |
 | **YouTube links** | Two popular, on-topic videos per lesson (most-viewed relevant result + an AP-topic video, chosen Oct 2026 and checked to exist), plus a search link. Admins can replace them. |
-| **Syllabus checklist** | Learn → AP Chemistry → 📋 Syllabus shows every official topic, the lesson that teaches it, and whether it's done. |
+| **Syllabus checklist** | Learn → a course → 📋 Syllabus shows every official topic, the lesson that teaches it, and whether it's done. |
 
 Progress and notes are written first to a real SQLite database inside the browser (sql.js/WebAssembly, saved to IndexedDB), so everything works offline. When signed in with Google, changes sync through the Cloudflare backend to every device on the same account (see **Backend** below). Guests stay device-only. *Me → Save a backup file* still exports the local database.
 
 ## How accuracy is protected
 
 - The lessons follow the official CED text. Topic numbers are shown on every lesson.
-- `npm test` (90 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic is taught, that MCQ keys are valid, and that FRQ point totals match the real exam (10 / 4). It also checks the periodic table (118 elements, every electron configuration adds up to the atomic number, masses match the lessons, positions) and that every glossary term points at a lesson that uses it.
+- `npm test` (147 automated checks) re-computes **every numeric answer and worked-example number** independently, checks that **every chemical equation is balanced** in atoms and charge, that every formula parses, that every CED topic of every course is taught, that unit titles and weights match the CED, that MCQ keys are valid, and that FRQ point totals match the real exam (Chemistry 10 / 4, Statistics 10). For Statistics, `app/src/lib/stats.ts` (normal, t, χ², binomial, intervals, tests, regression) is checked against the values printed in the CED's own z, t and χ² tables and its sample-question answers, and a markup check makes sure symbols like t^{∗} can't break formatting. It also checks the periodic table (118 elements, every electron configuration adds up to the atomic number, masses match the lessons, positions) and that every glossary term points at a lesson that uses it.
 - Element data comes from PubChem (U.S. National Institutes of Health, public domain); `app/src/content/elementData.ts` is generated from it, not typed by hand.
-- Two independent expert review passes checked every unit for chemistry errors. Their findings were fixed.
+- Two independent expert review passes checked every Chemistry unit for errors. Their findings were fixed.
+- Statistics was written from the Fall 2026 CED (downloaded Oct 17, 2026 into `docs/courses/stats/source/`, not committed). Worked examples use small data sets in `app/src/content/stats/data.ts` that the tests recompute, so figures and lessons can never disagree. See `docs/courses/stats/` for the outline, progress and accuracy notes.
 - Multiple-choice options are shuffled each time a question is shown, so the right answer isn't always in the same position.
 
 ## Run it on this computer
@@ -131,6 +132,9 @@ app/
   src/content/chem/u0.ts … u9.ts   lessons, questions, flashcards (one file per unit)
   src/content/chem/frq.ts           free-response practice
   src/content/chem/ced.ts           official CED topic list (used for coverage)
+  src/content/stats/                AP Statistics: u0–u5, frq, ced, glossary, youtube, data (shared data sets), diagrams
+  src/lib/stats.ts                  statistics functions used to verify content and power Formulas & tables
+  src/pages/StatsTables.tsx         Formulas & tables page (Statistics)
   src/content/diagrams.tsx          SVG diagrams
   src/lib/db.ts                     local SQLite storage, sync outbox triggers, backup/restore
   src/lib/sync.ts                   device ↔ account sync
@@ -164,7 +168,7 @@ The name, logo mark, domain and contact email are in `app/shared/brand.ts`; chan
 
 Every lesson needs a `cedVersion` tag (the CED edition it was checked against, e.g. `'Fall 2024'`) and the course a matching `cedVersion`; `npm test` fails on a mismatch. When College Board publishes a new edition, change the course's edition, re-check each lesson, and update each lesson's tag by hand as you go.
 
-The engine is subject-agnostic. Write the course in `app/src/content/<course>/` like `chem/`, add it to `COURSES` in `app/src/content/index.ts` (its catalog id must match `shared/catalog.ts`), add its YouTube list, glossary and practice-exam extras, and extend the tests.
+The engine is subject-agnostic. Write the course in `app/src/content/<course>/` like `chem/` or `stats/`, add it to `COURSES` in `app/src/content/index.ts` (its catalog id must match `shared/catalog.ts`), and register its CED topic list (`CEDS`), practice exams and FRQs (`EXAMS`), YouTube list and glossary in the same file. The generic tests then check coverage, numbers and FRQ points; add course-specific checks in `app/tests/<course>.test.ts`. The `/new-course` playbook in `docs/agent-kit` describes the full process.
 
 ---
 AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, AP Learning.

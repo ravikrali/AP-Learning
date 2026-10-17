@@ -20,6 +20,7 @@ import { CheckpointPage } from './pages/Checkpoint'
 import { ReviewPage } from './pages/Review'
 import { MorePage, GlossaryPage, VideoLinksPage } from './pages/More'
 import { PeriodicTablePage } from './pages/PeriodicTable'
+import { StatsTablesPage } from './pages/StatsTables'
 import { ErrataPage } from './pages/Errata'
 import { MePage } from './pages/Me'
 import { FaqPage, FeedbackPage, HelpPage, PrivacyPage } from './pages/Support'
@@ -151,6 +152,7 @@ export default function App() {
             <Route path="/notes" element={<Navigate to="/review?tab=notes" replace />} />
             <Route path="/more" element={<MorePage />} />
             <Route path="/more/periodic-table" element={<PeriodicTablePage />} />
+            <Route path="/more/stats-tables" element={<StatsTablesPage />} />
             <Route path="/more/glossary" element={<GlossaryPage />} />
             <Route path="/more/videos" element={<VideoLinksPage />} />
             <Route path="/more/errata" element={<ErrataPage />} />
@@ -164,6 +166,9 @@ export default function App() {
             <Route path="/exam" element={<Gated course="chem"><ExamHub /></Gated>} />
             <Route path="/exam/mc/:format" element={<Gated course="chem" kind="exam"><McExamPage /></Gated>} />
             <Route path="/exam/frq/:frqId" element={<Gated course="chem" kind="exam"><FrqPage /></Gated>} />
+            <Route path="/exam/:courseId" element={<Gated><ExamHub /></Gated>} />
+            <Route path="/exam/:courseId/mc/:format" element={<Gated kind="exam"><McExamPage /></Gated>} />
+            <Route path="/exam/:courseId/frq/:frqId" element={<Gated kind="exam"><FrqPage /></Gated>} />
             <Route path="/course/:courseId/syllabus" element={<Gated><SyllabusPage /></Gated>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
