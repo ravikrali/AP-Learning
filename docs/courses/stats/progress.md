@@ -19,11 +19,11 @@
 | Glossary (131), Formulas & tables page, YouTube (126 links, oEmbed-checked) | ✅ | ✅ | ✅ |
 
 "Self-check" = written and checked against the CED topic pages by the same author, with every number recomputed by
-the test suite. Chemistry also had two **independent** review passes; that has not been done for Statistics yet (see
+the test suite. Chemistry also had two **independent** review passes; Statistics had one on 2026-10-19 (see
 `accuracy-report.md`).
 
 ## Still to do before publishing (playbook Stage 4)
-- [ ] Independent accuracy-checker pass on all units and FRQs
+- [x] Independent accuracy-checker pass on all units and FRQs (2026-10-19, see `accuracy-report.md`)
 - [ ] Owner spot-checks 3 random lessons on a phone
 - [ ] Deploy when the owner says so (`/release`)
 - [ ] Launch pieces (Stage 5): `launch.md`, waitlist email, shorts

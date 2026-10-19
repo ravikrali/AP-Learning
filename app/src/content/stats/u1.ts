@@ -1059,7 +1059,7 @@ export const unit1: Unit = {
         },
         {
           kind: 'trap',
-          body: 'Equal chance for each **individual** is not enough for an SRS. In an SRS, every possible **group of n** must be equally likely. A cluster sample gives each person an equal chance but is not an SRS.',
+          body: 'Equal chance for each **individual** is not enough for an SRS. In an SRS, every possible **group of n** must be equally likely. A cluster sample of equal-size clusters gives each person an equal chance but is not an SRS.',
         },
         {
           kind: 'summary',

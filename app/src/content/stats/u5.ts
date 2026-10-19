@@ -391,7 +391,7 @@ export const unit5: Unit = {
         {
           kind: 'concept',
           title: 'Interpreting slope and intercept',
-          body: '- **Slope b**: the **predicted** increase (or decrease) in y for each **one-unit increase** in x. "For each additional hour studied, the **predicted** score increases by about **4.00 points**."\n- **Intercept a**: the predicted y when **x = 0**. "A student who studies 0 hours has a predicted score of about **59.12 points**."\n\nSometimes the intercept has **no reasonable meaning**: x = 0 may be far outside the data (extrapolation), or the predicted value may be impossible (like a negative height).',
+          body: '- **Slope b**: the **predicted** increase (or decrease) in y for each **one-unit increase** in x. "For each additional hour studied, the **predicted** score increases by about **4.00 points**."\n- **Intercept a**: the predicted y when **x = 0**. "A student who studies 0 hours has a predicted score of about **59.12 points**." (The data run from 1 to 8 hours, so x = 0 is a small extrapolation.)\n\nSometimes the intercept has **no reasonable meaning**: x = 0 may be far outside the data (extrapolation), or the predicted value may be impossible (like a negative height).',
         },
         {
           kind: 'concept',

@@ -243,7 +243,7 @@ export const unit4: Unit = {
             'x̄_{d} = 40 ÷ 10 = **4.0** points; s_{d} ≈ **2.62** points',
             'df = 9 → t^{∗} ≈ **1.833**; SE = 2.62 ÷ √10 ≈ 0.828',
             '4.0 ± 1.833(0.828) = (**2.48**, **5.52**) points',
-            'All positive: convincing evidence the method raises mean scores for such students.',
+            'All positive: convincing evidence that the mean score after the new method is higher than before, for all such students. With no comparison group, this alone doesn\'t show the method **caused** the gain.',
           ],
           answer: '(2.48, 5.52) points',
           verify: [

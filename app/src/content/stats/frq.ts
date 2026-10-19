@@ -10,7 +10,7 @@ const bars = tTest(11.6, 0.9, 25, 12, 'less')
 const stream = twoPropInterval(232, 400, 161, 350, 0.95)
 const SUB_X = [0, 1, 2, 3, 4]
 const SUB_P = [0.1, 0.25, 0.35, 0.2, 0.1]
-const subCi = tInterval(1.95, 1.15, 250, 0.9)
+const subCi = tInterval(1.95, 1.12, 250, 0.9)
 const drinks = (x: number) => -45.2 + 2.1 * x
 const pHot = normalcdf(160, Infinity, 144, 12)
 
@@ -347,7 +347,7 @@ export const STATS_FRQS: Frq[] = [
     kind: 'q4',
     units: [2, 4],
     intro:
-      'Let X = the number of streaming subscriptions in a randomly selected household in a town. Last year\'s town survey suggested the mean was 1.70 subscriptions. This year, a random sample of 250 households gave this distribution:\n\n| Subscriptions, X | 0 | 1 | 2 | 3 | 4 |\n| Proportion of households | 0.10 | 0.25 | 0.35 | 0.20 | 0.10 |\n\nThe sample standard deviation is 1.15 subscriptions.',
+      'Let X = the number of streaming subscriptions in a randomly selected household in a town. Last year\'s town survey suggested the mean was 1.70 subscriptions. This year, a random sample of 250 households gave this distribution:\n\n| Subscriptions, X | 0 | 1 | 2 | 3 | 4 |\n| Proportion of households | 0.10 | 0.25 | 0.35 | 0.20 | 0.10 |\n\nThe sample standard deviation is 1.12 subscriptions.',
     parts: [
       {
         label: 'A',
@@ -372,25 +372,25 @@ export const STATS_FRQS: Frq[] = [
       {
         label: 'C',
         prompt: 'Identify an inference procedure to estimate this year\'s mean number of subscriptions for all households in the town, and calculate a 90% interval. Assume conditions are met.',
-        answer: 'A **one-sample t-interval for a population mean**. 1.95 ± t^{∗}(1.15/√250), with df = 249 and t^{∗} ≈ 1.651: 1.95 ± 0.120 = (**1.830**, **2.070**) subscriptions.',
-        rubric: ['Identifies the one-sample t-interval for a population mean', 'Correct margin of error ≈ 0.120', 'Correct interval (1.830, 2.070)'],
+        answer: 'A **one-sample t-interval for a population mean**. 1.95 ± t^{∗}(1.12/√250), with df = 249 and t^{∗} ≈ 1.651: 1.95 ± 0.117 = (**1.833**, **2.067**) subscriptions.',
+        rubric: ['Identifies the one-sample t-interval for a population mean', 'Correct margin of error ≈ 0.117', 'Correct interval (1.833, 2.067)'],
         verify: [
           { stated: 1.651, compute: () => subCi.tStar, tol: 0.001 },
-          { stated: 0.12, compute: () => subCi.me, tol: 0.003 },
-          { stated: 1.83, compute: () => subCi.lo, tol: 0.001 },
-          { stated: 2.07, compute: () => subCi.hi, tol: 0.001 },
+          { stated: 0.117, compute: () => subCi.me, tol: 0.003 },
+          { stated: 1.833, compute: () => subCi.lo, tol: 0.001 },
+          { stated: 2.067, compute: () => subCi.hi, tol: 0.001 },
         ],
       },
       {
         label: 'D',
         prompt: 'Interpret the interval in context.',
-        answer: 'We are 90% confident that the interval from 1.830 to 2.070 subscriptions captures the mean number of streaming subscriptions for all households in the town this year.',
+        answer: 'We are 90% confident that the interval from 1.833 to 2.067 subscriptions captures the mean number of streaming subscriptions for all households in the town this year.',
         rubric: ['Correct interpretation with the parameter in context'],
       },
       {
         label: 'E',
         prompt: 'Is there convincing evidence that the mean has changed from last year\'s 1.70? Explain using the interval.',
-        answer: 'Yes. 1.70 is **not** in the interval (1.830, 2.070); all plausible values are higher, so there is convincing evidence the mean number of subscriptions per household has increased.',
+        answer: 'Yes. 1.70 is **not** in the interval (1.833, 2.067); all plausible values are higher, so there is convincing evidence the mean number of subscriptions per household has increased.',
         rubric: ['Concludes yes because 1.70 is outside the interval'],
       },
       {
@@ -442,13 +442,13 @@ export const STATS_FRQS: Frq[] = [
         verify: [{ stated: 38.8, compute: () => drinks(40) }],
       },
       {
-        label: 'F',
+        label: 'E',
         prompt: 'Interpret the y-intercept, or explain why it has no reasonable interpretation.',
         answer: 'The intercept −45.2 would be the predicted drinks sold on a 0 °F day. It has no reasonable interpretation: 0 °F is far outside the 65–95 °F data (extrapolation), and a negative number of drinks is impossible.',
         rubric: ['Explains that the intercept is not meaningful (x = 0 far outside the data and a negative count is impossible)'],
       },
       {
-        label: 'E',
+        label: 'F',
         prompt: 'On 90 °F days, sales are approximately normal with mean 144 drinks and standard deviation 12 drinks. (i) Find the probability of selling more than 160 drinks on a 90 °F day. (ii) Over 5 independent 90 °F days, find the probability that sales exceed 160 drinks on at least one day.',
         answer:
           '(i) z = (160 − 144) ÷ 12 ≈ 1.33; P(X > 160) ≈ **0.091**.\n(ii) P(at least one) = 1 − (1 − 0.091)^{5} ≈ **0.380**.',

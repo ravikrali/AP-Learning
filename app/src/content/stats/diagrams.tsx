@@ -391,7 +391,7 @@ function NormalRule() {
   )
 }
 
-/** Shaded area to the left of z = 1.2 and between −1 and 0.5. */
+/** Shaded area to the left of z = 1.2. */
 function NormalArea() {
   return (
     <Fig vb="0 0 420 180" caption="A probability is an area under the curve. Sketch, label and shade before you calculate.">
