@@ -155,7 +155,7 @@ export const unit4: Unit = {
           answer: 21.9,
           unit: 'g',
           hint: 'CH₄ = 16.04 g/mol, CO₂ = 44.01 g/mol, and the mole ratio is 1 : 1.',
-          explain: '8.00 g ÷ 16.04 = 0.499 mol CH₄ → 0.499 mol CO₂ × 44.01 = **21.9 g CO₂**',
+          explain: '8.00 g ÷ 16.042 g/mol = 0.4987 mol CH₄ → 0.4987 mol CO₂ × 44.01 = **21.9 g CO₂**',
           compute: () => (8.0 / molarMass('CH4')) * molarMass('CO2'),
         },
         {

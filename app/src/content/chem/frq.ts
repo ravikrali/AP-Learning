@@ -158,8 +158,8 @@ export const CHEM_FRQS: Frq[] = [
       {
         label: '(d)',
         prompt: 'Determine the pH after 12.5 mL of NaOH has been added. Justify.',
-        answer: '12.5 mL is the **half-equivalence point**: [HA] = [A⁻], so pH = pKa = −log(1.8 × 10^{-5}) = **4.75**',
-        rubric: ['Identifies the half-equivalence point ([HA] = [A⁻])', 'pH = pKa ≈ 4.75'],
+        answer: '12.5 mL is the **half-equivalence point**: [HA] = [A⁻], so pH = pKa = −log(1.76 × 10^{-5}) = **4.75** (with the rounded Ka, −log(1.8 × 10^{-5}) = 4.74; either is accepted)',
+        rubric: ['Identifies the half-equivalence point ([HA] = [A⁻])', 'pH = pKa ≈ 4.75 (4.74 from the rounded Ka)'],
         verify: [{ stated: 4.75, compute: () => -Math.log10(KaFrq3), tol: 0.005 }],
       },
       {

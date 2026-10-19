@@ -17,7 +17,7 @@ docs/courses/<courseId>/
 
 | Course | Id | Status |
 |---|---|---|
-| AP Chemistry | chem | ✅ live |
+| AP Chemistry | chem | ✅ live (Fall 2024 CED), independent review 2026-10-19 (`chem/accuracy-report.md`) |
 | AP Statistics | stats | ✅ built 2026-10-17 (Fall 2026 CED), independent review and publish pending |
 
 Before starting a course, put the current CED in `source/`. Agents will not invent the topic list.
