@@ -194,7 +194,7 @@ export const unit8: Unit = {
       cards: [
         {
           kind: 'hook',
-          body: 'Vinegar is acetic acid, but you can put it on salad! That\'s because only about **1%** of its molecules actually give up a proton. Weak acids are mostly "shy."',
+          body: 'Vinegar is acetic acid, but you can put it on salad! That\'s because fewer than **1%** of its molecules actually give up a proton. Weak acids are mostly "shy."',
         },
         {
           kind: 'concept',
@@ -207,13 +207,13 @@ export const unit8: Unit = {
           problem: 'Find the pH and percent ionization of **0.10 M CH₃COOH**.',
           steps: [
             'ICE: [H₃O⁺] = [A⁻] = x, and [HA] = 0.10 − x ≈ **0.10** (x is small)',
-            'x²/0.10 = 1.8 × 10^{-5} → x = √(1.8 × 10^{-6}) = **1.3 × 10^{-3} M**',
-            'pH = −log(1.3 × 10^{-3}) = **2.87**',
-            '% ionization = x/[HA]₀ × 100 = (1.3 × 10^{-3}/0.10) × 100 = **1.3%**',
+            'x²/0.10 = 1.8 × 10^{-5} → x = √(1.8 × 10^{-6}) = **1.34 × 10^{-3} M**',
+            'pH = −log(1.34 × 10^{-3}) = **2.87**',
+            '% ionization = x/[HA]₀ × 100 = (1.34 × 10^{-3}/0.10) × 100 = **1.3%**',
           ],
           answer: 'pH = 2.87, 1.3% ionized',
           verify: [
-            { stated: 1.3e-3, compute: () => Math.sqrt(Ka_acetic * 0.1), tol: 0.04 },
+            { stated: 1.34e-3, compute: () => Math.sqrt(Ka_acetic * 0.1) },
             { stated: 2.87, compute: () => -log(Math.sqrt(Ka_acetic * 0.1)) },
             { stated: 1.3, compute: () => (Math.sqrt(Ka_acetic * 0.1) / 0.1) * 100, tol: 0.04 },
           ],

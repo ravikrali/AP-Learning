@@ -769,7 +769,7 @@ export const unit1: Unit = {
         {
           kind: 'hack',
           title: 'Decode any PES in 3 steps',
-          body: '1. Count peaks from **high energy to low**: 1s, 2s, 2p, 3s, 3p, 4s, 3d…\n2. Read the relative heights as electron counts. s peaks = 2 max, p = 6 max, d = 10 max.\n3. Add them up to get the total electrons, which (for a neutral atom) equals the atomic number.\n\nExample: heights 2 : 2 : 6 : 1 → 1s² 2s² 2p⁶ 3s¹ = 11 e⁻ = **sodium**.',
+          body: '1. Count peaks from **high energy to low**: 1s, 2s, 2p, 3s, 3p, then 3d before 4s (the 3d peak sits at a higher binding energy, which is why 4s electrons are removed first).\n2. Read the relative heights as electron counts. s peaks = 2 max, p = 6 max, d = 10 max.\n3. Add them up to get the total electrons, which (for a neutral atom) equals the atomic number.\n\nExample: heights 2 : 2 : 6 : 1 → 1s² 2s² 2p⁶ 3s¹ = 11 e⁻ = **sodium**.',
         },
         {
           kind: 'concept',

@@ -39,7 +39,7 @@ export const unit2: Unit = {
         {
           kind: 'hack',
           title: 'Quick bond-type sorter',
-          body: '- **Metal + nonmetal** → usually **ionic**\n- **Nonmetal + nonmetal** → **covalent** (polar if the ENs differ)\n- **Metal + metal** → **metallic**\n\nAP fine print: EN difference isn\'t the *only* factor. The best evidence of bond type is the compound\'s **properties**. For example, ionic solids conduct electricity when melted or dissolved, and molecular substances don\'t.',
+          body: '- **Metal + nonmetal** → usually **ionic**\n- **Nonmetal + nonmetal** → **covalent** (polar if the ENs differ)\n- **Metal + metal** → **metallic**\n\nAP fine print: EN difference isn\'t the *only* factor. The best evidence of bond type is the compound\'s **properties**. For example, ionic solids conduct electricity when melted, and molecular substances don\'t.',
         },
         {
           kind: 'try',
