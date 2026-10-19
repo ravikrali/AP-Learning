@@ -36,13 +36,13 @@ AP Learning helps high-school students learn an AP course from the foundations u
 ## 2. Scope
 
 ### In scope now
-- A web app (PWA) for students, with one complete course (AP Chemistry) and a catalog of 21 planned courses
+- A web app (PWA) for students, with two complete courses (AP Chemistry and AP Statistics) and a catalog of 21 planned courses
 - Free and paid plans
 - A separate admin portal
 - A backend for sign-in, sync across devices, payments, statistics and admin tools
 
 ### Agreed for later
-- 📋 The other 20 courses (AP Statistics was the original second course; "I want this" votes and emails from the welcome page help decide the order)
+- 📋 The other 19 courses ("I want this" votes and emails from the welcome page help decide the order)
 - 📋 Video uploads hosted by the app (videos are currently added by link)
 
 ### Discussed, not decided
@@ -90,15 +90,16 @@ AP Learning helps high-school students learn an AP course from the foundations u
 |---|---|---|
 | C-1 | The catalog lists 21 AP courses in three groups. **History and Social Sciences (8):** African American Studies, Human Geography, Macroeconomics, Microeconomics, Psychology, US Government and Politics, US History, World History: Modern. **Math and Computer Science (6):** Calculus AB, Calculus BC, Computer Science A, Computer Science Principles, Precalculus, Statistics. **Sciences (7):** Chemistry, Biology, Environmental Science, Physics 1, Physics 2, Physics C: Electricity and Magnetism, Physics C: Mechanics. | ✅ |
 | C-2 | AP Chemistry is complete: a prerequisite "Chemistry Toolkit" unit plus Units 1–9, 98 lessons covering all 91 CED topics (CED effective Fall 2024). | ✅ |
+| C-2b | AP Statistics is complete: a prerequisite "Statistics Toolkit" unit plus Units 1–5, 63 lessons covering all 55 topics of the redesigned course (CED effective Fall 2026: 5 units; exam of 42 multiple-choice questions and four 10-point free-response questions). | ✅ |
 | C-3 | Courses that are not written yet show as "coming soon". A student can tap "Want it?" to vote. | ✅ |
-| C-4 | The remaining 20 courses are written and checked to the same standard, one at a time. | 📋 |
+| C-4 | The remaining 19 courses are written and checked to the same standard, one at a time. | 📋 |
 | C-5 | A syllabus page lists every official topic, the lesson that teaches it, and whether it is done. | ✅ |
 
 ### 3.4 Plans and payments
 
 | ID | Requirement | Status |
 |---|---|---|
-| P-1 | **Free:** any 1 course. **Trio:** any 3 courses for $5.99 a month. **Everything:** all available courses for $12.99 a month. | ✅ |
+| P-1 | **Free:** any 2 courses (raised from 1 on Oct 17, 2026). **Trio:** any 3 courses for $5.99 a month. **Everything:** all available courses for $12.99 a month. | ✅ |
 | P-2 | A student picks which courses fill their plan. A course can be added to a free slot at any time. Swapping a course out is allowed once every 30 days. Progress in a dropped course is kept. | ✅ |
 | P-3 | Courses outside the plan are gated, with a clear prompt to add the course or see plans. | ✅ |
 | P-4 | Payment by card through Stripe: checkout, plan switching with fair proration, cancel at the end of the paid month, and a billing page to manage the card. Card details never reach the app. | 🔧 |
@@ -126,8 +127,8 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | ID | Requirement | Status |
 |---|---|---|
 | X-1 | Each unit has an optional checkpoint: 10 mixed questions, one try each, no timer, 1–3 stars (90% = 3 stars, 70% = 2). | ✅ |
-| X-2 | Practice multiple-choice sections of 15, 30 and 60 questions, weighted like the real exam, with an optional timer. | ✅ |
-| X-3 | Seven free-response questions in the real exam format (long = 10 points, short = 4 points), self-scored with a rubric. | ✅ |
+| X-2 | Practice multiple-choice sections weighted like the real exam, with an optional timer: 15, 30 and 60 questions for Chemistry; 14, 21 and 42 for Statistics. Each course has its own practice-exam page. | ✅ |
+| X-3 | Free-response questions in each exam's real format, self-scored with a rubric: Chemistry 7 (long = 10 points, short = 4 points); Statistics 8 (two of each of the four 10-point question types). | ✅ |
 
 ### 3.7 Review page
 
@@ -169,11 +170,12 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | ID | Requirement | Status |
 |---|---|---|
-| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows four buttons: Periodic table, Glossary, Video links and Corrections. | ✅ |
+| M-1 | The bottom menu has a **More** item (in place of "Me"). The More page shows the reference tool for each of the student's courses (Periodic table for Chemistry, Formulas & tables for Statistics), then Glossary, Video links and Corrections. With more than one course, the Glossary and Video links pages have course chips to switch. | ✅ |
 | M-7 | **Corrections (errata):** a public list of mistakes found in lessons and what was changed, newest first, with the lesson, CED topic and card. Shown under More and on the welcome page. | ✅ |
 | M-2 | **Periodic table:** an interactive table of all 118 elements. Tapping an element shows quick insights: protons and electrons, molar mass, family, state at room temperature, group and period, electron configuration (flagging exceptions such as Cr and Cu), common oxidation states, valence electrons, the usual ion, diatomic elements and electronegativity. | ✅ |
 | M-3 | The table can be colored by family, electronegativity or state, searched by name, symbol or number, and zoomed. Links lead to the lessons that explain it. | ✅ |
-| M-4 | **Glossary:** the key terms of the course (130 for AP Chemistry) with short definitions, a search box and A–Z jumps. Tapping a term opens the topic where it is explained, at the card that explains it. | ✅ |
+| M-8 | **Formulas & tables (Statistics):** the AP Statistics formula sheet written out, plus calculators for normal areas and cutoffs, t areas and t^{∗}, and χ² p-values and critical values, computed by the same functions the tests check against the CED's tables. | ✅ |
+| M-4 | **Glossary:** the key terms of the course (130 for AP Chemistry, 131 for AP Statistics) with short definitions, a search box and A–Z jumps. Tapping a term opens the topic where it is explained, at the card that explains it. | ✅ |
 | M-6 | **Video links:** one page with every topic's YouTube links, grouped by unit and then topic, with a search box. Each unit opens and closes; a topic name opens its lesson; videos open on YouTube. Links replaced by an admin show here too. | ✅ |
 | M-5 | The student's profile, badges, plan, settings and help stay reachable from the More page and from the picture at the top of Home. | ✅ |
 
@@ -256,7 +258,7 @@ AP Learning helps high-school students learn an AP course from the foundations u
 
 | Area | Requirement |
 |---|---|
-| **Accuracy** | `npm test` runs 90 automated checks. They re-compute every numeric answer and worked-example number, check that every chemical equation balances in atoms and charge, that every CED topic is taught, that every glossary term points at a lesson that really uses it, and that periodic-table data is consistent (electron counts, masses matching the lessons, positions). Element data comes from PubChem (U.S. National Institutes of Health, public domain). |
+| **Accuracy** | `npm test` runs 147 automated checks. They re-compute every numeric answer and worked-example number, check that every chemical equation balances in atoms and charge, that the statistics functions match the CED's z, t and χ² tables and sample answers, that every CED topic of every course is taught, that every glossary term points at a lesson that really uses it, and that periodic-table data is consistent (electron counts, masses matching the lessons, positions). Element data comes from PubChem (U.S. National Institutes of Health, public domain). |
 | **Privacy** | No ads and no data sales. Visitors are counted without name, email or IP address, and not at all in the EU, EEA and UK. Do Not Track and Global Privacy Control are honored. Accounts are for ages 13 and up; only the birth year is kept. Marketing email goes to parents only. Card details are handled only by Stripe. A parent or guardian makes purchases. |
 | **Security** | Google tokens are verified on the server. Sessions are stored as hashes. Admin routes check the person's role and privilege on every request. Stripe webhooks are signature-checked and safe to receive twice. Every `/api/*` route is rate-limited per network address (600 a minute overall, 60 for sign-in, 120 for the public forms). Every response carries security headers: a Content Security Policy, HSTS, no-sniff, no framing, a referrer policy and a permissions policy. Secrets are rotated on the schedule in `docs/security.md`. |
 | **Phone use** | Every screen fits a 375-pixel-wide phone without sideways scrolling (the zoomed periodic table scrolls inside its own box). |
@@ -308,3 +310,4 @@ AP Learning helps high-school students learn an AP course from the foundations u
 | Oct 10, 2026 | Bulb tips on Unit pages. Search on Course, Unit and Topic pages. Bookmarks, shown on the Review page. Notes moved under Review. "More" menu item with Periodic table and Glossary. Icon-only bottom menu. Admin metrics for visitors who have not signed in and for students who are not subscribed; welcome page collects visit sources and optional emails. This document. |
 | Oct 11, 2026 | "Video links" button on the More page: all YouTube links by unit and topic. |
 | Oct 11, 2026 | Launch hardening: “Report an error” on every lesson card with a public Corrections page; age question at sign-up (under-13s blocked, birth year saved); parent/student choice and 13+ tick on the email form, marketing to parents only; visit counting off for the EU, EEA and UK; brand name and domain in one file; copy audit (® on AP, “does not endorse” notice, no score promises); rate limits, security headers and a secret-rotation runbook; CED edition tags on lessons with a test; business numbers on the dashboard (conversion, churn by month, sign-ups by campaign tag, ad spend and cost per sign-up). |
+| Oct 17, 2026 | AP Statistics built from the redesigned CED (effective Fall 2026): Statistics Toolkit + 5 units, 63 lessons, all 55 topics; 8 FRQs in the new 10-point format; practice exams of 14/21/42 questions; Formulas & tables page; glossary and YouTube links. The app is now multi-course: per-course practice exams (/exam/<course>), syllabus, glossary, videos and admin lesson picker. |

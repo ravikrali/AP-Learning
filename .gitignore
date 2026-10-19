@@ -7,3 +7,12 @@ dist-artifact/
 .DS_Store
 .dev.vars
 .wrangler/
+
+# College Board CED source files (copyrighted; download from AP Central). Keep the README.
+docs/courses/*/source/*
+!docs/courses/*/source/README.md
+
+# Rendered marketing videos (large binaries) and nested Claude worktrees
+marketing/*.mp4
+.claude/worktrees/
+marketing/.claude/worktrees/
