@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { catalogCourse } from '../../shared/catalog'
 import { BRAND } from '../../shared/brand'
 import { planToIcs, sessionMinutes, type PlanSession, type StudyPlan } from '../../shared/plan'
@@ -8,7 +8,7 @@ import type { Course } from '../content/types'
 import { useApp, useCourse } from '../lib/app'
 import { api } from '../lib/api'
 import { today } from '../lib/db'
-import { deletePlan, getPlan, savePlan } from '../lib/plans'
+import { allPlans, deletePlan, getPlan, savePlan } from '../lib/plans'
 import { lessonStatuses } from '../lib/progress'
 import { buildPlan, minutesNeeded, parseDay, planStatus, type PlanAnswers } from '../lib/schedule'
 import { track } from '../lib/track'
@@ -36,7 +36,9 @@ export function SchedulePage() {
 function Schedule({ course }: { course: Course }) {
   const { db } = useApp()
   const plan = getPlan(db, course.id)
-  const [editing, setEditing] = useState(!plan)
+  // "Edit schedule" on Home opens straight to the questions (/plan/<course>?edit=1)
+  const { search } = useLocation()
+  const [editing, setEditing] = useState(!plan || new URLSearchParams(search).has('edit'))
   if (editing || !plan) return <Wizard course={course} initial={plan} onDone={() => setEditing(false)} />
   return <PlanView course={course} plan={plan} onEdit={() => setEditing(true)} />
 }
@@ -437,46 +439,136 @@ function PlanView({ course, plan, onEdit }: { course: Course; plan: StudyPlan; o
 }
 
 /** Today's session from any plan, for the Home screen. */
-export function TodayPlan() {
+/** Today on the Home page: each study plan's session for today (or the next one), and the flashcard review. */
+export function TodayCard({ due }: { due: number }) {
   const { db } = useApp()
   const statuses = lessonStatuses(db)
   const done = new Set([...statuses].filter(([, s]) => s === 'done').map(([id]) => id))
-  const rows = db.all('SELECT course_id FROM plans').map((r) => getPlan(db, String(r.course_id))).filter((p): p is StudyPlan => !!p)
-  if (!rows.length) return null
+  const plans = allPlans(db)
+  const reviewMin = Math.max(1, Math.round(due / 4))
+  const reviewText = due ? `${due} quick card${due === 1 ? '' : 's'}, about ${reviewMin} min` : 'All caught up. Nice!'
+  const sessions = plans
+    .map((plan) => {
+      const st = planStatus(plan, done)
+      const s = st.todays ?? st.next
+      return s ? { plan, st, s, isToday: s.date === today() } : null
+    })
+    .filter((x) => !!x)
+  // a plan's "Flashcard review" item today stands in for the separate review line
+  const reviewInPlan = sessions.some((x) => x.isToday && x.s.items.some((i) => i.k === 'cards'))
+  const todayDone = sessions.length > 0 && sessions.every((x) => !x.isToday || x.s.items.every((i) => i.k !== 'lesson' || done.has(i.id!)))
+
+  return (
+    <div className="card today-card">
+      <div className="row">
+        <b className="grow">☀️ Today</b>
+        <span className="small muted">{fmt(today())}</span>
+      </div>
+      {sessions.map(({ plan, st, s, isToday }) => (
+        <div key={plan.course} className="today-block">
+          <div className="row small">
+            <span className="grow muted" style={{ fontWeight: 800 }}>
+              🗓️ {plan.courseTitle.replace(/^AP®? /, '')}
+              {isToday ? '' : ` · next session ${fmt(s.date)}`}
+            </span>
+            <Link to={`/plan/${plan.course}`} className="small">
+              Plan ›
+            </Link>
+          </div>
+          {s.items.map((i, n) => {
+            const finished = i.k === 'lesson' && done.has(i.id!)
+            const isCards = i.k === 'cards'
+            return (
+              <Link key={n} to={isCards ? '/review' : (i.to ?? '/')} className={`session-item ${finished ? 'done' : ''}`}>
+                <span className="dot">{finished ? '✓' : ICON[i.k]}</span>
+                <span className="grow">
+                  {i.t}
+                  {isCards && isToday && <span className="small muted"> · {due ? `${due} due` : 'all caught up'}</span>}
+                </span>
+                <span className="small muted">{i.m}′</span>
+              </Link>
+            )
+          })}
+          {st.behind > 0 && (
+            <p className="small muted" style={{ margin: '6px 0 0' }}>
+              {st.behind} planned lesson{st.behind === 1 ? '' : 's'} from earlier days still waiting. No stress: they're at the top of your list.
+            </p>
+          )}
+        </div>
+      ))}
+      {!reviewInPlan && (
+        <Link to="/review" className="session-item">
+          <span className="dot">🃏</span>
+          <span className="grow">
+            Review cards <span className="small muted">· {reviewText}</span>
+          </span>
+          <span className="muted">›</span>
+        </Link>
+      )}
+      {todayDone && <p className="small" style={{ margin: '8px 0 0' }}>🌟 Today's plan is done. Amazing!</p>}
+    </div>
+  )
+}
+
+/** Home page: how each course is going against its study plan, or an invitation to make one. */
+export function ScheduleCards({ courses }: { courses: Course[] }) {
+  const { db } = useApp()
+  const statuses = lessonStatuses(db)
+  const done = new Set([...statuses].filter(([, s]) => s === 'done').map(([id]) => id))
+  if (!courses.length) return null
   return (
     <>
-      {rows.map((plan) => {
+      {courses.map((course) => {
+        const plan = getPlan(db, course.id)
+        if (!plan)
+          return (
+            <Link key={course.id} to={`/plan/${course.id}`} className="card row plan-cta" style={{ marginBottom: 0 }}>
+              <span style={{ fontSize: 26 }}>🗓️</span>
+              <span className="grow">
+                <b>Create a study schedule</b>
+                <span className="small muted" style={{ display: 'block' }}>
+                  {course.title}: answer 6 quick questions and get a day-by-day plan up to your exam, with calendar reminders.
+                </span>
+              </span>
+              <span className="muted">›</span>
+            </Link>
+          )
         const st = planStatus(plan, done)
-        const s = st.todays ?? st.next
-        if (!s) return null
-        const isToday = s.date === today()
-        const left = s.items.filter((i) => !(i.k === 'lesson' && done.has(i.id!)))
+        const days = daysUntil(plan.examDate)
+        const pct = st.lessonsPlanned ? (st.lessonsDone / st.lessonsPlanned) * 100 : 0
+        // where the schedule says you should be by today
+        const target = st.lessonsPlanned ? (st.dueSoFar / st.lessonsPlanned) * 100 : 0
         return (
-          <div key={plan.course} className="card">
+          <div key={course.id} className="card schedule-card">
             <div className="row">
-              <b className="grow">🗓️ {isToday ? "Today's plan" : `Next session · ${fmt(s.date)}`}</b>
-              <Link to={`/plan/${plan.course}`} className="small">
-                {plan.courseTitle.replace(/^AP®? /, '')} ›
+              <div className="grow">
+                <b>🗓️ {course.title} schedule</b>
+                <div className="small muted">
+                  {days > 0 ? `Exam in ${days} day${days === 1 ? '' : 's'}` : days === 0 ? 'Exam day! You have got this.' : 'Exam date has passed'} ·{' '}
+                  {fmt(plan.examDate, { month: 'short', day: 'numeric' })}
+                </div>
+              </div>
+              <span className={`pill ${st.behind ? 'warn' : 'good'}`}>
+                {st.behind ? `${st.behind} behind` : st.ahead ? `${st.ahead} ahead 🚀` : 'On track ✓'}
+              </span>
+            </div>
+            <div className="schedule-bar" role="img" aria-label={`${st.lessonsDone} of ${st.lessonsPlanned} planned lessons done; ${st.dueSoFar} planned by today`}>
+              <i className="done" style={{ width: `${pct}%` }} />
+              {target > 0 && target < 100 && <i className="target" style={{ left: `${target}%` }} title="Where the schedule expects you today" />}
+            </div>
+            <div className="row small muted" style={{ marginTop: 6 }}>
+              <span className="grow">
+                {st.lessonsDone} of {st.lessonsPlanned} lessons done · {st.dueSoFar} planned by today
+              </span>
+            </div>
+            <div className="row" style={{ marginTop: 10, gap: 8 }}>
+              <Link to={`/plan/${course.id}`} className="btn secondary grow">
+                View plan
+              </Link>
+              <Link to={`/plan/${course.id}?edit=1`} className="btn ghost grow">
+                ✏️ Edit schedule
               </Link>
             </div>
-            <div className="stack" style={{ gap: 6, marginTop: 8 }}>
-              {s.items.map((i, n) => {
-                const finished = i.k === 'lesson' && done.has(i.id!)
-                return (
-                  <Link key={n} to={i.to ?? '/'} className={`session-item ${finished ? 'done' : ''}`}>
-                    <span className="dot">{finished ? '✓' : ICON[i.k]}</span>
-                    <span className="grow">{i.t}</span>
-                    <span className="small muted">{i.m}′</span>
-                  </Link>
-                )
-              })}
-            </div>
-            {isToday && !left.length && <p className="small" style={{ margin: '8px 0 0' }}>🌟 Today's plan is done. Amazing!</p>}
-            {st.behind > 0 && (
-              <p className="small muted" style={{ margin: '8px 0 0' }}>
-                {st.behind} planned lesson{st.behind === 1 ? '' : 's'} from earlier days still waiting. No stress: they're at the top of your list.
-              </p>
-            )}
           </div>
         )
       })}

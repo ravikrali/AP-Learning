@@ -157,6 +157,10 @@ export interface PlanStatus {
   /** lessons done ahead of schedule */
   ahead: number
   lessonsPlanned: number
+  /** planned lessons scheduled up to and including today */
+  dueSoFar: number
+  /** planned lessons that are done (on any day) */
+  lessonsDone: number
 }
 
 export function planStatus(p: StudyPlan, done: Set<string>, now = new Date()): PlanStatus {
@@ -164,10 +168,14 @@ export function planStatus(p: StudyPlan, done: Set<string>, now = new Date()): P
   let behind = 0
   let ahead = 0
   let lessonsPlanned = 0
+  let dueSoFar = 0
+  let lessonsDone = 0
   for (const s of p.sessions)
     for (const i of s.items) {
       if (i.k !== 'lesson') continue
       lessonsPlanned++
+      if (s.date <= t) dueSoFar++
+      if (done.has(i.id!)) lessonsDone++
       if (s.date < t && !done.has(i.id!)) behind++
       if (s.date > t && done.has(i.id!)) ahead++
     }
@@ -177,5 +185,7 @@ export function planStatus(p: StudyPlan, done: Set<string>, now = new Date()): P
     behind,
     ahead,
     lessonsPlanned,
+    dueSoFar,
+    lessonsDone,
   }
 }

@@ -6,7 +6,7 @@ import { usePricing } from '../lib/pricing'
 import { planOf } from '../../shared/pricing'
 import { trickyTopics } from '../lib/tips'
 import { TipSheet, TrickyTopics } from '../components/Help'
-import { TodayPlan } from './Schedule'
+import { ScheduleCards, TodayCard } from './Schedule'
 import { InstallCard } from '../components/Install'
 import { COURSES } from '../content'
 import { Progress } from '../components/bits'
@@ -58,7 +58,7 @@ export function HomePage() {
 
       <InstallCard />
 
-      <TodayPlan />
+      <TodayCard due={due} />
 
       {!course ? (
         <div className="card continue">
@@ -88,19 +88,10 @@ export function HomePage() {
         </div>
       )}
 
+      <ScheduleCards courses={mine} />
+
       <TrickyTopics items={tricky} onTip={setTip} />
       {tip && <TipSheet lessonId={tip} onClose={() => setTip(null)} />}
-
-      <Link to="/review" className="card row" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div style={{ fontSize: 30 }}>🃏</div>
-        <div className="grow">
-          <b>Today's review</b>
-          <div className="small muted">
-            {due ? `${due} quick card${due === 1 ? '' : 's'}, about ${Math.max(1, Math.round(due / 4))} min` : 'All caught up. Nice!'}
-          </div>
-        </div>
-        <span className="muted">›</span>
-      </Link>
 
       <div className="stats">
         <div className="stat">

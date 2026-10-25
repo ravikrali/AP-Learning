@@ -140,6 +140,22 @@ describe('study plan builder', () => {
     expect(planStatus(p, new Set(), now).todays).toBeUndefined() // Friday is not a study day
     expect(planStatus(p, new Set(), new Date(2026, 9, 12)).todays?.date).toBe('2026-10-12')
   })
+
+  test('status: progress against the schedule (Home page card)', () => {
+    const p = buildPlan(chem, answers, new Set(), {}, now)
+    const later = new Date(2026, 9, 20)
+    const lessons = p.sessions.flatMap((s) => s.items.filter((i) => i.k === 'lesson').map((i) => ({ id: i.id!, date: s.date })))
+    const byLater = lessons.filter((l) => l.date <= '2026-10-20')
+    const st = planStatus(p, new Set(), later)
+    expect(st.lessonsPlanned).toBe(lessons.length)
+    expect(st.dueSoFar).toBe(byLater.length)
+    expect(st.lessonsDone).toBe(0)
+    expect(st.behind).toBe(byLater.filter((l) => l.date < '2026-10-20').length)
+    // doing everything planned so far, plus one lesson early, puts the student ahead
+    const done = new Set([...byLater.map((l) => l.id), lessons[byLater.length].id])
+    const caught = planStatus(p, done, later)
+    expect(caught).toMatchObject({ behind: 0, ahead: 1, lessonsDone: byLater.length + 1 })
+  })
 })
 
 describe('calendar (.ics)', () => {
