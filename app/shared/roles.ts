@@ -14,6 +14,7 @@ export const SECTIONS = [
   { id: 'content', label: 'Content', icon: '📝', actions: ['view', 'edit', 'delete'], about: 'Edit lesson text, quick checks and flashcards; delete = revert an edit' },
   { id: 'videos', label: 'Videos', icon: '🎬', actions: ['view', 'edit', 'delete'], about: 'Lesson videos and YouTube links; delete = remove a video or custom list' },
   { id: 'students', label: 'Students', icon: '👥', actions: ['view', 'edit', 'delete'], about: 'Search students; edit = grant a plan; delete = take a granted plan back' },
+  { id: 'pricing', label: 'Pricing', icon: '🏷️', actions: ['view', 'edit', 'delete'], about: 'Plans and prices, free-course promotions, coupon and affiliate codes and how they perform; delete = remove a promotion or code' },
   { id: 'feedback', label: 'Feedback', icon: '💬', actions: ['view', 'edit', 'delete'], about: 'Read feedback; edit = mark done or reopen; delete = delete a message' },
   { id: 'team', label: 'Admins', icon: '🔑', actions: ['view', 'edit', 'delete'], about: 'Portal users; edit = add people and change roles; delete = remove people' },
 ] as const satisfies readonly { id: string; label: string; icon: string; actions: readonly Action[]; about: string }[]
@@ -36,6 +37,11 @@ export const ROLES = {
     about: 'Looks after students: grants plans and works the feedback inbox.',
     privs: { students: ['view', 'edit'], feedback: ['view', 'edit', 'delete'] } as Privs,
   },
+  pricing: {
+    name: 'Pricing',
+    about: 'Manages plans and prices, free-course promotions, and coupon and affiliate codes. Can see the Dashboard.',
+    privs: { pricing: ['view', 'edit', 'delete'], dashboard: ['view'] } as Privs,
+  },
   analyst: { name: 'Analyst', about: 'Sees the Dashboard and Audience numbers. Cannot change anything.', privs: viewOnly('dashboard', 'audience') },
   viewer: { name: 'Viewer', about: 'Can look at every section but cannot change anything.', privs: viewOnly(...EVERY) },
   custom: { name: 'Custom', about: 'A hand-picked set of privileges.', privs: {} as Privs },
@@ -43,7 +49,7 @@ export const ROLES = {
 
 export type RoleId = keyof typeof ROLES
 /** Roles that can be given to someone (Super Admin is the owner only). */
-export const ASSIGNABLE_ROLES: readonly RoleId[] = ['admin', 'curator', 'support', 'analyst', 'viewer', 'custom']
+export const ASSIGNABLE_ROLES: readonly RoleId[] = ['admin', 'curator', 'support', 'pricing', 'analyst', 'viewer', 'custom']
 
 export interface Access {
   role: RoleId

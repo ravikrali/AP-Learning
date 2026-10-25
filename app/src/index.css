@@ -418,13 +418,14 @@ a.pill.on { background: var(--primary-soft); color: var(--primary); border-color
 .chips .chip.soon.want { border-color: var(--gold); color: var(--gold); }
 .chips button:disabled { opacity: 1; }
 
-.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
 @media (max-width: 640px) { .plans { grid-template-columns: 1fr; } }
 .plan-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 6px; }
 .plan-card.current { border-color: var(--primary); }
-.plan-card.all { background: linear-gradient(160deg, var(--primary-soft), var(--surface) 60%); }
+.plan-card.top { background: linear-gradient(160deg, var(--primary-soft), var(--surface) 60%); }
 .plan-name { font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .plan-price { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.plan-price s.was { font-size: 18px; color: var(--muted); font-weight: 700; margin-right: 8px; }
 .plan-price span { font-size: 14px; color: var(--muted); font-weight: 700; margin-left: 2px; }
 .plan-card ul { margin: 4px 0 8px; padding-left: 18px; font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
 .plan-action { margin-top: auto; }

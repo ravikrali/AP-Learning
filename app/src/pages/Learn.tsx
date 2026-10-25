@@ -1,6 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import { BUILT, CATALOG, COURSES, examInfo } from '../content'
-import { CATEGORIES, pickLimit } from '../../shared/catalog'
+import { CATEGORIES } from '../../shared/catalog'
+import { pickLimit, planOf, promoCourses, unlimited } from '../../shared/pricing'
+import { usePricing } from '../lib/pricing'
 import { openable, toggleInterest, useAccount } from '../lib/account'
 import { getPlan } from '../lib/plans'
 import { CourseGate } from './Plans'
@@ -14,11 +16,14 @@ import { SearchButton, courseRefs } from '../components/Search'
 export function LearnPage() {
   const { db } = useApp()
   const a = useAccount()
+  const pricing = usePricing()
+  const promo = promoCourses(pricing)
   const statuses = lessonStatuses(db)
-  const mine = COURSES.filter((c) => openable(a, c.id))
+  const mine = COURSES.filter((c) => openable(a, c.id, pricing))
   const ready = CATALOG.filter((c) => BUILT.has(c.id) && !mine.some((m) => m.id === c.id))
   const soon = CATALOG.filter((c) => !BUILT.has(c.id))
-  const slots = a.plan === 'all' ? 0 : pickLimit(a.plan) - a.courses.length
+  const slots = unlimited(pricing, a.plan) ? 0 : pickLimit(pricing, a.plan) - a.courses.length
+  const freeCount = planOf(pricing, 'free').courses ?? 0
   return (
     <div>
       <TopBar title="Learn" />
@@ -38,6 +43,11 @@ export function LearnPage() {
                 <div className="small muted">
                   {done} of {all.length} lessons{plan ? ' · 🗓️ study plan on' : ''}
                 </div>
+                {promo.has(c.id) && !a.courses.includes(c.id) && !unlimited(pricing, a.plan) && !a.admin && (
+                  <div className="small" style={{ color: 'var(--good)' }}>
+                    🎁 Free for everyone until {new Date(promo.get(c.id)!).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </div>
+                )}
                 <div style={{ marginTop: 6 }}>
                   <Progress pct={all.length ? (done / all.length) * 100 : 0} />
                 </div>
@@ -50,7 +60,9 @@ export function LearnPage() {
       {mine.length === 0 && (
         <div className="card notice">
           <b>Pick your first course</b>
-          <div className="small">Your free plan includes any two courses. Tap a course under Ready now to start.</div>
+          <div className="small">
+            Your free plan includes any {freeCount === 1 ? 'one course' : `${freeCount} courses`}. Tap a course under Ready now to start.
+          </div>
         </div>
       )}
 

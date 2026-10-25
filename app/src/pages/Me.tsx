@@ -2,7 +2,8 @@ import { useRef, useState, useSyncExternalStore } from 'react'
 import { syncNow, syncStore } from '../lib/sync'
 import { Link } from 'react-router-dom'
 import { COURSES } from '../content'
-import { PLANS } from '../../shared/catalog'
+import { planOf, unlimited } from '../../shared/pricing'
+import { usePricing } from '../lib/pricing'
 import { courseTitle, openable, useAccount } from '../lib/account'
 import { minutesByDay } from '../lib/track'
 import { setDismissed, useInstall } from '../lib/install'
@@ -45,6 +46,7 @@ export function MePage() {
   const studyDays = Number(db.get('SELECT COUNT(DISTINCT day) AS n FROM xp_log')?.n ?? 0)
   const milestones = badgeProgress(db, COURSES[0]).milestones
   const account = useAccount()
+  const pricing = usePricing()
   const mine = COURSES.filter((c) => openable(account, c.id))
   const weekMinutes = minutesByDay(db, 7).reduce((n, d) => n + d.minutes, 0)
   const install = useInstall()
@@ -152,9 +154,9 @@ export function MePage() {
       <Link to="/plans" className="card row" style={{ marginTop: 10, textDecoration: 'none', color: 'inherit', padding: 14 }}>
         <span style={{ fontSize: 24 }}>⭐</span>
         <span className="grow">
-          <b>{PLANS[account.ownPlan].name} plan</b>
+          <b>{planOf(pricing, account.ownPlan).name} plan</b>
           <span className="small muted" style={{ display: 'block' }}>
-            {account.plan === 'all'
+            {unlimited(pricing, account.plan)
               ? 'Every course included'
               : account.courses.length
                 ? account.courses.map(courseTitle).join(', ')

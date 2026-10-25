@@ -5,8 +5,9 @@ import { MIN_AGE } from '../../shared/age'
 import { Trademark } from '../components/Legal'
 import { ErrataList } from './Errata'
 import { BUILT, CATALOG, COURSES, unitQuestions } from '../content'
-import { PLAN_ORDER, PLANS } from '../../shared/catalog'
-import { planFeatures } from './Plans'
+import { offeredPlans, planFeatures } from '../../shared/pricing'
+import { usePricing } from '../lib/pricing'
+import { PriceTag } from './Plans'
 import { DEFAULT_MASCOT, Mascot } from '../components/Mascot'
 import { levelInfo } from '../lib/progress'
 import { leadVisitor, trackVisit } from '../lib/visit'
@@ -320,6 +321,7 @@ function LeadForm() {
 }
 
 export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
+  const pricing = usePricing()
   const btn = useRef<HTMLDivElement>(null)
   const [err, setErr] = useState<string | null>(null)
   const [privacy, setPrivacy] = useState(false)
@@ -458,15 +460,13 @@ export function LoginPage({ onUser }: { onUser: (u: User) => void }) {
         <section className="pricing">
           <h2>Start free</h2>
           <div className="plans" style={{ marginTop: 14 }}>
-            {PLAN_ORDER.map((id) => (
-              <div key={id} className={`plan-card ${id}`}>
-                <div className="plan-name">{PLANS[id].name}</div>
-                <div className="plan-price">
-                  {PLANS[id].price ? `$${PLANS[id].price}` : 'Free'}
-                  {PLANS[id].price > 0 && <span>/month</span>}
-                </div>
+            {offeredPlans(pricing).map((p) => (
+              <div key={p.id} className={`plan-card ${p.courses === null ? 'top' : ''}`}>
+                <div className="plan-name">{p.name}</div>
+                <PriceTag plan={p} interval="month" />
+                {p.trialDays > 0 && <div className="small" style={{ color: 'var(--good)', fontWeight: 700 }}>{p.trialDays}-day free trial</div>}
                 <ul>
-                  {planFeatures(id).map((f) => (
+                  {planFeatures(p).map((f) => (
                     <li key={f}>{f}</li>
                   ))}
                 </ul>

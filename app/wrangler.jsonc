@@ -32,8 +32,12 @@
   // Stripe (set once with `npx wrangler secret put STRIPE_SECRET_KEY` and `... STRIPE_WEBHOOK_SECRET`;
   // until then paid plans show "Coming soon").
   "observability": { "enabled": true },
-  // The address also lives in shared/brand.ts (domain); keep the two in step.
+  // The address also lives in shared/brand.ts (domain); keep the two in step. The old aplearning.app
+  // addresses stay attached so their links redirect to eziq.app (OLD_DOMAINS in shared/brand.ts).
   "routes": [
+    { "pattern": "www.eziq.app", "custom_domain": true },
+    { "pattern": "eziq.app", "custom_domain": true },
+    { "pattern": "admin.eziq.app", "custom_domain": true },
     { "pattern": "www.aplearning.app", "custom_domain": true },
     { "pattern": "aplearning.app", "custom_domain": true },
     { "pattern": "admin.aplearning.app", "custom_domain": true }

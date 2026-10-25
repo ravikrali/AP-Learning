@@ -13,8 +13,8 @@ import { unit9 } from './u9'
 
 export const chemistry: Course = {
   id: 'chem',
-  title: 'AP® Chemistry',
-  short: 'AP® Chem',
+  title: 'Chemistry',
+  short: 'Chem',
   emoji: '⚗️',
   cedVersion: CED_VERSION,
   units: [unit0, unit1, unit2, unit3, unit4, unit5, unit6, unit7, unit8, unit9],

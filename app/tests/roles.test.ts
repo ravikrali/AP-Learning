@@ -11,7 +11,17 @@ describe('roles & privileges', () => {
   test('Curator: view, edit and delete in Content and Videos only', () => {
     const p = privsOf('curator')
     expect(p).toEqual({ content: ['view', 'edit', 'delete'], videos: ['view', 'edit', 'delete'] })
-    for (const s of ['dashboard', 'audience', 'students', 'feedback', 'team'] as const) expect(can(p, s, 'view')).toBe(false)
+    for (const s of ['dashboard', 'audience', 'students', 'feedback', 'team', 'pricing'] as const) expect(can(p, s, 'view')).toBe(false)
+  })
+
+  test('Pricing: plans, promotions and codes, and a look at the Dashboard; nothing else', () => {
+    const p = privsOf('pricing')
+    expect(p).toEqual({ dashboard: ['view'], pricing: ['view', 'edit', 'delete'] })
+    expect(can(p, 'dashboard', 'edit')).toBe(false)
+    for (const s of ['audience', 'content', 'videos', 'students', 'feedback', 'team'] as const) expect(can(p, s, 'view')).toBe(false)
+    expect(ASSIGNABLE_ROLES).toContain('pricing')
+    // only roles that hold Pricing can change prices
+    for (const r of ['curator', 'support', 'analyst', 'viewer'] as const) expect(can(privsOf(r), 'pricing', 'edit')).toBe(false)
   })
 
   test('read-only roles cannot change anything', () => {

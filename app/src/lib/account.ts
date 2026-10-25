@@ -3,7 +3,9 @@
 // open offline. Guests keep their one free pick on the device.
 
 import { useSyncExternalStore } from 'react'
-import { canOpen, CATALOG, checkPickChange, type PlanId } from '../../shared/catalog'
+import { CATALOG } from '../../shared/catalog'
+import { canOpen, checkPickChange, SWITCH_DAYS, type Interval, type PlanId, type Pricing } from '../../shared/pricing'
+import { pricingStore } from './pricing'
 import { api } from './api'
 import { loadSession } from './auth'
 
@@ -12,6 +14,14 @@ export interface Account {
   ownPlan: PlanId
   paidPlan: PlanId
   compPlan: PlanId | null
+  /** billing period, price before discount, and the code of the current subscription (paid plans only) */
+  interval: Interval | null
+  priceCents: number | null
+  code: string | null
+  /** the code on the link they signed up through */
+  refCode: string | null
+  /** a free trial is only for a first subscription */
+  trialUsed: boolean
   admin: boolean
   status: string
   courses: string[]
@@ -24,7 +34,8 @@ export interface Account {
 }
 
 const FREE: Account = {
-  plan: 'free', ownPlan: 'free', paidPlan: 'free', compPlan: null, admin: false, status: 'none', courses: [],
+  plan: 'free', ownPlan: 'free', paidPlan: 'free', compPlan: null, interval: null, priceCents: null, code: null, refCode: null, trialUsed: false,
+  admin: false, status: 'none', courses: [],
   switchAvailableAt: null, periodEnd: null, cancelAtPeriodEnd: false, billing: false, interest: [],
 }
 
@@ -78,11 +89,13 @@ export async function refreshAccount(): Promise<Account> {
   return a
 }
 
-export const openable = (a: Account, courseId: string) => canOpen(a, courseId)
+/** Can this person open the course (their plan, their picks, or a free-course promotion)? */
+export const openable = (a: Account, courseId: string, p: Pricing = pricingStore.get()) => a.admin || canOpen(p, a, courseId)
 
 /** Error text if this change isn't allowed (same rule the server uses). */
-export function pickProblem(a: Account, next: string[]) {
-  return checkPickChange(a.plan, a.courses, next, a.switchAvailableAt ? new Date(Date.parse(a.switchAvailableAt) - 30 * 86400_000).toISOString() : null)
+export function pickProblem(a: Account, next: string[], p: Pricing = pricingStore.get()) {
+  if (a.admin) return null
+  return checkPickChange(p, a.plan, a.courses, next, a.switchAvailableAt ? new Date(Date.parse(a.switchAvailableAt) - SWITCH_DAYS * 86400_000).toISOString() : null)
 }
 
 export async function setPicks(next: string[]): Promise<Account> {
@@ -108,12 +121,26 @@ export async function toggleInterest(course: string) {
   if (signedIn()) await api('/api/interest', { body: { course, on } }).catch(() => undefined)
 }
 
-/** Start paying for a plan (or switch plans). Returns a Stripe Checkout URL to open, or null when done in place. */
-export async function choosePlan(plan: 'three' | 'all'): Promise<string | null> {
-  const r = await api<{ url?: string; account?: Account }>('/api/billing/checkout', { body: { plan } })
+/** Start paying for a plan (or switch plans). Returns a Stripe Checkout URL to open, or a note when done in place. */
+export async function choosePlan(plan: PlanId, interval: Interval, code?: string): Promise<{ url?: string; note?: string }> {
+  const r = await api<{ url?: string; account?: Account; note?: string }>('/api/billing/checkout', { body: { plan, interval, code: code || undefined } })
   if (r.account) set(r.account)
-  return r.url ?? null
+  return { url: r.url, note: r.note }
 }
+
+export interface CodeInfo {
+  code: string
+  description: string
+  percentOff: number | null
+  amountOff: number | null
+  duration: 'once' | 'repeating' | 'forever'
+  months: number | null
+  /** plans it works with; empty = every paid plan */
+  plans: PlanId[]
+}
+
+/** What a discount code gives (throws with the reason when it can't be used). */
+export const checkCode = (code: string) => api<CodeInfo>(`/api/codes/check?code=${encodeURIComponent(code)}`)
 
 export async function billingPortal(): Promise<string> {
   return (await api<{ url: string }>('/api/billing/portal', { body: {} })).url

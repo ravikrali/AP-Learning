@@ -10,8 +10,8 @@ import { unit5 } from './u5'
 
 export const statistics: Course = {
   id: 'stats',
-  title: 'AP® Statistics',
-  short: 'AP® Stats',
+  title: 'Statistics',
+  short: 'Stats',
   emoji: '📊',
   cedVersion: CED_VERSION,
   units: [unit0, unit1, unit2, unit3, unit4, unit5],

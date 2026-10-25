@@ -12,7 +12,7 @@ import { Trademark } from '../components/Legal'
 export const FEEDBACK_EMAIL = BRAND.email
 
 const HOW_IT_WORKS: { e: string; t: string; d: string }[] = [
-  { e: '🗺️', t: 'Follow the map', d: 'Learn → AP® Chemistry shows every unit. Each unit goes Foundation → Core → Advanced. Nothing is locked, so you can jump to whatever your class is on.' },
+  { e: '🗺️', t: 'Follow the map', d: 'Learn → Chemistry shows every unit. Each unit goes Foundation → Core → Advanced. Nothing is locked, so you can jump to whatever your class is on.' },
   { e: '📖', t: 'Short lessons', d: 'Each lesson is a few small cards: a key idea, a worked example (tap to reveal one step at a time), a smart trick, a common trap, then a quick check.' },
   { e: '💡', t: 'Hints before answers', d: 'Wrong answer in a lesson? You get a hint and another try first. Only then is the full explanation shown.' },
   { e: '🃏', t: 'Daily review', d: 'Finishing a lesson adds its flashcards to Review. Cards you know come back later and later (1, 3, 7, 14, 30, then 60 days); ones you miss come back tomorrow. At most 15 a day.' },

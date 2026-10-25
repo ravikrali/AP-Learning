@@ -1,18 +1,23 @@
-// AP Learning backend: Google sign-in → session, cross-device sync, subscriptions (Stripe),
-// learning statistics, calendar feeds, admin content editing, admin dashboard, feedback,
-// and anonymous visitor counts for the welcome page.
+// Backend: Google sign-in → session, cross-device sync, subscriptions (Stripe), plans and prices
+// edited in the admin portal, discount and affiliate codes, learning statistics, calendar feeds,
+// admin content editing, admin dashboard, feedback, and anonymous visitor counts for the welcome page.
 // Everything that is not /api/* is the static app, served from ./dist by the ASSETS binding;
 // on admin.* hosts the admin portal (admin.html) is served instead.
 
 import { isTelemetry, KEY_PATTERN, maxItemSize, mergeItem, type SyncItem } from '../shared/sync'
-import { CATALOG_IDS, checkPickChange, PLANS, trimPicks, type PlanId } from '../shared/catalog'
+import { CATALOG_IDS } from '../shared/catalog'
+import {
+  biggerPlan, checkPickChange, CODE_PATTERN, codeProblem, DEFAULT_PRICING, describeDiscount, FREE_PLAN, hasDiscount, normalizeCode, planOf,
+  planRank, sortedPlans, SWITCH_DAYS, trimPicks, unlimited, validateCode, validatePlan, validatePromo,
+  type CoursePromo, type DiscountCode, type Interval, type Plan, type PlanId, type Pricing,
+} from '../shared/pricing'
 import { planToIcs, type StudyPlan } from '../shared/plan'
 import { CARD_REF_PATTERN, channelOf, countable, hostOf, LESSON_ID_PATTERN, REPORT_MAX, VID_PATTERN, VISIT_EVENTS, type VisitBody } from '../shared/visit'
 import { ASSIGNABLE_ROLES, can, covers, normalizePrivs, privsOf, roleFor, ROLES, type Access, type Action, type RoleId, type Section } from '../shared/roles'
-import { ADMIN_URL, APP_HOST, BRAND, BRAND_SLUG } from '../shared/brand'
+import { ADMIN_URL, APP_HOST, BRAND, BRAND_SLUG, movedUrl } from '../shared/brand'
 import { MIN_AGE, oldEnough, validBirth } from '../shared/age'
 import { MONTH_PATTERN, SOURCE_PATTERN } from '../shared/business'
-import { PAID_STATUSES, priceId, readSubscription, stripe, StripeError, verifyStripeSignature, type StripeEnv } from './stripe'
+import { ensureCoupon, PAID_STATUSES, priceId, readSubscription, stripe, StripeError, verifyStripeSignature, type StripeEnv } from './stripe'
 
 /** Cloudflare's rate limiting binding (see "ratelimits" in wrangler.jsonc). */
 interface Limiter {
@@ -147,13 +152,17 @@ interface SignupFacts {
   source: string | null
   medium: string | null
   campaign: string | null
+  /** the discount/affiliate code on the link they came through, if it exists */
+  code: string | null
 }
+
+const NO_FACTS: SignupFacts = { birthYear: null, source: null, medium: null, campaign: null, code: null }
 
 interface SignInBody {
   birthYear?: unknown
   birthMonth?: unknown
   /** campaign tags from the link that brought this person in */
-  utm?: { source?: unknown; medium?: unknown; campaign?: unknown }
+  utm?: { source?: unknown; medium?: unknown; campaign?: unknown; code?: unknown }
 }
 
 /**
@@ -162,7 +171,7 @@ interface SignInBody {
  */
 async function signIn(env: Env, req: Request, u: User, body: SignInBody) {
   const known = await env.DB.prepare('SELECT 1 FROM users WHERE sub = ?').bind(u.sub).first()
-  const facts: SignupFacts = { birthYear: null, source: null, medium: null, campaign: null }
+  const facts: SignupFacts = { ...NO_FACTS }
   // portal users are staff, added by an admin: they are not asked
   if (!known && !(await accessOf(env, u.email))) {
     if (body.birthYear === undefined || body.birthMonth === undefined) return json({ needAge: true })
@@ -181,20 +190,22 @@ async function signIn(env: Env, req: Request, u: User, body: SignInBody) {
     facts.source = str(body.utm?.source)
     facts.medium = str(body.utm?.medium)
     facts.campaign = str(body.utm?.campaign)
+    const code = normalizeCode(body.utm?.code)
+    if (CODE_PATTERN.test(code) && (await env.DB.prepare('SELECT 1 FROM discount_codes WHERE code = ?').bind(code).first())) facts.code = code
   }
   return json(await startSession(env, u, req, facts))
 }
 
-async function startSession(env: Env, u: User, req: Request, facts: SignupFacts = { birthYear: null, source: null, medium: null, campaign: null }) {
+async function startSession(env: Env, u: User, req: Request, facts: SignupFacts = NO_FACTS) {
   const t = now()
   const cf = (req as Request & { cf?: { country?: string; region?: string } }).cf
   await env.DB.batch([
     env.DB.prepare(
-      `INSERT INTO users (sub, email, name, picture, created_at, last_seen, country, region, birth_year, utm_source, utm_medium, utm_campaign)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+      `INSERT INTO users (sub, email, name, picture, created_at, last_seen, country, region, birth_year, utm_source, utm_medium, utm_campaign, ref_code)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
        ON CONFLICT(sub) DO UPDATE SET email=excluded.email, name=excluded.name, picture=excluded.picture, last_seen=excluded.last_seen,
          country=COALESCE(users.country, excluded.country), region=COALESCE(users.region, excluded.region)`,
-    ).bind(u.sub, u.email, u.name, u.picture, t, cf?.country ?? null, cf?.region ?? null, facts.birthYear, facts.source, facts.medium, facts.campaign),
+    ).bind(u.sub, u.email, u.name, u.picture, t, cf?.country ?? null, cf?.region ?? null, facts.birthYear, facts.source, facts.medium, facts.campaign, facts.code),
     env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(t),
   ])
   const token = bytesToB64url(crypto.getRandomValues(new Uint8Array(32)))
@@ -457,6 +468,263 @@ async function myInsights(req: Request, env: Env) {
   return json({ topics: rows.results, days: week.results })
 }
 
+// ---------- plans, prices, promotions and codes ----------
+// Edited in the admin portal (Pricing tab); the rules are in shared/pricing.ts.
+
+interface PlanRow {
+  id: string
+  name: string
+  blurb: string
+  courses: number | null
+  monthly_cents: number
+  yearly_cents: number | null
+  trial_days: number
+  sort: number
+  active: number
+}
+
+interface PromoRow {
+  id: number
+  label: string
+  courses: string
+  starts_at: string
+  ends_at: string
+  created_by: string
+  created_at: string
+}
+
+interface CodeRow {
+  code: string
+  kind: string
+  channel: string | null
+  percent_off: number | null
+  amount_off: number | null
+  duration: string
+  months: number | null
+  plans: string
+  starts_at: string | null
+  ends_at: string | null
+  max_uses: number | null
+  commission_pct: number | null
+  active: number
+  note: string | null
+  created_by: string
+  created_at: string
+  updated_at: string
+}
+
+const planFromRow = (r: PlanRow): Plan => ({
+  id: r.id, name: r.name, blurb: r.blurb, courses: r.courses, monthly: r.monthly_cents, yearly: r.yearly_cents,
+  trialDays: r.trial_days, sort: r.sort, active: !!r.active,
+})
+
+const promoFromRow = (r: PromoRow): CoursePromo => ({ id: r.id, label: r.label, courses: parseList(r.courses), starts: r.starts_at, ends: r.ends_at })
+
+const codeFromRow = (r: CodeRow): DiscountCode => ({
+  code: r.code, kind: r.kind === 'affiliate' ? 'affiliate' : 'coupon', channel: r.channel, percentOff: r.percent_off, amountOff: r.amount_off,
+  duration: r.duration === 'repeating' || r.duration === 'forever' ? r.duration : 'once', months: r.months, plans: parseList(r.plans),
+  starts: r.starts_at, ends: r.ends_at, maxUses: r.max_uses, commissionPct: r.commission_pct, active: !!r.active, note: r.note,
+})
+
+function parseList(text: string | null): string[] {
+  try {
+    const v = JSON.parse(text ?? '[]')
+    return Array.isArray(v) ? v.map(String) : []
+  } catch {
+    return []
+  }
+}
+
+// Kept for a short while per Worker instance; a change in the portal clears it there, and every
+// other instance picks it up within PRICING_TTL.
+const PRICING_TTL = 30_000
+let pricingCache: { until: number; p: Pricing } | null = null
+
+async function loadPricing(env: Env): Promise<Pricing> {
+  if (pricingCache && pricingCache.until > Date.now()) return pricingCache.p
+  const [plans, promos] = await Promise.all([
+    env.DB.prepare('SELECT * FROM pricing_plans').all<PlanRow>(),
+    env.DB.prepare('SELECT * FROM course_promos WHERE ends_at > ? ORDER BY starts_at').bind(now()).all<PromoRow>(),
+  ])
+  const p: Pricing = { plans: plans.results.length ? plans.results.map(planFromRow) : DEFAULT_PRICING.plans, promos: promos.results.map(promoFromRow) }
+  pricingCache = { until: Date.now() + PRICING_TTL, p }
+  return p
+}
+
+async function getCode(env: Env, code: string): Promise<DiscountCode | null> {
+  const r = await env.DB.prepare('SELECT * FROM discount_codes WHERE code = ?').bind(code).first<CodeRow>()
+  return r ? codeFromRow(r) : null
+}
+
+/** Public: the plans and the free-course promotions running now or coming up. */
+async function publicPricing(env: Env) {
+  return json(await loadPricing(env), 200, { 'cache-control': 'public, max-age=60' })
+}
+
+async function pricingLog(env: Env, email: string, what: string, detail: unknown) {
+  pricingCache = null
+  await env.DB.prepare('INSERT INTO pricing_log (at, by_email, what, detail) VALUES (?, ?, ?, ?)').bind(now(), email, what, JSON.stringify(detail)).run()
+}
+
+/** Admin: everything in the Pricing tab, with how many people are on each plan and how each code is doing. */
+async function adminPricing(req: Request, env: Env) {
+  await requirePriv(req, env, 'pricing', 'view')
+  const q = <T>(sql: string, ...args: unknown[]) =>
+    env.DB.prepare(sql)
+      .bind(...args)
+      .all<T>()
+      .then((r) => r.results)
+  const paid = "a.status IN ('active','trialing','past_due')"
+  const [plans, promos, codes, signups, redeemed, paying, revenue, holders, granted, log] = await Promise.all([
+    q<PlanRow>('SELECT * FROM pricing_plans'),
+    q<PromoRow>('SELECT * FROM course_promos ORDER BY ends_at DESC LIMIT 200'),
+    q<CodeRow>('SELECT * FROM discount_codes ORDER BY created_at DESC'),
+    q<{ code: string; n: number }>('SELECT ref_code AS code, COUNT(*) AS n FROM users WHERE ref_code IS NOT NULL GROUP BY 1'),
+    q<{ code: string; n: number }>('SELECT code, COUNT(*) AS n FROM code_redemptions GROUP BY 1'),
+    q<{ code: string; n: number }>(
+      `SELECT COALESCE(a.code, u.ref_code) AS code, COUNT(*) AS n FROM accounts a JOIN users u ON u.sub = a.user_sub
+       WHERE ${paid} AND COALESCE(a.code, u.ref_code) IS NOT NULL GROUP BY 1`,
+    ),
+    q<{ code: string; amount: number; payers: number }>(
+      'SELECT code, SUM(amount) AS amount, COUNT(DISTINCT user_sub) AS payers FROM payments WHERE code IS NOT NULL GROUP BY 1',
+    ),
+    q<{ plan: string; price_cents: number | null; billing_interval: string | null; n: number }>(
+      `SELECT a.plan, a.price_cents, a.billing_interval, COUNT(*) AS n FROM accounts a WHERE ${paid} GROUP BY 1, 2, 3`,
+    ),
+    q<{ plan: string; n: number }>('SELECT comp_plan AS plan, COUNT(*) AS n FROM accounts WHERE comp_plan IS NOT NULL GROUP BY 1'),
+    q<{ at: string; by_email: string; what: string; detail: string | null }>('SELECT at, by_email, what, detail FROM pricing_log ORDER BY id DESC LIMIT 100'),
+  ])
+  const by = (rows: { code: string; n: number }[]) => Object.fromEntries(rows.map((r) => [r.code, r.n]))
+  const [s, r, pn] = [by(signups), by(redeemed), by(paying)]
+  const rev = Object.fromEntries(revenue.map((x) => [x.code, x]))
+  return json({
+    plans: plans.length ? plans.map(planFromRow) : DEFAULT_PRICING.plans,
+    promos: promos.map((x) => ({ ...promoFromRow(x), createdBy: x.created_by })),
+    codes: codes.map((x) => {
+      const c = codeFromRow(x)
+      const amount = rev[c.code]?.amount ?? 0
+      return {
+        ...c,
+        createdBy: x.created_by,
+        createdAt: x.created_at,
+        stats: {
+          signups: s[c.code] ?? 0,
+          redemptions: r[c.code] ?? 0,
+          payingNow: pn[c.code] ?? 0,
+          payers: rev[c.code]?.payers ?? 0,
+          revenue: amount,
+          commission: c.commissionPct ? Math.round((amount * c.commissionPct) / 100) : 0,
+        },
+      }
+    }),
+    holders,
+    granted,
+    log: log.map((x) => ({ ...x, detail: x.detail ? JSON.parse(x.detail) : null })),
+  })
+}
+
+async function savePlan(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'pricing', 'edit')
+  const body = await readJson<Record<string, unknown>>(req)
+  const v = validatePlan(body)
+  if (typeof v === 'string') throw new HttpError(400, v)
+  const old = await env.DB.prepare('SELECT * FROM pricing_plans WHERE id = ?').bind(v.id).first<PlanRow>()
+  if (body.isNew && old) throw new HttpError(400, `There is already a plan with the id "${v.id}".`)
+  if (!body.isNew && !old) throw new HttpError(404, 'No such plan')
+  await env.DB.prepare(
+    `INSERT INTO pricing_plans (id, name, blurb, courses, monthly_cents, yearly_cents, trial_days, sort, active, updated_by, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET name=excluded.name, blurb=excluded.blurb, courses=excluded.courses, monthly_cents=excluded.monthly_cents,
+       yearly_cents=excluded.yearly_cents, trial_days=excluded.trial_days, sort=excluded.sort, active=excluded.active,
+       updated_by=excluded.updated_by, updated_at=excluded.updated_at`,
+  )
+    .bind(v.id, v.name, v.blurb, v.courses, v.monthly, v.yearly, v.trialDays, v.sort, v.active ? 1 : 0, admin.email, now())
+    .run()
+  await pricingLog(env, admin.email, old ? `Changed plan ${v.id}` : `Added plan ${v.id}`, { before: old ? planFromRow(old) : null, after: v })
+  return json({ ok: true, plan: v })
+}
+
+async function savePromo(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'pricing', 'edit')
+  const body = await readJson<Record<string, unknown>>(req)
+  const v = validatePromo(body)
+  if (typeof v === 'string') throw new HttpError(400, v)
+  const id = Number(body.id)
+  if (body.id !== undefined && body.id !== null) {
+    if (!Number.isInteger(id)) throw new HttpError(400, 'Bad id')
+    const r = await env.DB.prepare('UPDATE course_promos SET label = ?, courses = ?, starts_at = ?, ends_at = ? WHERE id = ?')
+      .bind(v.label, JSON.stringify(v.courses), v.starts, v.ends, id)
+      .run()
+    if (!r.meta.changes) throw new HttpError(404, 'No such promotion')
+    await pricingLog(env, admin.email, `Changed free-course promotion "${v.label}"`, v)
+  } else {
+    await env.DB.prepare('INSERT INTO course_promos (label, courses, starts_at, ends_at, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+      .bind(v.label, JSON.stringify(v.courses), v.starts, v.ends, admin.email, now())
+      .run()
+    await pricingLog(env, admin.email, `Added free-course promotion "${v.label}"`, v)
+  }
+  return json({ ok: true })
+}
+
+async function deletePromo(req: Request, env: Env, url: URL) {
+  const admin = await requirePriv(req, env, 'pricing', 'delete')
+  const id = Number(url.searchParams.get('id'))
+  const row = await env.DB.prepare('SELECT * FROM course_promos WHERE id = ?').bind(id).first<PromoRow>()
+  if (!row) throw new HttpError(404, 'No such promotion')
+  await env.DB.prepare('DELETE FROM course_promos WHERE id = ?').bind(id).run()
+  await pricingLog(env, admin.email, `Removed free-course promotion "${row.label}"`, promoFromRow(row))
+  return json({ ok: true })
+}
+
+async function saveCode(req: Request, env: Env) {
+  const admin = await requirePriv(req, env, 'pricing', 'edit')
+  const body = await readJson<Record<string, unknown>>(req)
+  const v = validateCode(body, (await loadPricing(env)).plans.map((x) => x.id))
+  if (typeof v === 'string') throw new HttpError(400, v)
+  const old = await getCode(env, v.code)
+  if (body.isNew && old) throw new HttpError(400, `The code ${v.code} already exists.`)
+  if (!body.isNew && !old) throw new HttpError(404, 'No such code')
+  const t = now()
+  await env.DB.prepare(
+    `INSERT INTO discount_codes (code, kind, channel, percent_off, amount_off, duration, months, plans, starts_at, ends_at, max_uses,
+       commission_pct, active, note, created_by, created_at, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?16)
+     ON CONFLICT(code) DO UPDATE SET kind=excluded.kind, channel=excluded.channel, percent_off=excluded.percent_off,
+       amount_off=excluded.amount_off, duration=excluded.duration, months=excluded.months, plans=excluded.plans,
+       starts_at=excluded.starts_at, ends_at=excluded.ends_at, max_uses=excluded.max_uses, commission_pct=excluded.commission_pct,
+       active=excluded.active, note=excluded.note, updated_at=excluded.updated_at`,
+  )
+    .bind(
+      v.code, v.kind, v.channel, v.percentOff, v.amountOff, v.duration, v.months, JSON.stringify(v.plans), v.starts, v.ends, v.maxUses,
+      v.commissionPct, v.active ? 1 : 0, v.note, admin.email, t,
+    )
+    .run()
+  await pricingLog(env, admin.email, old ? `Changed code ${v.code}` : `Added code ${v.code}`, { before: old, after: v })
+  return json({ ok: true, code: v })
+}
+
+/** A code nobody has used is deleted; one with sign-ups or payments is switched off instead, so its reports stay. */
+async function deleteCode(req: Request, env: Env, url: URL) {
+  const admin = await requirePriv(req, env, 'pricing', 'delete')
+  const code = normalizeCode(url.searchParams.get('code'))
+  const c = await getCode(env, code)
+  if (!c) throw new HttpError(404, 'No such code')
+  const used = await env.DB.prepare(
+    `SELECT EXISTS (SELECT 1 FROM code_redemptions WHERE code = ?1) OR EXISTS (SELECT 1 FROM users WHERE ref_code = ?1)
+            OR EXISTS (SELECT 1 FROM payments WHERE code = ?1) AS used`,
+  )
+    .bind(code)
+    .first<{ used: number }>()
+  if (used?.used) {
+    await env.DB.prepare('UPDATE discount_codes SET active = 0, updated_at = ? WHERE code = ?').bind(now(), code).run()
+    await pricingLog(env, admin.email, `Switched off code ${code}`, c)
+    return json({ ok: true, deactivated: true })
+  }
+  await env.DB.prepare('DELETE FROM discount_codes WHERE code = ?').bind(code).run()
+  await pricingLog(env, admin.email, `Deleted code ${code}`, c)
+  return json({ ok: true, deleted: true })
+}
+
 // ---------- accounts & subscriptions ----------
 
 interface AccountRow {
@@ -470,47 +738,53 @@ interface AccountRow {
   cancel_at_period_end: number
   courses: string
   courses_switched_at: string | null
+  /** discount/affiliate code on the current subscription */
+  code: string | null
+  /** what the current subscription costs (before any discount) */
+  price_cents: number | null
+  billing_interval: Interval | null
 }
-
-const RANK: Record<PlanId, number> = { free: 0, three: 1, all: 2 }
-const better = (a: PlanId, b: PlanId | null) => (b && RANK[b] > RANK[a] ? b : a)
 
 async function getAccount(env: Env, sub: string): Promise<AccountRow> {
   const row = await env.DB.prepare('SELECT * FROM accounts WHERE user_sub = ?').bind(sub).first<AccountRow>()
   return (
     row ?? {
       user_sub: sub, plan: 'free', status: 'none', comp_plan: null, stripe_customer: null, stripe_subscription: null,
-      current_period_end: null, cancel_at_period_end: 0, courses: '[]', courses_switched_at: null,
+      current_period_end: null, cancel_at_period_end: 0, courses: '[]', courses_switched_at: null, code: null, price_cents: null,
+      billing_interval: null,
     }
   )
 }
 
 /** The plan in force: the paid plan (while Stripe says it's paid) or an admin-granted plan, whichever is bigger. */
-function effectivePlan(a: AccountRow): PlanId {
-  return better(PAID_STATUSES.has(a.status) ? a.plan : 'free', a.comp_plan)
+function effectivePlan(p: Pricing, a: AccountRow): PlanId {
+  return biggerPlan(p, PAID_STATUSES.has(a.status) ? a.plan : FREE_PLAN, a.comp_plan)
 }
 
 async function saveAccount(env: Env, a: AccountRow) {
   await env.DB.prepare(
     `INSERT INTO accounts (user_sub, plan, status, comp_plan, stripe_customer, stripe_subscription, current_period_end,
-       cancel_at_period_end, courses, courses_switched_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       cancel_at_period_end, courses, courses_switched_at, code, price_cents, billing_interval, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(user_sub) DO UPDATE SET plan=excluded.plan, status=excluded.status, comp_plan=excluded.comp_plan,
        stripe_customer=excluded.stripe_customer, stripe_subscription=excluded.stripe_subscription,
        current_period_end=excluded.current_period_end, cancel_at_period_end=excluded.cancel_at_period_end,
-       courses=excluded.courses, courses_switched_at=excluded.courses_switched_at, updated_at=excluded.updated_at`,
+       courses=excluded.courses, courses_switched_at=excluded.courses_switched_at, code=excluded.code,
+       price_cents=excluded.price_cents, billing_interval=excluded.billing_interval, updated_at=excluded.updated_at`,
   )
     .bind(
       a.user_sub, a.plan, a.status, a.comp_plan, a.stripe_customer, a.stripe_subscription, a.current_period_end,
-      a.cancel_at_period_end, a.courses, a.courses_switched_at, now(),
+      a.cancel_at_period_end, a.courses, a.courses_switched_at, a.code, a.price_cents, a.billing_interval, now(),
     )
     .run()
 }
 
 /** Save a change and log it when the plan in force changed; trims picked courses after a downgrade. */
 async function updateAccount(env: Env, before: AccountRow, after: AccountRow) {
-  const from = effectivePlan(before)
-  const to = effectivePlan(after)
-  if (RANK[to] < RANK[from]) after.courses = JSON.stringify(trimPicks(to, JSON.parse(after.courses)))
+  const p = await loadPricing(env)
+  const from = effectivePlan(p, before)
+  const to = effectivePlan(p, after)
+  if (planRank(p, to) < planRank(p, from)) after.courses = JSON.stringify(trimPicks(p, to, JSON.parse(after.courses)))
   await saveAccount(env, after)
   if (from !== to)
     await env.DB.prepare('INSERT INTO plan_changes (user_sub, from_plan, to_plan, at) VALUES (?, ?, ?, ?)')
@@ -518,18 +792,30 @@ async function updateAccount(env: Env, before: AccountRow, after: AccountRow) {
       .run()
 }
 
+/** A plan that includes every course (admins are shown as being on it). */
+const everyCoursePlan = (p: Pricing) => sortedPlans(p).find((x) => x.courses === null)?.id ?? null
+
 async function accountView(env: Env, u: User) {
   const a = await getAccount(env, u.sub)
+  const p = await loadPricing(env)
   const admin = await isAdmin(env, u.email)
   const interest = await env.DB.prepare('SELECT course_id FROM course_interest WHERE user_sub = ?').bind(u.sub).all<{ course_id: string }>()
-  const plan = effectivePlan(a)
-  const switchAt = a.courses_switched_at ? new Date(new Date(a.courses_switched_at).getTime() + 30 * 86400_000).toISOString() : null
+  const ref = await env.DB.prepare('SELECT ref_code FROM users WHERE sub = ?').bind(u.sub).first<{ ref_code: string | null }>()
+  const plan = effectivePlan(p, a)
+  const switchAt = a.courses_switched_at ? new Date(new Date(a.courses_switched_at).getTime() + SWITCH_DAYS * 86400_000).toISOString() : null
+  const paid = PAID_STATUSES.has(a.status)
   return {
     // admins can open every course so they can check content
-    plan: admin ? 'all' : plan,
+    plan: admin ? (everyCoursePlan(p) ?? plan) : plan,
     ownPlan: plan,
-    paidPlan: PAID_STATUSES.has(a.status) ? a.plan : 'free',
+    paidPlan: paid ? a.plan : FREE_PLAN,
     compPlan: a.comp_plan,
+    interval: paid ? (a.billing_interval ?? 'month') : null,
+    priceCents: paid ? a.price_cents : null,
+    code: paid ? a.code : null,
+    refCode: ref?.ref_code ?? null,
+    /** a free trial is only for a first subscription */
+    trialUsed: !!a.stripe_subscription,
     admin,
     status: a.status,
     courses: JSON.parse(a.courses) as string[],
@@ -547,11 +833,15 @@ async function setCourses(req: Request, env: Env) {
   if (!Array.isArray(courses) || courses.some((c) => typeof c !== 'string')) throw new HttpError(400, 'Bad course list')
   const a = await getAccount(env, u.sub)
   const before = JSON.parse(a.courses) as string[]
-  const plan = (await isAdmin(env, u.email)) ? 'all' : effectivePlan(a)
-  const err = checkPickChange(plan, before, courses, a.courses_switched_at)
+  const p = await loadPricing(env)
+  const admin = await isAdmin(env, u.email)
+  const plan = effectivePlan(p, a)
+  // admins can pick anything (they open every course anyway)
+  const err = admin ? (courses.some((c) => !CATALOG_IDS.has(c)) ? 'Unknown course' : null) : checkPickChange(p, plan, before, courses, a.courses_switched_at)
   if (err) throw new HttpError(400, err)
   const removed = before.some((c) => !courses.includes(c))
-  await saveAccount(env, { ...a, courses: JSON.stringify(courses), courses_switched_at: removed && plan !== 'all' ? now() : a.courses_switched_at })
+  const counts = removed && !admin && !unlimited(p, plan)
+  await saveAccount(env, { ...a, courses: JSON.stringify(courses), courses_switched_at: counts ? now() : a.courses_switched_at })
   return json(await accountView(env, u))
 }
 
@@ -586,37 +876,80 @@ async function syncSubscription(env: Env, subscriptionId: string, userHint?: str
     plan: s.plan ?? row.plan,
     current_period_end: s.periodEnd,
     cancel_at_period_end: s.cancelAtPeriodEnd ? 1 : 0,
+    // a plan switch keeps the code the subscription was bought with
+    code: s.code ?? (s.id === row.stripe_subscription ? row.code : null),
+    price_cents: s.priceCents,
+    billing_interval: s.interval,
+  })
+}
+
+/** The code, if this person can use it now (for this plan, when one is given); otherwise a 400 saying why. */
+async function usableCode(env: Env, typed: string, plan: PlanId | null, sub: string): Promise<DiscountCode> {
+  const c = CODE_PATTERN.test(typed) ? await getCode(env, typed) : null
+  if (!c) throw new HttpError(400, "That code wasn't found. Check the spelling.")
+  const [uses, mine] = await Promise.all([
+    env.DB.prepare('SELECT COUNT(*) AS n FROM code_redemptions WHERE code = ?').bind(c.code).first<{ n: number }>(),
+    env.DB.prepare('SELECT 1 FROM code_redemptions WHERE code = ? AND user_sub = ?').bind(c.code, sub).first(),
+  ])
+  if (mine) throw new HttpError(400, 'You have already used this code.')
+  const problem = codeProblem(plan ? c : { ...c, plans: [] }, plan ?? '', uses?.n ?? 0)
+  if (problem) throw new HttpError(400, problem)
+  return c
+}
+
+/** What a code gives, for the plans page (signed-in students only, so codes can't be guessed in bulk). */
+async function checkCode(req: Request, env: Env, url: URL) {
+  const u = await currentUser(req, env)
+  const plan = url.searchParams.get('plan')
+  const c = await usableCode(env, normalizeCode(url.searchParams.get('code')), plan || null, u.sub)
+  return json({
+    code: c.code,
+    description: describeDiscount(c),
+    percentOff: c.percentOff,
+    amountOff: c.amountOff,
+    duration: c.duration,
+    months: c.months,
+    plans: c.plans,
   })
 }
 
 async function checkout(req: Request, env: Env) {
   const u = await currentUser(req, env)
-  const { plan } = await readJson<{ plan: PlanId }>(req)
-  if (plan !== 'three' && plan !== 'all') throw new HttpError(400, 'Pick a paid plan')
+  const b = await readJson<{ plan?: unknown; interval?: unknown; code?: unknown }>(req)
+  const pricing = await loadPricing(env)
+  const plan = pricing.plans.find((x) => x.id === b.plan)
+  if (!plan || plan.id === FREE_PLAN || !plan.active) throw new HttpError(400, 'Pick a paid plan')
+  const interval: Interval = b.interval === 'year' ? 'year' : 'month'
+  if (interval === 'year' && !plan.yearly) throw new HttpError(400, `${plan.name} has no yearly option`)
   const a = await getAccount(env, u.sub)
   const base = appUrl(env, req)
+  const typed = normalizeCode(b.code)
+  const code = typed ? await usableCode(env, typed, plan.id, u.sub) : null
 
   // Already paying: switch the existing subscription (prorated) instead of starting a second one.
   if (a.stripe_subscription && PAID_STATUSES.has(a.status)) {
     const s = readSubscription(await stripe(env, 'GET', `subscriptions/${a.stripe_subscription}`))
     await stripe(env, 'POST', `subscriptions/${s.id}`, {
-      items: [{ id: s.itemId, price: await priceId(env, plan) }],
+      items: [{ id: s.itemId, price: await priceId(env, plan, interval) }],
       proration_behavior: 'create_prorations',
       cancel_at_period_end: 'false',
-      metadata: { plan, user_sub: u.sub },
+      metadata: { plan: plan.id, user_sub: u.sub, code: a.code ?? '' },
     })
     await syncSubscription(env, s.id, u.sub)
-    return json({ changed: true, account: await accountView(env, u) })
+    return json({ changed: true, account: await accountView(env, u), note: code ? 'Codes are for new subscriptions, so yours was not used for this switch.' : undefined })
   }
 
+  const trial = plan.trialDays && !a.stripe_subscription ? plan.trialDays : 0
+  const meta = { plan: plan.id, user_sub: u.sub, ...(code ? { code: code.code } : {}) }
   const session = await stripe<{ url: string }>(env, 'POST', 'checkout/sessions', {
     mode: 'subscription',
-    line_items: [{ price: await priceId(env, plan), quantity: 1 }],
+    line_items: [{ price: await priceId(env, plan, interval), quantity: 1 }],
     client_reference_id: u.sub,
     ...(a.stripe_customer ? { customer: a.stripe_customer } : { customer_email: u.email }),
-    subscription_data: { metadata: { plan, user_sub: u.sub } },
-    metadata: { user_sub: u.sub, plan },
-    allow_promotion_codes: 'true',
+    subscription_data: { metadata: meta, ...(trial ? { trial_period_days: trial } : {}) },
+    metadata: meta,
+    // codes are made in the admin portal (Pricing), so Stripe's own promo-code box is not offered
+    ...(code && hasDiscount(code) ? { discounts: [{ coupon: await ensureCoupon(env, code) }] } : {}),
     success_url: `${base}/#/plans?checkout=done`,
     cancel_url: `${base}/#/plans?checkout=cancelled`,
   })
@@ -664,16 +997,27 @@ async function stripeWebhook(req: Request, env: Env) {
       if (sub) {
         const a = await getAccount(env, sub)
         await saveAccount(env, { ...a, stripe_customer: String(o.customer) })
+        const meta = (o.metadata ?? {}) as Record<string, string>
+        const code = normalizeCode(meta.code)
+        if (CODE_PATTERN.test(code))
+          await env.DB.prepare('INSERT OR IGNORE INTO code_redemptions (code, user_sub, plan, at) VALUES (?, ?, ?, ?)')
+            .bind(code, sub, str(meta.plan, 20), now())
+            .run()
       }
       await syncSubscription(env, String(o.subscription), sub || undefined)
     } else if (ev.type.startsWith('customer.subscription.')) {
       await syncSubscription(env, String(o.id))
     } else if (ev.type === 'invoice.paid' || ev.type === 'invoice.payment_succeeded') {
-      const row = await env.DB.prepare('SELECT user_sub, plan FROM accounts WHERE stripe_customer = ?').bind(String(o.customer)).first<{ user_sub: string; plan: string }>()
+      // a payment is credited to the code used at checkout, else to the code on the link they signed up through
+      const row = await env.DB.prepare(
+        `SELECT a.user_sub, a.plan, COALESCE(a.code, u.ref_code) AS code FROM accounts a LEFT JOIN users u ON u.sub = a.user_sub WHERE a.stripe_customer = ?`,
+      )
+        .bind(String(o.customer))
+        .first<{ user_sub: string; plan: string; code: string | null }>()
       const paidAt = Number((o.status_transitions as Record<string, number> | undefined)?.paid_at ?? o.created ?? Date.now() / 1000)
       if (num(o.amount_paid) > 0)
-        await env.DB.prepare('INSERT OR IGNORE INTO payments (id, user_sub, plan, amount, currency, paid_at) VALUES (?, ?, ?, ?, ?, ?)')
-          .bind(String(o.id), row?.user_sub ?? null, row?.plan ?? null, num(o.amount_paid), String(o.currency ?? 'usd'), new Date(paidAt * 1000).toISOString())
+        await env.DB.prepare('INSERT OR IGNORE INTO payments (id, user_sub, plan, amount, currency, paid_at, code) VALUES (?, ?, ?, ?, ?, ?, ?)')
+          .bind(String(o.id), row?.user_sub ?? null, row?.plan ?? null, num(o.amount_paid), String(o.currency ?? 'usd'), new Date(paidAt * 1000).toISOString(), row?.code ?? null)
           .run()
     }
   } catch (e) {
@@ -1056,15 +1400,19 @@ async function recordLead(req: Request, env: Env) {
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 86400_000).toISOString().slice(0, 10)
 
-// Plan in force per user (same rule as effectivePlan, in SQL).
-const PLAN_SQL = `CASE
-    WHEN a.comp_plan = 'all' OR (a.plan = 'all' AND a.status IN ('active','trialing','past_due')) THEN 'all'
-    WHEN a.comp_plan = 'three' OR (a.plan = 'three' AND a.status IN ('active','trialing','past_due')) THEN 'three'
-    ELSE 'free' END`
+/** The plan in force per user (same rule as effectivePlan, in SQL). Plan ids match PLAN_ID_PATTERN, so they are safe to inline. */
+function planSql(p: Pricing): string {
+  const paid = p.plans.filter((x) => x.id !== FREE_PLAN).sort((a, b) => planRank(p, b.id) - planRank(p, a.id))
+  if (!paid.length) return `'${FREE_PLAN}'`
+  return `CASE ${paid
+    .map((x) => `WHEN a.comp_plan = '${x.id}' OR (a.plan = '${x.id}' AND a.status IN ('active','trialing','past_due')) THEN '${x.id}'`)
+    .join(' ')} ELSE '${FREE_PLAN}' END`
+}
 
 /** Admin: visitors who have not signed in, where they come from, the welcome-page funnel, leads, and students on the free plan. */
 async function audience(req: Request, env: Env) {
   await requirePriv(req, env, 'audience', 'view')
+  const PLAN_SQL = planSql(await loadPricing(env))
   const q = <T>(sql: string, ...args: unknown[]) =>
     env.DB.prepare(sql)
       .bind(...args)
@@ -1144,11 +1492,12 @@ async function metrics(req: Request, env: Env) {
       .then((r) => r.results)
   const one = async <T>(sql: string, ...args: unknown[]) => (await q<T>(sql, ...args))[0]
 
-  const planSql = PLAN_SQL
+  const pricing = await loadPricing(env)
+  const PLAN_SQL = planSql(pricing)
   const paidSql = `CASE WHEN a.status IN ('active','trialing','past_due') THEN a.plan ELSE 'free' END`
 
   const [
-    totals, signups, byCountry, byPlan, subsByCountry, changes, revenue, active, activeByDay, topics, picks, interest, events, regions,
+    totals, signups, byCountry, byPlan, subsByCountry, changes, revenue, active, activeByDay, topics, picks, interest, events, regions, prices,
   ] = await Promise.all([
     one<{ users: number; new7: number; new30: number }>(
       'SELECT COUNT(*) AS users, SUM(created_at >= ?) AS new7, SUM(created_at >= ?) AS new30 FROM users', daysAgo(7), daysAgo(30),
@@ -1156,10 +1505,10 @@ async function metrics(req: Request, env: Env) {
     q<{ day: string; n: number }>('SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS n FROM users WHERE created_at >= ? GROUP BY 1 ORDER BY 1', daysAgo(89)),
     q<{ country: string; n: number }>("SELECT COALESCE(country, '??') AS country, COUNT(*) AS n FROM users GROUP BY 1 ORDER BY 2 DESC LIMIT 30"),
     q<{ plan: string; paid: string; n: number }>(
-      `SELECT ${planSql} AS plan, ${paidSql} AS paid, COUNT(*) AS n FROM users u LEFT JOIN accounts a ON a.user_sub = u.sub GROUP BY 1, 2`,
+      `SELECT ${PLAN_SQL} AS plan, ${paidSql} AS paid, COUNT(*) AS n FROM users u LEFT JOIN accounts a ON a.user_sub = u.sub GROUP BY 1, 2`,
     ),
     q<{ country: string; plan: string; n: number }>(
-      `SELECT COALESCE(u.country, '??') AS country, ${planSql} AS plan, COUNT(*) AS n
+      `SELECT COALESCE(u.country, '??') AS country, ${PLAN_SQL} AS plan, COUNT(*) AS n
        FROM users u LEFT JOIN accounts a ON a.user_sub = u.sub GROUP BY 1, 2`,
     ),
     q<{ month: string; from_plan: string; to_plan: string; n: number }>(
@@ -1196,7 +1545,10 @@ async function metrics(req: Request, env: Env) {
     q<{ name: string; n: number }>('SELECT name, SUM(count) AS n FROM event_daily WHERE day >= ? GROUP BY 1 ORDER BY 2 DESC', daysAgo(29)),
     q<{ country: string; region: string; n: number }>(
       `SELECT u.country, COALESCE(u.region, '') AS region, COUNT(*) AS n FROM users u
-       LEFT JOIN accounts a ON a.user_sub = u.sub WHERE ${planSql} != 'free' GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20`,
+       LEFT JOIN accounts a ON a.user_sub = u.sub WHERE ${PLAN_SQL} != 'free' GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20`,
+    ),
+    q<{ plan: string; price_cents: number | null; billing_interval: string | null; n: number }>(
+      `SELECT plan, price_cents, billing_interval, COUNT(*) AS n FROM accounts WHERE status IN ('active','trialing','past_due') GROUP BY 1, 2, 3`,
     ),
   ])
 
@@ -1231,13 +1583,17 @@ async function metrics(req: Request, env: Env) {
     q<{ month: string; source: string; amount: number }>('SELECT month, source, amount FROM ad_spend WHERE month >= ? ORDER BY month DESC, source', yearAgo.slice(0, 7)),
   ])
 
-  // Monthly recurring revenue now: paying subscriptions × list price (admin-granted plans are free).
-  const mrr = byPlan.reduce((s, r) => s + (r.paid === 'free' ? 0 : r.n * Math.round(PLANS[r.paid as PlanId].price * 100)), 0)
+  // Monthly recurring revenue now: paying subscriptions × the price each was bought at, yearly ones
+  // spread over 12 months (before discounts; admin-granted plans are free).
+  const mrr = prices.reduce((s, r) => {
+    const cents = r.price_cents ?? planOf(pricing, r.plan).monthly
+    return s + r.n * (r.billing_interval === 'year' ? Math.round(cents / 12) : cents)
+  }, 0)
   return json({
     generatedAt: now(),
     business: { everPaid: everPaid?.n ?? 0, cohorts, payers, retained, utm, spend },
     users: { ...totals, byDay: signups, byCountry },
-    plans: { byPlan, byCountry: subsByCountry, changes, paidRegions: regions },
+    plans: { byPlan, byCountry: subsByCountry, changes, paidRegions: regions, defs: sortedPlans(pricing) },
     revenue: { mrr, currency: 'usd', byMonth: revenue },
     engagement: { ...active, byDay: activeByDay, events },
     topics,
@@ -1285,7 +1641,7 @@ async function listUsers(req: Request, env: Env, url: URL) {
 /** Give someone a plan without payment (family, teachers, testers), or take it back. */
 async function grantPlan(req: Request, env: Env) {
   const { sub, plan } = await readJson<{ sub: string; plan: PlanId | null }>(req)
-  if (plan !== null && plan !== 'three' && plan !== 'all') throw new HttpError(400, 'Bad plan')
+  if (plan !== null && (plan === FREE_PLAN || !(await loadPricing(env)).plans.some((x) => x.id === plan))) throw new HttpError(400, 'Bad plan')
   // granting a plan is an edit; taking a granted plan back is a delete
   await requirePriv(req, env, 'students', plan === null ? 'delete' : 'edit')
   const exists = await env.DB.prepare('SELECT 1 FROM users WHERE sub = ?').bind(String(sub)).first()
@@ -1352,6 +1708,8 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/visit' && m === 'POST') return recordVisit(req, env)
   if (p === '/api/lead' && m === 'POST') return recordLead(req, env)
 
+  if (p === '/api/pricing' && m === 'GET') return publicPricing(env)
+  if (p === '/api/codes/check' && m === 'GET') return checkCode(req, env, url)
   if (p === '/api/account' && m === 'GET') return json(await accountView(env, await currentUser(req, env)))
   if (p === '/api/account/courses' && m === 'POST') return setCourses(req, env)
   if (p === '/api/interest' && m === 'POST') return setInterest(req, env)
@@ -1382,6 +1740,12 @@ async function route(req: Request, env: Env, url: URL): Promise<Response> {
   if (p === '/api/admin/errata' && m === 'POST') return addErratum(req, env)
   if (p === '/api/admin/errata' && m === 'DELETE') return deleteErratum(req, env, url)
   if (p === '/api/admin/spend' && m === 'POST') return setAdSpend(req, env)
+  if (p === '/api/admin/pricing' && m === 'GET') return adminPricing(req, env)
+  if (p === '/api/admin/pricing/plan' && m === 'PUT') return savePlan(req, env)
+  if (p === '/api/admin/pricing/promo' && m === 'PUT') return savePromo(req, env)
+  if (p === '/api/admin/pricing/promo' && m === 'DELETE') return deletePromo(req, env, url)
+  if (p === '/api/admin/pricing/code' && m === 'PUT') return saveCode(req, env)
+  if (p === '/api/admin/pricing/code' && m === 'DELETE') return deleteCode(req, env, url)
 
   throw new HttpError(404, 'Not found')
 }
@@ -1449,6 +1813,9 @@ function secure(res: Response, url: URL, api: boolean): Response {
 }
 
 async function handle(req: Request, env: Env, url: URL): Promise<Response> {
+  // The old address keeps working: every page moves to the same place on the new one (301).
+  const moved = movedUrl(url)
+  if (moved) return Response.redirect(moved, 301)
   // One address for everyone: Google sign-in only works on origins registered in Google Cloud,
   // so send the bare domain to www.
   if (url.hostname === BRAND.domain) {
