@@ -139,7 +139,7 @@ function CourseMap({ course }: { course: Course }) {
 
   return (
     <div>
-      <TopBar title={course.title} back="/learn" right={<SearchButton course={course} scopes={[{ label: 'Whole course', refs: courseRefs(course) }]} />} />
+      <TopBar title={course.title} back={`/home/${course.id}`} right={<SearchButton course={course} scopes={[{ label: 'Whole course', refs: courseRefs(course) }]} />} />
       <p className="muted small" style={{ marginTop: 0 }}>
         Units go from foundations to advanced ideas. Everything is open, so go in order or jump to what your class is doing.
       </p>

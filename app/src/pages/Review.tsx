@@ -8,18 +8,30 @@ import { Cheer } from '../components/Cheer'
 import { pick, REVIEW_CHEERS } from '../lib/cheer'
 import { bookmarks, dueCards, dueCount, evaluateBadges, lessonStatuses, reviewCard, setBookmark } from '../lib/progress'
 import { useStudyTimer } from '../lib/track'
+import { courseHome, useCurrentCourse } from '../lib/course'
 
 type Tab = 'cards' | 'bookmarks' | 'notes'
 const TABS: Tab[] = ['cards', 'bookmarks', 'notes']
 
-/** Everything to look at again, in one place: today's flashcards, bookmarked topics and her notes. */
+/** Topics from the current course only (every course when none is picked yet). */
+function useInCourse() {
+  const course = useCurrentCourse()
+  return (lessonId: string) => {
+    const ref = findLesson(lessonId)
+    return !!ref && (!course || ref.course.id === course.id)
+  }
+}
+
+/** Everything to look at again, in one place: today's flashcards, bookmarked topics and her notes, for the current course. */
 export function ReviewPage() {
   const { db } = useApp()
+  const course = useCurrentCourse()
+  const inCourse = useInCourse()
   const [params, setParams] = useSearchParams()
   const tab = (TABS.includes(params.get('tab') as Tab) ? params.get('tab') : 'cards') as Tab
-  const due = dueCount(db)
-  const nMarks = bookmarks(db).filter((b) => findLesson(b.lessonId)).length
-  const nNotes = Number(db.get('SELECT COUNT(*) AS n FROM notes')?.n ?? 0)
+  const due = dueCount(db, course?.id)
+  const nMarks = bookmarks(db).filter((b) => inCourse(b.lessonId)).length
+  const nNotes = db.all('SELECT lesson_id FROM notes').filter((r) => inCourse(String(r.lesson_id))).length
   const labels: Record<Tab, string> = {
     cards: `🃏 Cards${due ? ` ${due}` : ''}`,
     bookmarks: `🔖 Bookmarks${nMarks ? ` ${nMarks}` : ''}`,
@@ -44,8 +56,9 @@ export function ReviewPage() {
 
 function Flashcards() {
   const { db } = useApp()
-  useStudyTimer(db, { kind: 'review' })
-  const [queue, setQueue] = useState<string[]>(() => dueCards(db).filter((id) => findFlashcard(id)))
+  const course = useCurrentCourse()
+  useStudyTimer(db, { kind: 'review', course: course?.id })
+  const [queue, setQueue] = useState<string[]>(() => dueCards(db, undefined, course?.id).filter((id) => findFlashcard(id)))
   const [total] = useState(queue.length)
   const [flipped, setFlipped] = useState(false)
   const [doneCount, setDoneCount] = useState(0)
@@ -74,7 +87,7 @@ function Flashcards() {
         <div className="e">🌤️</div>
         <h3>Nothing due right now</h3>
         <p>Cards appear here after you finish lessons, then come back just before you'd forget them.</p>
-        <Link to="/" className="btn">
+        <Link to={courseHome(course?.id)} className="btn">
           Back home
         </Link>
       </div>
@@ -86,7 +99,7 @@ function Flashcards() {
         <Cheer message={pick(REVIEW_CHEERS)} headline="All done for today!">
           <div className="sub">You reviewed {doneCount} cards. Each review makes the memory last longer.</div>
         </Cheer>
-        <Link to="/" className="btn" style={{ marginTop: 16 }}>
+        <Link to={courseHome(course?.id)} className="btn" style={{ marginTop: 16 }}>
           Back home
         </Link>
       </div>
@@ -134,9 +147,10 @@ function Flashcards() {
 function BookmarkList() {
   const { db } = useApp()
   const statuses = lessonStatuses(db)
+  const inCourse = useInCourse()
   const rows = bookmarks(db)
+    .filter((b) => inCourse(b.lessonId))
     .map((b) => ({ ...b, ref: findLesson(b.lessonId) }))
-    .filter((b) => b.ref)
   if (!rows.length)
     return (
       <div className="empty">
@@ -178,10 +192,11 @@ function NotesList() {
   const { db } = useApp()
   const [open, setOpen] = useState<string | null>(null)
   const [q, setQ] = useState('')
+  const inCourse = useInCourse()
   const all = db
     .all('SELECT lesson_id, body, updated_at FROM notes ORDER BY updated_at DESC')
     .map((r) => ({ id: String(r.lesson_id), body: String(r.body), at: String(r.updated_at), ref: findLesson(String(r.lesson_id)) }))
-    .filter((r) => r.ref)
+    .filter((r) => inCourse(r.id))
   const rows = all.filter((r) => !q || (r.body + r.ref!.lesson.title).toLowerCase().includes(q.toLowerCase()))
 
   return (

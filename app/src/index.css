@@ -119,6 +119,15 @@ a { color: var(--primary); }
 .grow { flex: 1; min-width: 0; }
 .muted { color: var(--muted); }
 .small { font-size: 14px; }
+.course-bar { display: flex; align-items: center; gap: 10px; padding: 10px 0 0; }
+.course-chip { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; background: var(--surface); border: 1px solid var(--primary); color: var(--text); border-radius: 999px; padding: 5px 14px 5px 10px; font-weight: 800; font-size: 14px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.course-chip::after { content: '⌂'; color: var(--primary); margin-left: 2px; }
+.course-switch { margin-left: auto; white-space: nowrap; }
+.home-course { display: block; }
+.course-links { gap: 8px; }
+.course-links .btn { white-space: nowrap; padding-left: 8px; padding-right: 8px; flex-direction: row; gap: 6px; }
+.home-course .today-block .session-item { pointer-events: none; }
+.home-course-go { margin-top: 10px; text-align: right; color: var(--primary); font-weight: 800; }
 .section-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 18px 0 4px; }
 h2 { font-size: 22px; margin: 0 0 6px; line-height: 1.25; }
 h3 { font-size: 18px; margin: 0 0 4px; }

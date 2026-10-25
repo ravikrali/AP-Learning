@@ -7,10 +7,13 @@ import { contentStore, youtubeOverride } from '../lib/overrides'
 import { renderInline } from '../lib/RichText'
 import { TopBar } from '../components/bits'
 import { track } from '../lib/track'
+import { useCurrentCourse } from '../lib/course'
 
-/** Her courses (or the first built one, before she picks any). */
+/** The current course; else her courses (or the first built one, before she picks any). */
 function useMyCourses() {
   const a = useAccount()
+  const current = useCurrentCourse()
+  if (current) return [current]
   const mine = COURSES.filter((c) => openable(a, c.id))
   return mine.length ? mine : [COURSES[0]]
 }

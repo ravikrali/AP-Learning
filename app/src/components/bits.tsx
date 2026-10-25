@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { contentStore, videoOverride } from '../lib/overrides'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../lib/app'
+import { openable, useAccount } from '../lib/account'
+import { courseHome, courseInPath, setCurrentCourse, useCurrentCourse } from '../lib/course'
 import { getNote, saveNote, dueCount } from '../lib/progress'
 
 export function TopBar({ title, back, right }: { title: string; back?: string | true; right?: ReactNode }) {
@@ -19,16 +21,49 @@ export function TopBar({ title, back, right }: { title: string; back?: string | 
   )
 }
 
+/** Pages that are about her account, not a course: no course bar there. */
+const ACCOUNT_PAGES = ['/me', '/plans', '/learn']
+
+/**
+ * The course she is working in, at the top of every course page; tap it to go back to that
+ * course's Home. Opening a page that belongs to a course (a lesson, a unit) makes it the current one.
+ */
+export function CourseBar() {
+  const { pathname } = useLocation()
+  const account = useAccount()
+  const course = useCurrentCourse()
+  const inPath = courseInPath(pathname)
+  useEffect(() => {
+    if (inPath && openable(account, inPath)) setCurrentCourse(inPath)
+  }, [inPath, account])
+  if (!course || pathname === '/' || ACCOUNT_PAGES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null
+  const onHome = pathname === courseHome(course.id)
+  return (
+    <div className="course-bar">
+      <Link to={courseHome(course.id)} className="course-chip" aria-label={`${course.title}: course home`} aria-current={onHome ? 'page' : undefined}>
+        <span aria-hidden>{course.emoji}</span> {course.title}
+      </Link>
+      {onHome && (
+        <Link to="/" className="small course-switch">
+          All courses ›
+        </Link>
+      )}
+    </div>
+  )
+}
+
 export function TabBar() {
   const { db } = useApp()
   const { pathname } = useLocation()
-  const due = dueCount(db)
+  const course = useCurrentCourse()
+  const due = dueCount(db, course?.id)
   // Focus mode: no tab bar while inside a lesson or checkpoint.
   if (pathname.startsWith('/lesson/') || pathname.endsWith('/checkpoint') || pathname.startsWith('/exam/')) return null
   // Icons only: each one has a spoken label and a tooltip instead of visible text.
   const tabs: { to: string; icon: ReactNode; label: string; end?: boolean; dot?: number; also?: string[] }[] = [
-    { to: '/', icon: <HomeIcon />, label: 'Home', end: true },
-    { to: '/learn', icon: <LearnIcon />, label: 'Learn', also: ['/course', '/plan/', '/exam'] },
+    { to: '/', icon: <HomeIcon />, label: 'Home', end: true, also: ['/home/'] },
+    // inside a course, Learn opens that course's units; the full course list is one step back
+    { to: course ? `/course/${course.id}` : '/learn', icon: <LearnIcon />, label: 'Learn', also: ['/learn', '/course', '/plan/', '/exam'] },
     { to: '/review', icon: <ReviewIcon />, label: 'Review: flashcards, bookmarks and notes', dot: due },
     { to: '/more', icon: <MoreIcon />, label: 'More: periodic table, glossary and your profile', also: ['/me', '/plans'] },
   ]

@@ -10,9 +10,9 @@ import { startSync } from './lib/sync'
 import { contentStore } from './lib/overrides'
 import { LocalDB } from './lib/db'
 import { AppContext } from './lib/app'
-import { TabBar } from './components/bits'
+import { CourseBar, TabBar } from './components/bits'
 import { LoginPage } from './pages/Login'
-import { HomePage } from './pages/Home'
+import { CourseHomePage, HomePage } from './pages/Home'
 import { LearnPage, CoursePage } from './pages/Learn'
 import { UnitPage } from './pages/Unit'
 import { LessonPage } from './pages/Lesson'
@@ -141,8 +141,10 @@ export default function App() {
       <HashRouter>
         <ScrollTop />
         <div className="app">
+          <CourseBar />
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/home/:courseId" element={<CourseHomePage />} />
             <Route path="/learn" element={<LearnPage />} />
             <Route path="/course/:courseId" element={<CoursePage />} />
             <Route path="/course/:courseId/unit/:unitId" element={<Gated><UnitPage /></Gated>} />
