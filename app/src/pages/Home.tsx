@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../lib/app'
 import { openable, useAccount } from '../lib/account'
+import { usePricing } from '../lib/pricing'
+import { planOf } from '../../shared/pricing'
 import { trickyTopics } from '../lib/tips'
 import { TipSheet, TrickyTopics } from '../components/Help'
 import { TodayPlan } from './Schedule'
@@ -13,6 +15,7 @@ import { dueCount, getSetting, lessonStatuses, levelInfo, nextLesson, streak, to
 const GREETINGS = ['Hi', 'Hey', 'Welcome back', 'Good to see you']
 
 export function HomePage() {
+  const freeCount = planOf(usePricing(), 'free').courses ?? 0
   const { db, user } = useApp()
   const xp = totalXp(db)
   const lv = levelInfo(xp)
@@ -60,7 +63,7 @@ export function HomePage() {
       {!course ? (
         <div className="card continue">
           <h3 style={{ marginTop: 0 }}>Choose your first course</h3>
-          <p className="muted small">Your free plan includes any two AP® courses. More are on the way.</p>
+          <p className="muted small">Your free plan includes any {freeCount === 1 ? 'one course' : `${freeCount} courses`}. More are on the way.</p>
           <Link className="btn block" to="/learn">
             Browse courses ▶
           </Link>

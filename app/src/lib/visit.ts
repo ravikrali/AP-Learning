@@ -9,7 +9,10 @@ import { BRAND } from '../../shared/brand'
 const VID_KEY = 'ap-learning-visitor'
 const TOUCH_KEY = 'ap-learning-first-touch'
 
-type Touch = Pick<VisitBody, 'source' | 'medium' | 'campaign' | 'referrer'>
+type Touch = Pick<VisitBody, 'source' | 'medium' | 'campaign' | 'referrer'> & {
+  /** a discount or affiliate code on the link (?code=…), credited with this person's sign-up */
+  code?: string
+}
 
 export function trackingAllowed(): boolean {
   const n = navigator as Navigator & { globalPrivacyControl?: boolean }
@@ -65,6 +68,7 @@ export function readTouch(search: string, referrer: string, ownHost: string): To
     source: clip(p.get('utm_source') ?? p.get('ref') ?? p.get('source')),
     medium: clip(p.get('utm_medium')),
     campaign: clip(p.get('utm_campaign')),
+    code: clip(p.get('code') ?? p.get('promo'), 30)?.toUpperCase(),
     // sign-in round trips and our own pages are not referrers
     referrer: ref && ref !== ownHost.replace(/^www\./, '') && !ref.endsWith(BRAND.domain) && ref !== 'accounts.google.com' ? ref : undefined,
   }
@@ -111,7 +115,7 @@ export const leadVisitor = () => countingAllowed().then((ok) => (ok ? visitorId(
  * Uses the first-touch tags when this browser has them, otherwise the tags on the current link.
  * Reads only: nothing is stored here.
  */
-export function signupTags(): Pick<Touch, 'source' | 'medium' | 'campaign'> {
+export function signupTags(): Pick<Touch, 'source' | 'medium' | 'campaign' | 'code'> {
   let t: Touch | null = null
   try {
     const saved = localStorage.getItem(TOUCH_KEY)
@@ -120,5 +124,8 @@ export function signupTags(): Pick<Touch, 'source' | 'medium' | 'campaign'> {
     /* fall through to the link */
   }
   t ??= readTouch(window.location.search, document.referrer, window.location.hostname)
-  return { source: t.source, medium: t.medium, campaign: t.campaign }
+  return { source: t.source, medium: t.medium, campaign: t.campaign, code: t.code ?? readTouch(window.location.search, '', '').code }
 }
+
+/** The code on the link this visitor came through, to fill in on the plans page. Reads only. */
+export const linkCode = () => signupTags().code

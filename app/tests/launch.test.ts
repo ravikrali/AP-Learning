@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, test } from 'vitest'
 import { ageFrom, MIN_AGE, oldEnough, validBirth } from '../shared/age'
 import { churnByMonth, conversion, costPerSignup, nextMonth } from '../shared/business'
-import { ADMIN_URL, APP_URL, BRAND, BRAND_SLUG, TRADEMARK_NOTICE } from '../shared/brand'
+import { ADMIN_URL, APP_URL, BRAND, BRAND_SLUG, movedUrl, OLD_DOMAINS, TRADEMARK_NOTICE } from '../shared/brand'
 import { CATALOG } from '../shared/catalog'
 import { CARD_REF_PATTERN, countable } from '../shared/visit'
 import { COURSES } from '../src/content'
@@ -118,6 +118,25 @@ describe('business numbers', () => {
   })
 })
 
+describe('moving from the old address', () => {
+  const at = (u: string) => movedUrl(new URL(u))
+  test('every old page goes to the same place on the new domain', () => {
+    expect(OLD_DOMAINS).toContain('aplearning.app')
+    expect(BRAND.domain).toBe('eziq.app')
+    expect(at('https://www.aplearning.app/')).toBe('https://www.eziq.app/')
+    expect(at('https://aplearning.app/?code=FALL20')).toBe('https://www.eziq.app/?code=FALL20')
+    expect(at('https://admin.aplearning.app/admin')).toBe('https://admin.eziq.app/admin')
+    expect(at('http://www.aplearning.app/index.html?utm_source=tiktok')).toBe('https://www.eziq.app/index.html?utm_source=tiktok')
+  })
+  test('the API stays where it is, and the new domain is left alone', () => {
+    expect(at('https://www.aplearning.app/api/billing/webhook')).toBeNull()
+    expect(at('https://www.aplearning.app/api/cal/abcdefghijklmnop.ics')).toBeNull()
+    expect(at('https://www.eziq.app/')).toBeNull()
+    expect(at('https://notaplearning.app/')).toBeNull()
+    expect(at('http://localhost:8787/')).toBeNull()
+  })
+})
+
 describe('brand in one place', () => {
   test('addresses and file names come from the name and domain', () => {
     expect(APP_URL).toBe(`https://www.${BRAND.domain}`)
@@ -156,10 +175,16 @@ describe('brand in one place', () => {
 
     test('AP always carries its ® in screen text', () => {
       const bare = screens.flatMap((f) =>
-        [...code(f).matchAll(/[^\n]*\bAP (?!Learning)[^\n]*/g)].map((m) => `${f}: ${m[0].trim().slice(0, 100)}`),
+        [...code(f).matchAll(/[^\n]*\bAP [^\n]*/g)].map((m) => `${f}: ${m[0].trim().slice(0, 100)}`),
       )
       expect(bare).toEqual([])
-      expect(CATALOG.filter((c) => c.title.startsWith('AP ') || c.short.startsWith('AP '))).toEqual([])
+    })
+
+    test('course names do not carry the AP® mark; only the official exam name does', () => {
+      const named = [...CATALOG, ...COURSES].filter((c) => /\bAP|APUSH|APES/.test(`${c.title} ${c.short}`)).map((c) => c.id)
+      expect(named).toEqual([])
+      for (const c of CATALOG) expect(c.ap, c.id).toMatch(/^AP® /)
+      expect(BRAND.name).not.toMatch(/\bAP\b/)
     })
 
     test('nothing promises a score or a result', () => {

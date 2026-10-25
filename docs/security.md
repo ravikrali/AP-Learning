@@ -1,4 +1,4 @@
-# AP Learning: Security runbook
+# EzIQ: Security runbook
 
 What protects the app, and the jobs that need a person: rotating secrets and responding when something leaks.
 
@@ -23,7 +23,7 @@ Run the commands from `app/`. Rotate every 6 months, and straight away if a secr
 | `STRIPE_SECRET_KEY` | Cloudflare Worker secret | Stripe Dashboard → Developers → API keys → roll the secret key (choose a 24-hour overlap). Then `npx wrangler secret put STRIPE_SECRET_KEY` with the new key. Test a checkout. |
 | `STRIPE_WEBHOOK_SECRET` | Cloudflare Worker secret | 1. `npx wrangler secret put STRIPE_WEBHOOK_SECRET_PREVIOUS` with the current secret. 2. Stripe Dashboard → Developers → Webhooks → the endpoint → roll the signing secret. 3. `npx wrangler secret put STRIPE_WEBHOOK_SECRET` with the new one. 4. A day later, `npx wrangler secret delete STRIPE_WEBHOOK_SECRET_PREVIOUS`. No webhook is lost in between. |
 | Cloudflare API token / wrangler login | Your computer | `npx wrangler logout` then `npx wrangler login`. Delete unused API tokens in the Cloudflare dashboard. Turn on two-step sign-in for the Cloudflare account. |
-| Google sign-in | Google Cloud | There is no secret: the Client ID is public by design. Keep the list of authorized origins to `https://www.aplearning.app` and `https://admin.aplearning.app` only. |
+| Google sign-in | Google Cloud | There is no secret: the Client ID is public by design. Keep the list of authorized origins to `https://www.eziq.app`, `https://eziq.app` and `https://admin.eziq.app` (plus the old aplearning.app ones until nobody signs in there; their pages redirect). |
 | Student sessions | D1 `sessions` table | To sign everyone out (for example after a suspected database leak): `npx wrangler d1 execute ap-learning --remote --command "DELETE FROM sessions"`. Everyone signs in with Google again; no progress is lost. |
 | Calendar links | D1 `calendar_tokens` table | A student can reset their own link from the study plan page. To reset all: `DELETE FROM calendar_tokens`. |
 

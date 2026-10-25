@@ -1,4 +1,4 @@
-// The admin portal (admin.aplearning.app): its own sign-in, then dashboard and tools.
+// The admin portal (admin.<domain>): its own sign-in, then dashboard and tools.
 
 import { useEffect, useRef, useState, type ComponentType } from 'react'
 import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom'
@@ -13,6 +13,7 @@ import { UsersTab } from './Users'
 import { AudienceTab } from './Audience'
 import { ContentTab, FeedbackTab, VideosTab } from './Tools'
 import { TeamTab } from './Team'
+import { PricingTab } from './Pricing'
 
 const APP_URL = import.meta.env.DEV ? '/' : `${BRAND_APP_URL}/`
 
@@ -72,6 +73,7 @@ const PATHS: Record<Section, string> = {
   content: '/content',
   videos: '/videos',
   students: '/users',
+  pricing: '/pricing',
   feedback: '/feedback',
   team: '/admins',
 }
@@ -81,6 +83,7 @@ const PAGES: Record<Section, ComponentType> = {
   content: ContentTab,
   videos: VideosTab,
   students: UsersTab,
+  pricing: PricingTab,
   feedback: FeedbackTab,
   team: TeamTab,
 }

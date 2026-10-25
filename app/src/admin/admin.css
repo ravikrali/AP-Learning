@@ -92,3 +92,5 @@ table.privs input:disabled { opacity: 0.35; }
 .acc.low { color: var(--oops); }
 .acc.mid { color: var(--warm); }
 .acc.ok { color: var(--good); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.data .btn { white-space: nowrap; }

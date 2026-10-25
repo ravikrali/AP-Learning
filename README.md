@@ -1,4 +1,4 @@
-# AP Learning: AP study app (PWA)
+# EzIQ: study app for AP® exam prep (PWA)
 
 A friendly, gamified study app for AP courses. AP Chemistry and AP Statistics are complete; the catalog lists all 21 courses that are planned (`app/shared/catalog.ts`), and the rest show as "coming soon". It is a Progressive Web App (PWA), so it can be installed on a phone like a regular app, and it works offline once loaded.
 
@@ -49,17 +49,17 @@ Other commands: `npm test` (content verification) and `npm run build` (productio
 
 The Google sign-in token is verified by the backend, which then issues a 90-day session used for syncing.
 
-1. Go to https://console.cloud.google.com/ and create a project (e.g. "AP Learning").
+1. Go to https://console.cloud.google.com/ and create a project (e.g. "EzIQ").
 2. **APIs & Services → OAuth consent screen**: choose **External**, fill in the app name and your email, and keep the default scopes (no extra scopes needed). Publish it ("In production"). Basic sign-in (name/email) needs no Google review.
 3. **APIs & Services → Credentials → Create credentials → OAuth client ID**, type **Web application**.
-   - *Authorized JavaScript origins*: add `http://localhost:5173` and the live site: `https://www.aplearning.app` and `https://aplearning.app`.
+   - *Authorized JavaScript origins*: add `http://localhost:5173` and the live site: `https://www.eziq.app` and `https://eziq.app`.
 4. Copy the **Client ID** into `app/.env` (copy `app/.env.example` to `.env`):
    `VITE_GOOGLE_CLIENT_ID=1234-abc.apps.googleusercontent.com`
 5. Rebuild (`npm run build`) and redeploy.
 
 ## Put it online (free, Cloudflare)
 
-Live at **https://www.aplearning.app** (also https://aplearning.app). It is served as a static-assets Cloudflare Worker named `ap-learning`; `app/wrangler.jsonc` attaches both custom domains.
+Live at **https://www.eziq.app** (also https://eziq.app). It is served as a static-assets Cloudflare Worker named `ap-learning`; `app/wrangler.jsonc` attaches the custom domains. The old `aplearning.app` addresses stay attached and redirect every page to eziq.app (`OLD_DOMAINS` in `app/shared/brand.ts`); `/api/*` still answers there for the Stripe webhook and old calendar links. The `eziq.app` zone must be in the same Cloudflare account before `npm run deploy`.
 
 ```bash
 cd app
@@ -81,14 +81,16 @@ Payments use **Stripe Checkout** (no card data touches our server). One-time set
 
 1. Create a Stripe account; in test mode copy the secret key (`sk_test_…`).
 2. `cd app && npx wrangler secret put STRIPE_SECRET_KEY`
-3. Stripe → Developers → Webhooks → add endpoint `https://www.aplearning.app/api/billing/webhook` with events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`. Copy its signing secret, then `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
+3. Stripe → Developers → Webhooks → add endpoint `https://www.eziq.app/api/billing/webhook` with events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`. Copy its signing secret, then `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
 4. Stripe → Settings → Billing → Customer portal: turn it on (used for receipts, card changes and cancelling).
 
-Products and prices are created automatically on first use (lookup keys `aplearning_three_monthly_599`, `aplearning_all_monthly_1299`). Until the key is set, paid plans show "Coming soon". Switch to live keys when ready.
+Products, prices and coupons are created automatically on first use (lookup keys like `aplearning_three_monthly_599`; the key holds the amount, so a new price in the admin portal makes a new Stripe price and existing subscribers stay on theirs). Until the key is set, paid plans show "Coming soon". Switch to live keys when ready.
 
-## Admin portal (admin.aplearning.app)
+**Pricing tab** (admin portal, Pricing role): plans and prices (monthly, optional yearly, free trial, retire a plan), free-course promotions, coupon codes and affiliate codes. Share a code as `https://www.eziq.app/?code=CODE`: the sign-up is credited to the code and the code is filled in on the Plans page. Rules live in `app/shared/pricing.ts`; tables in migration `0006_pricing.sql`.
 
-A separate site served by the same Worker (`app/admin.html`, `app/src/admin/`): **Dashboard** (students, sign-ups per day, subscriptions by plan, by country and region, plan changes per month, revenue per month with a 6-month trend forecast, MRR, daily/weekly/monthly active students, study minutes, lessons finished, feature use, hardest topics, course demand), **Audience** (visitors who have not signed in: per day, how far down the welcome page they get, by country/region, channel, site, campaign, device and language; the emails left on the welcome page with CSV download; and students on the free plan), **Content**, **Videos** (lesson video + YouTube links), **Students** (search, grant plans), **Feedback** and **Admins** (portal users, roles and privileges). Add `https://admin.aplearning.app` to the Google OAuth client's Authorized JavaScript origins.
+## Admin portal (admin.eziq.app)
+
+A separate site served by the same Worker (`app/admin.html`, `app/src/admin/`): **Dashboard** (students, sign-ups per day, subscriptions by plan, by country and region, plan changes per month, revenue per month with a 6-month trend forecast, MRR, daily/weekly/monthly active students, study minutes, lessons finished, feature use, hardest topics, course demand), **Audience** (visitors who have not signed in: per day, how far down the welcome page they get, by country/region, channel, site, campaign, device and language; the emails left on the welcome page with CSV download; and students on the free plan), **Content**, **Videos** (lesson video + YouTube links), **Students** (search, grant plans), **Pricing** (plans, prices, promotions, coupon and affiliate codes, channel reports), **Feedback** and **Admins** (portal users, roles and privileges). Add `https://admin.eziq.app` to the Google OAuth client's Authorized JavaScript origins.
 
 ## Backend (Cloudflare Workers + D1)
 
@@ -171,4 +173,4 @@ Every lesson needs a `cedVersion` tag (the CED edition it was checked against, e
 The engine is subject-agnostic. Write the course in `app/src/content/<course>/` like `chem/` or `stats/`, add it to `COURSES` in `app/src/content/index.ts` (its catalog id must match `shared/catalog.ts`), and register its CED topic list (`CEDS`), practice exams and FRQs (`EXAMS`), YouTube list and glossary in the same file. The generic tests then check coverage, numbers and FRQ points; add course-specific checks in `app/tests/<course>.test.ts`. The `/new-course` playbook in `docs/agent-kit` describes the full process.
 
 ---
-AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, AP Learning.
+AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, EzIQ.

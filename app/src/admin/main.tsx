@@ -4,8 +4,10 @@ import '../index.css'
 import './admin.css'
 import { AdminApp } from './AdminApp'
 import { applyCachedContent } from '../lib/overrides'
+import { refreshPricing } from '../lib/pricing'
 
 applyCachedContent()
+refreshPricing().catch(() => undefined)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

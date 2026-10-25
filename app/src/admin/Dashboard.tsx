@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { findLesson } from '../content'
-import { catalogCourse, PLANS, type PlanId } from '../../shared/catalog'
+import { catalogCourse } from '../../shared/catalog'
+import { money, planRank, type Plan, type PlanId } from '../../shared/pricing'
 import { addMonths, fillMonths, forecast, monthKey } from './forecast'
 import { Columns, Line, Ranked, Split } from './charts'
 import { Business, type BusinessData } from './Business'
@@ -14,6 +15,8 @@ interface Metrics {
     byPlan: { plan: PlanId; paid: PlanId; n: number }[]
     byCountry: { country: string; plan: PlanId; n: number }[]
     changes: { month: string; from_plan: PlanId; to_plan: PlanId; n: number }[]
+    /** every plan, retired ones too */
+    defs: Plan[]
     paidRegions: { country: string; region: string; n: number }[]
   }
   revenue: { mrr: number; currency: string; byMonth: { month: string; amount: number; n: number }[] }
@@ -42,7 +45,6 @@ const usd = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { min
 export const int = (n: number) => Math.round(n).toLocaleString()
 const shortDay = (d: string) => new Date(d + 'T12:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 const shortMonth = (m: string) => `${new Date(m + '-15T12:00:00Z').toLocaleDateString(undefined, { month: 'short' })} ’${m.slice(2, 4)}`
-const RANK: Record<PlanId, number> = { free: 0, three: 1, all: 2 }
 
 const EVENT_LABEL: Record<string, string> = {
   video: 'YouTube video opened',
@@ -95,6 +97,7 @@ export function Dashboard() {
 
   const derived = useMemo(() => {
     if (!m) return null
+    const pricing = { plans: m.plans.defs, promos: [] }
     const count = (plan: PlanId) => m.plans.byPlan.filter((r) => r.plan === plan).reduce((s, r) => s + r.n, 0)
     const paying = m.plans.byPlan.filter((r) => r.paid !== 'free').reduce((s, r) => s + r.n, 0)
     const comp = m.plans.byPlan.filter((r) => r.plan !== 'free' && r.paid === 'free').reduce((s, r) => s + r.n, 0)
@@ -114,7 +117,7 @@ export function Dashboard() {
       const row = months.get(c.month) ?? { started: 0, upgraded: 0, downgraded: 0, ended: 0 }
       if (c.from_plan === 'free') row.started += c.n
       else if (c.to_plan === 'free') row.ended += c.n
-      else if (RANK[c.to_plan] > RANK[c.from_plan]) row.upgraded += c.n
+      else if (planRank(pricing, c.to_plan) > planRank(pricing, c.from_plan)) row.upgraded += c.n
       else row.downgraded += c.n
       months.set(c.month, row)
     }
@@ -176,7 +179,9 @@ export function Dashboard() {
         <section className="card">
           <h3>Subscriptions by plan</h3>
           <Split
-            parts={(['free', 'three', 'all'] as PlanId[]).map((p) => ({ label: `${PLANS[p].name}${p === 'free' ? '' : ` ($${PLANS[p].price})`}`, value: derived.count(p) }))}
+            parts={m.plans.defs
+              .map((p) => ({ label: `${p.name}${p.monthly ? ` (${money(p.monthly)})` : ''}${p.active ? '' : ' · retired'}`, value: derived.count(p.id) }))
+              .filter((x, i) => x.value > 0 || m.plans.defs[i].active)}
           />
           <h4>Plan changes by month</h4>
           {derived.months.length ? (

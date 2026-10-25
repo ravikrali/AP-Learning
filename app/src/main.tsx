@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.tsx'
 import { applyCachedContent, refreshContent } from './lib/overrides'
 import { listenForInstall } from './lib/install'
+import { refreshPricing } from './lib/pricing'
 
 // Offline support: cache the app so lessons work without internet. Updates install quietly.
 registerSW({ immediate: true })
@@ -14,6 +15,8 @@ listenForInstall()
 // Admin content edits: show the saved copy right away, then fetch the latest in the background.
 applyCachedContent()
 refreshContent().catch(() => undefined)
+// Plans, prices and free-course promotions (set in the admin portal); the saved copy shows until then.
+refreshPricing().catch(() => undefined)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

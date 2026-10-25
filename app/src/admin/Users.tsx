@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { useAdmin } from './context'
-import { catalogCourse, PLANS, type PlanId } from '../../shared/catalog'
+import { catalogCourse } from '../../shared/catalog'
+import { FREE_PLAN, planOf, sortedPlans, type PlanId } from '../../shared/pricing'
+import { usePricing } from '../lib/pricing'
 
 interface UserRow {
   sub: string
@@ -27,6 +29,8 @@ export function UsersTab() {
   const [rows, setRows] = useState<UserRow[] | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const { can } = useAdmin()
+  const pricing = usePricing()
+  const name = (id: PlanId) => planOf(pricing, id).name
   // granting a plan is an edit; taking a granted plan back is a delete
   const mayGrant = can('students', 'edit')
   const mayRevoke = can('students', 'delete')
@@ -43,7 +47,7 @@ export function UsersTab() {
     setMsg(null)
     try {
       await api('/api/admin/users/plan', { body: { sub: u.sub, plan } })
-      setMsg(plan ? `${u.email} now has ${PLANS[plan].name} (granted, no payment).` : `Granted plan removed for ${u.email}.`)
+      setMsg(plan ? `${u.email} now has ${name(plan)} (granted, no payment).` : `Granted plan removed for ${u.email}.`)
       void load()
     } catch (e) {
       setMsg((e as Error).message)
@@ -100,7 +104,7 @@ export function UsersTab() {
                     <td>{d(u.created_at)}</td>
                     <td>{d(u.last_seen)}</td>
                     <td>
-                      {PLANS[paid].name}
+                      {name(paid)}
                       {u.status === 'past_due' && <div className="small">⚠️ payment failed</div>}
                       {paid !== 'free' && u.cancel_at_period_end ? <div className="small muted">ends {d(u.current_period_end)}</div> : null}
                     </td>
@@ -111,15 +115,17 @@ export function UsersTab() {
                           <option value="" disabled={!mayRevoke && !!u.comp_plan}>
                             None
                           </option>
-                          <option value="three" disabled={!mayGrant}>
-                            {PLANS.three.name}
-                          </option>
-                          <option value="all" disabled={!mayGrant}>
-                            {PLANS.all.name}
-                          </option>
+                          {sortedPlans(pricing)
+                            .filter((p) => p.id !== FREE_PLAN)
+                            .map((p) => (
+                              <option key={p.id} value={p.id} disabled={!mayGrant}>
+                                {p.name}
+                                {p.active ? '' : ' (retired)'}
+                              </option>
+                            ))}
                         </select>
                       ) : u.comp_plan ? (
-                        PLANS[u.comp_plan].name
+                        name(u.comp_plan)
                       ) : (
                         '—'
                       )}
