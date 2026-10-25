@@ -288,7 +288,7 @@ function SessionList({ sessions, plan, done }: { sessions: PlanSession[]; plan: 
   )
 }
 
-const ICON: Record<string, string> = { lesson: '📖', checkpoint: '🎯', exam: '🎓', frq: '✍️', cards: '🃏', review: '🔁' }
+export const ICON: Record<string, string> = { lesson: '📖', checkpoint: '🎯', exam: '🎓', frq: '✍️', cards: '🃏', review: '🔁' }
 
 // ---------- the saved plan ----------
 
@@ -438,13 +438,12 @@ function PlanView({ course, plan, onEdit }: { course: Course; plan: StudyPlan; o
   )
 }
 
-/** Today's session from any plan, for the Home screen. */
-/** Today on the Home page: each study plan's session for today (or the next one), and the flashcard review. */
-export function TodayCard({ due }: { due: number }) {
+/** Today on a course's Home page: its study plan's session for today (or the next one), and the flashcard review. */
+export function TodayCard({ due, course }: { due: number; course?: Course }) {
   const { db } = useApp()
   const statuses = lessonStatuses(db)
   const done = new Set([...statuses].filter(([, s]) => s === 'done').map(([id]) => id))
-  const plans = allPlans(db)
+  const plans = allPlans(db).filter((p) => !course || p.course === course.id)
   const reviewMin = Math.max(1, Math.round(due / 4))
   const reviewText = due ? `${due} quick card${due === 1 ? '' : 's'}, about ${reviewMin} min` : 'All caught up. Nice!'
   const sessions = plans

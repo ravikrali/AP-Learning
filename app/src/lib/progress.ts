@@ -211,13 +211,21 @@ export function bookmarks(db: LocalDB): { lessonId: string; at: string }[] {
 export const BOX_INTERVALS = [0, 1, 3, 7, 14, 30, 60]
 export const DAILY_CARD_CAP = 15
 
-export function dueCards(db: LocalDB, limit = DAILY_CARD_CAP): string[] {
+/** Cards due today; only one course's when a course is given (card ids are "lessonId#index"). */
+export function dueCards(db: LocalDB, limit = DAILY_CARD_CAP, courseId?: string): string[] {
+  if (!courseId)
+    return db
+      .all('SELECT card_id FROM cards WHERE due <= ? ORDER BY due ASC, box ASC LIMIT ?', [today(), limit])
+      .map((r) => String(r.card_id))
   return db
-    .all('SELECT card_id FROM cards WHERE due <= ? ORDER BY due ASC, box ASC LIMIT ?', [today(), limit])
+    .all('SELECT card_id FROM cards WHERE due <= ? ORDER BY due ASC, box ASC', [today()])
     .map((r) => String(r.card_id))
+    .filter((id) => findLesson(id.split('#')[0])?.course.id === courseId)
+    .slice(0, limit)
 }
 
-export function dueCount(db: LocalDB): number {
+export function dueCount(db: LocalDB, courseId?: string): number {
+  if (courseId) return dueCards(db, DAILY_CARD_CAP, courseId).length
   const n = Number(db.get('SELECT COUNT(*) AS n FROM cards WHERE due <= ?', [today()])?.n ?? 0)
   return Math.min(n, DAILY_CARD_CAP)
 }
