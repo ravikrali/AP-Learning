@@ -16,3 +16,8 @@ docs/courses/*/source/*
 marketing/*.mp4
 .claude/worktrees/
 marketing/.claude/worktrees/
+
+# Printable course books: build scratch files, and the finished PDFs (products for sale, rebuilt
+# with `node scripts/books/build.mjs` from app/)
+app/scripts/books/.work/
+marketing/digital-products/

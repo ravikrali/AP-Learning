@@ -126,3 +126,14 @@ export interface Frq {
   intro: string
   parts: FrqPart[]
 }
+
+/**
+ * Longer textbook prose for the printed course book (scripts/books), in the same markup as cards.
+ * The app does not show it; it lives next to the lessons so a lesson and its book text are edited together.
+ */
+export interface CourseBook {
+  /** per unit id: paragraphs that open the chapter */
+  units: Record<string, { overview: string }>
+  /** per lesson id: an opening paragraph and "A closer look" sections */
+  lessons: Record<string, { intro?: string; deeper: { title: string; body: string }[] }>
+}
