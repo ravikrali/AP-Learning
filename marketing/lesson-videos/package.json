@@ -1,0 +1,16 @@
+{
+  "name": "eziq-lesson-videos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "voice": "node voice.mjs",
+    "stills": "node render.mjs --stills",
+    "render": "node render.mjs",
+    "publish-video": "node publish.mjs"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "kokoro-js": "^1.2.0",
+    "playwright-core": "^1.50.0"
+  }
+}

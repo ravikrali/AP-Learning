@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- EzIQ lesson video player. Open index.html?lesson=chem-2.2 to preview with sound (needs out/<lesson>/ from voice.mjs).
+     render.mjs opens it with &capture and steps window.seek(ms) one frame at a time. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EzIQ lesson video</title>
+<link rel="stylesheet" href="player.css">
+</head>
+<body>
+<div id="fit"><div id="stage">
+  <div id="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="grid"></i></div>
+  <div id="scenes"></div>
+  <header id="top"></header>
+  <div id="bar"><div class="fill"></div></div>
+</div></div>
+<div id="ui"><button id="play">Play</button><input id="scrub" type="range" min="0" max="1000" value="0"><span id="clock">0:00</span></div>
+<script>
+  const LESSON_ID = new URLSearchParams(location.search).get('lesson') || 'chem-2.2'
+  for (const src of [`../out/${LESSON_ID}/timings.js`, 'engine.js', `../lessons/${LESSON_ID}/scenes.js`])
+    document.write(`<script src="${src}"><\/script>`)
+  document.write('<script>EZ.start()<\/script>')
+</script>
+</body>
+</html>

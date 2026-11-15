@@ -58,20 +58,12 @@ function Player({ refx }: { refx: LessonRef }) {
   const marked = isBookmarked(db, lesson.id)
 
   const steps: Step[] = useMemo(() => {
-    const s: Step[] = []
-    let videoPlaced = false
-    for (const card of lesson.cards) {
-      s.push({ t: 'card', card })
-      if (video && !videoPlaced && card.kind === 'concept') {
-        s.push({ t: 'video', video })
-        videoPlaced = true
-      }
-    }
-    if (video && !videoPlaced) s.splice(1, 0, { t: 'video', video })
+    // A lesson with a video opens on a choice: watch it, or read the cards. The video is not also a step.
+    const s: Step[] = lesson.cards.map((card) => ({ t: 'card', card }))
     lesson.check.forEach((q, n) => s.push({ t: 'check', q, n: n + 1, of: lesson.check.length }))
     s.push({ t: 'finish' })
     return s
-  }, [lesson, video])
+  }, [lesson])
 
   const [idx, setIdx] = useState(() => {
     // opened from search or the glossary: start at that card
@@ -81,6 +73,8 @@ function Player({ refx }: { refx: LessonRef }) {
     const saved = row && row.status !== 'done' ? Number(row.card_index) : 0
     return Math.min(saved, lesson.cards.length) // resume at most at the first quick-check question
   })
+  // 'choose' = the first screen of a lesson that has a video; 'watch' = the video; 'read' = the cards
+  const [mode, setMode] = useState<'choose' | 'watch' | 'read'>(idx === 0 && !params.has('card') ? 'choose' : 'read')
   const [resolved, setResolved] = useState<Record<string, { correct: boolean; firstTry: boolean }>>({})
   const [notesOpen, setNotesOpen] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
@@ -131,6 +125,68 @@ function Player({ refx }: { refx: LessonRef }) {
     go(Math.max(0, at))
   }
 
+  function read(at = 0) {
+    setMode('read')
+    go(at)
+  }
+
+  if (video && mode !== 'read')
+    return (
+      <div className="player">
+        <div className="player-top">
+          <button className="icon-btn" aria-label="Close lesson" onClick={() => nav(`/course/${course.id}/unit/${unit.id}`)}>
+            ✕
+          </button>
+          <Progress pct={0} />
+          <button className="icon-btn" aria-label="My notes" onClick={() => setNotesOpen(true)}>
+            📝
+          </button>
+        </div>
+        <div className="lcard" key={mode}>
+          <div className="small muted" style={{ marginBottom: 6, fontWeight: 700 }}>
+            {lesson.title} {lesson.ced.length ? `· CED ${lesson.ced.join(', ')} (${lesson.cedVersion})` : ''}
+          </div>
+          {mode === 'choose' ? (
+            <div className="card">
+              <h2 style={{ marginTop: 0 }}>How do you want to learn this?</h2>
+              <div className="lesson-ways">
+                <button className="way" onClick={() => setMode('watch')}>
+                  <span className="way-icon">▶</span>
+                  <b>Play</b>
+                  <span className="small muted">{video.seconds ? `Video · about ${Math.max(1, Math.round(video.seconds / 60))} min` : 'Watch the video'}</span>
+                </button>
+                <button className="way" onClick={() => read()}>
+                  <span className="way-icon">📖</span>
+                  <b>Text</b>
+                  <span className="small muted">
+                    {lesson.cards.length} short cards · about {lesson.minutes} min
+                  </span>
+                </button>
+              </div>
+              <p className="small muted" style={{ marginBottom: 0 }}>
+                Either way, the quick check at the end is what marks the lesson done.
+              </p>
+            </div>
+          ) : (
+            <div className="card">
+              <span className="kind video">{KIND_LABEL.video}</span>
+              {video.title && <h2>{video.title}</h2>}
+              <VideoPlayer video={video} autoPlay />
+              <div className="stack" style={{ marginTop: 14 }}>
+                <button className="btn block" onClick={() => read(lesson.cards.length)}>
+                  ✅ Go to the quick check
+                </button>
+                <button className="btn secondary block" onClick={() => read()}>
+                  📖 Read the lesson too
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        {notesOpen && <NotesSheet lessonId={lesson.id} title={lesson.title} onClose={() => setNotesOpen(false)} />}
+      </div>
+    )
+
   return (
     <div className="player">
       <div className="player-top">
@@ -159,6 +215,12 @@ function Player({ refx }: { refx: LessonRef }) {
           <div className="small muted" style={{ marginBottom: 6, fontWeight: 700 }}>
             {lesson.title} {lesson.ced.length ? `· CED ${lesson.ced.join(', ')} (${lesson.cedVersion})` : ''}
           </div>
+        )}
+
+        {idx === 0 && video && (
+          <button className="link-btn" style={{ display: 'block', marginBottom: 8 }} onClick={() => setMode('watch')}>
+            ▶ Watch the video instead
+          </button>
         )}
 
         {step.t === 'card' && <CardView card={step.card} onResolved={onResolved} />}
