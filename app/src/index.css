@@ -628,3 +628,10 @@ a.pill.on { background: var(--primary-soft); color: var(--primary); border-color
 .calc-field { display: flex; flex-direction: column; gap: 2px; }
 .calc-field input { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); }
 .calc-out { padding-bottom: 6px; line-height: 1.5; }
+
+/* a lesson with a video opens on a choice: watch it or read the cards */
+.lesson-ways { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.way { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 10px; border-radius: 18px; border: 2px solid var(--primary-soft); background: var(--surface-2); color: var(--text); font: inherit; text-align: center; cursor: pointer; }
+.way:hover, .way:focus-visible { border-color: var(--primary); }
+.way b { font-size: 20px; }
+.way-icon { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: var(--primary-text); font-size: 26px; }

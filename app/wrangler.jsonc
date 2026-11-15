@@ -18,6 +18,8 @@
       "migrations_dir": "worker/migrations"
     }
   ],
+  // Lesson videos: bucket "eziq", files under videos/<unit>/<lesson>/, served at /media/videos/… (see media() in worker/index.ts).
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "eziq" }],
   "vars": {
     "GOOGLE_CLIENT_ID": "1066207111886-bgdealh7knhf47b8kpetallaqi4d0587.apps.googleusercontent.com",
     "OWNER_EMAIL": "devt309@gmail.com"

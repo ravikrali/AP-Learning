@@ -238,8 +238,14 @@ export function NotesSheet({ lessonId, title, onClose }: { lessonId: string; tit
 
 export interface VideoEntry {
   url?: string
+  /** a file of our own: a path in the app ("videos/x.mp4") or in the video store ("media/videos/…") */
   src?: string
   title?: string
+  /** for our own videos: the still shown before it plays, and the captions file (WebVTT) */
+  poster?: string
+  captions?: string
+  /** length in seconds, shown on the lesson's first screen */
+  seconds?: number
 }
 
 let videoCache: Promise<Record<string, VideoEntry>> | null = null
@@ -280,13 +286,16 @@ function youtubeEmbed(url: string): string | null {
   return m ? `https://www.youtube-nocookie.com/embed/${m[1]}` : null
 }
 
-export function VideoPlayer({ video }: { video: VideoEntry }) {
-  const src = video.src ? `${import.meta.env.BASE_URL}${video.src.replace(/^\//, '')}` : undefined
+export function VideoPlayer({ video, autoPlay }: { video: VideoEntry; autoPlay?: boolean }) {
+  const file = (p?: string) => (p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, '')}` : undefined)
+  const src = file(video.src)
   const yt = video.url ? youtubeEmbed(video.url) : null
   return (
     <div className="video-wrap">
       {src ? (
-        <video src={src} controls playsInline preload="metadata" />
+        <video src={src} poster={file(video.poster)} controls playsInline preload="metadata" autoPlay={autoPlay}>
+          {video.captions && <track kind="captions" src={file(video.captions)} srcLang="en" label="English" />}
+        </video>
       ) : (
         <iframe
           src={yt ?? video.url}

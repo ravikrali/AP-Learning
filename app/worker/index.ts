@@ -27,6 +27,8 @@ interface Limiter {
 interface Env extends StripeEnv {
   DB: D1Database
   ASSETS: Fetcher
+  /** the R2 bucket that holds the lesson videos; missing in tests */
+  MEDIA?: R2Bucket
   GOOGLE_CLIENT_ID: string
   OWNER_EMAIL: string
   /** main app address (used for links in emails, calendars, Stripe); defaults to the address in shared/brand.ts */
@@ -1812,6 +1814,44 @@ function secure(res: Response, url: URL, api: boolean): Response {
   return out
 }
 
+// ---------- lesson videos (R2) ----------
+
+// Our own lesson videos live in the R2 bucket as videos/<unit>/<lesson>/<file>. Only the files a
+// lesson page plays are served (the video, its poster and captions); the working files stored next
+// to them (narration script, voice track) are not.
+const MEDIA_TYPES: Record<string, string> = { mp4: 'video/mp4', jpg: 'image/jpeg', vtt: 'text/vtt; charset=utf-8' }
+const MEDIA_KEY = /^videos\/[\w.\-]{1,100}\/[\w.\-]{1,100}\/[\w.\-]{1,100}$/
+
+async function media(req: Request, env: Env, url: URL): Promise<Response> {
+  const missing = () => new Response('Not found', { status: 404 })
+  const key = url.pathname.slice('/media/'.length)
+  const type = MEDIA_TYPES[key.slice(key.lastIndexOf('.') + 1)]
+  if (!env.MEDIA || !type || !MEDIA_KEY.test(key) || (req.method !== 'GET' && req.method !== 'HEAD')) return missing()
+  const h = (o: R2Object) => new Headers({ 'content-type': type, 'accept-ranges': 'bytes', etag: o.httpEtag, 'cache-control': 'public, max-age=3600' })
+  if (req.method === 'HEAD') {
+    const o = await env.MEDIA.head(key)
+    if (!o) return missing()
+    const headers = h(o)
+    headers.set('content-length', String(o.size))
+    return new Response(null, { headers })
+  }
+  // a phone asks for a video a piece at a time (Range), so that it can start at once and jump around
+  const o = await env.MEDIA.get(key, { range: req.headers, onlyIf: req.headers })
+  if (!o) return missing()
+  const headers = h(o)
+  if (!('body' in o)) return new Response(null, { status: 304, headers }) // the browser's copy is still current
+  const r = o.range as { offset?: number; length?: number } | undefined
+  if (req.headers.has('range') && r) {
+    const offset = r.offset ?? 0
+    const length = r.length ?? o.size - offset
+    headers.set('content-range', `bytes ${offset}-${offset + length - 1}/${o.size}`)
+    headers.set('content-length', String(length))
+    return new Response(o.body, { status: 206, headers })
+  }
+  headers.set('content-length', String(o.size))
+  return new Response(o.body, { headers })
+}
+
 async function handle(req: Request, env: Env, url: URL): Promise<Response> {
   // The old address keeps working: every page moves to the same place on the new one (301).
   const moved = movedUrl(url)
@@ -1822,6 +1862,7 @@ async function handle(req: Request, env: Env, url: URL): Promise<Response> {
     url.hostname = APP_HOST
     return Response.redirect(url.toString(), 301)
   }
+  if (url.pathname.startsWith('/media/')) return media(req, env, url)
   if (!url.pathname.startsWith('/api/')) {
     // The admin portal lives at admin.<domain>; its page is admin.html, served at "/admin".
     if (url.hostname.startsWith('admin.') && (url.pathname === '/' || url.pathname === '/index.html'))

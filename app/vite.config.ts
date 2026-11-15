@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => ({
         ],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         // the backend is never served from the offline cache
-        navigateFallbackDenylist: [/^\/api\//, /^\/admin/],
+        navigateFallbackDenylist: [/^\/api\//, /^\/media\//, /^\/admin/],
       },
       manifest: {
         name: BRAND.name,
@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => ({
           rolldownOptions: { input: { main: 'index.html', admin: 'admin.html' } },
         },
   // in development, /api goes to the local Worker started by `npm run dev:api`
-  server: { proxy: { '/api': 'http://localhost:8787' } },
+  server: { proxy: { '/api': 'http://localhost:8787', '/media': 'http://localhost:8787' } },
   test: {
     include: ['tests/**/*.test.ts'],
   },
