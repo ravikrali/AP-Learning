@@ -10,5 +10,691 @@
     "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.2-bonds-and-potential-energy/captions.vtt",
     "title": "Bonds & Potential Energy",
     "seconds": 306
+  },
+  "chem-2.1": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.1-types-of-chemical-bonds/chem-2.1.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.1-types-of-chemical-bonds/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.1-types-of-chemical-bonds/captions.vtt",
+    "title": "Types of Chemical Bonds",
+    "seconds": 282
+  },
+  "stats-1.1": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/stats-1.1.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/captions.vtt",
+    "title": "What Can We Learn from Data?",
+    "seconds": 276
+  },
+  "chem-2.3": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.3-structure-of-ionic-solids/chem-2.3.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.3-structure-of-ionic-solids/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.3-structure-of-ionic-solids/captions.vtt",
+    "title": "Structure of Ionic Solids",
+    "seconds": 256
+  },
+  "chem-2.4": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.4-metals-and-alloys/chem-2.4.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.4-metals-and-alloys/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.4-metals-and-alloys/captions.vtt",
+    "title": "Metals & Alloys",
+    "seconds": 230
+  },
+  "chem-2.5": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.5-lewis-diagrams/chem-2.5.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.5-lewis-diagrams/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.5-lewis-diagrams/captions.vtt",
+    "title": "Lewis Diagrams",
+    "seconds": 287
+  },
+  "chem-2.7b": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7b-hybridization-sigma-pi-bonds-and-polarity/chem-2.7b.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7b-hybridization-sigma-pi-bonds-and-polarity/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7b-hybridization-sigma-pi-bonds-and-polarity/captions.vtt",
+    "title": "Hybridization, Sigma/Pi Bonds & Polarity",
+    "seconds": 255
+  },
+  "chem-2.7a": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7a-vsepr-shapes-of-molecules/chem-2.7a.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7a-vsepr-shapes-of-molecules/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.7a-vsepr-shapes-of-molecules/captions.vtt",
+    "title": "VSEPR: Shapes of Molecules",
+    "seconds": 268
+  },
+  "chem-0.1": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.1-scientific-notation-and-significant-figures/chem-0.1.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.1-scientific-notation-and-significant-figures/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.1-scientific-notation-and-significant-figures/captions.vtt",
+    "title": "Scientific Notation & Significant Figures",
+    "seconds": 274
+  },
+  "chem-2.6": {
+    "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.6-resonance-and-formal-charge/chem-2.6.mp4",
+    "poster": "media/videos/chem-u2-compound-structure-and-properties/chem-2.6-resonance-and-formal-charge/poster.jpg",
+    "captions": "media/videos/chem-u2-compound-structure-and-properties/chem-2.6-resonance-and-formal-charge/captions.vtt",
+    "title": "Resonance & Formal Charge",
+    "seconds": 300
+  },
+  "chem-0.2": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.2-dimensional-analysis-units-are-your-gps/chem-0.2.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.2-dimensional-analysis-units-are-your-gps/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.2-dimensional-analysis-units-are-your-gps/captions.vtt",
+    "title": "Dimensional Analysis: Units Are Your GPS",
+    "seconds": 220
+  },
+  "chem-0.3": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.3-atoms-isotopes-and-ions/chem-0.3.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.3-atoms-isotopes-and-ions/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.3-atoms-isotopes-and-ions/captions.vtt",
+    "title": "Atoms, Isotopes & Ions",
+    "seconds": 245
+  },
+  "chem-0.4": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.4-naming-compounds-and-polyatomic-ions/chem-0.4.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.4-naming-compounds-and-polyatomic-ions/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.4-naming-compounds-and-polyatomic-ions/captions.vtt",
+    "title": "Naming Compounds & Polyatomic Ions",
+    "seconds": 264
+  },
+  "chem-0.5": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.5-balancing-chemical-equations/chem-0.5.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.5-balancing-chemical-equations/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.5-balancing-chemical-equations/captions.vtt",
+    "title": "Balancing Chemical Equations",
+    "seconds": 251
+  },
+  "chem-0.6": {
+    "src": "media/videos/chem-u0-chemistry-toolkit/chem-0.6-logs-and-exponents-for-chemistry/chem-0.6.mp4",
+    "poster": "media/videos/chem-u0-chemistry-toolkit/chem-0.6-logs-and-exponents-for-chemistry/poster.jpg",
+    "captions": "media/videos/chem-u0-chemistry-toolkit/chem-0.6-logs-and-exponents-for-chemistry/captions.vtt",
+    "title": "Logs & Exponents for Chemistry",
+    "seconds": 216
+  },
+  "chem-1.2": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.2-mass-spectra-of-elements/chem-1.2.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.2-mass-spectra-of-elements/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.2-mass-spectra-of-elements/captions.vtt",
+    "title": "Mass Spectra of Elements",
+    "seconds": 248
+  },
+  "chem-1.1": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.1-moles-and-molar-mass/chem-1.1.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.1-moles-and-molar-mass/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.1-moles-and-molar-mass/captions.vtt",
+    "title": "Moles and Molar Mass",
+    "seconds": 255
+  },
+  "chem-1.5": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.5-atomic-structure-and-electron-configuration/chem-1.5.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.5-atomic-structure-and-electron-configuration/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.5-atomic-structure-and-electron-configuration/captions.vtt",
+    "title": "Atomic Structure & Electron Configuration",
+    "seconds": 321
+  },
+  "chem-1.4": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.4-composition-of-mixtures/chem-1.4.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.4-composition-of-mixtures/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.4-composition-of-mixtures/captions.vtt",
+    "title": "Composition of Mixtures",
+    "seconds": 246
+  },
+  "chem-1.3": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.3-composition-of-pure-substances/chem-1.3.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.3-composition-of-pure-substances/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.3-composition-of-pure-substances/captions.vtt",
+    "title": "Composition of Pure Substances",
+    "seconds": 301
+  },
+  "chem-1.7": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.7-periodic-trends/chem-1.7.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.7-periodic-trends/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.7-periodic-trends/captions.vtt",
+    "title": "Periodic Trends",
+    "seconds": 287
+  },
+  "chem-1.8": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.8-valence-electrons-and-ionic-compounds/chem-1.8.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.8-valence-electrons-and-ionic-compounds/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.8-valence-electrons-and-ionic-compounds/captions.vtt",
+    "title": "Valence Electrons & Ionic Compounds",
+    "seconds": 291
+  },
+  "chem-1.6": {
+    "src": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.6-photoelectron-spectroscopy-pes/chem-1.6.mp4",
+    "poster": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.6-photoelectron-spectroscopy-pes/poster.jpg",
+    "captions": "media/videos/chem-u1-atomic-structure-and-properties/chem-1.6-photoelectron-spectroscopy-pes/captions.vtt",
+    "title": "Photoelectron Spectroscopy (PES)",
+    "seconds": 298
+  },
+  "chem-3.3": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.3-solids-liquids-and-gases/chem-3.3.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.3-solids-liquids-and-gases/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.3-solids-liquids-and-gases/captions.vtt",
+    "title": "Solids, Liquids & Gases",
+    "seconds": 203
+  },
+  "chem-3.7": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.7-solutions-and-molarity/chem-3.7.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.7-solutions-and-molarity/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.7-solutions-and-molarity/captions.vtt",
+    "title": "Solutions & Molarity",
+    "seconds": 315
+  },
+  "chem-3.1a": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1a-intermolecular-forces-the-four-types/chem-3.1a.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1a-intermolecular-forces-the-four-types/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1a-intermolecular-forces-the-four-types/captions.vtt",
+    "title": "Intermolecular Forces: The Four Types",
+    "seconds": 327
+  },
+  "chem-3.2": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.2-types-of-solids-and-their-properties/chem-3.2.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.2-types-of-solids-and-their-properties/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.2-types-of-solids-and-their-properties/captions.vtt",
+    "title": "Types of Solids & Their Properties",
+    "seconds": 324
+  },
+  "chem-3.1b": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1b-comparing-imfs-boiling-points-and-vapor-pressure/chem-3.1b.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1b-comparing-imfs-boiling-points-and-vapor-pressure/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.1b-comparing-imfs-boiling-points-and-vapor-pressure/captions.vtt",
+    "title": "Comparing IMFs: Boiling Points & Vapor Pressure",
+    "seconds": 374
+  },
+  "chem-3.4": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.4-the-ideal-gas-law/chem-3.4.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.4-the-ideal-gas-law/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.4-the-ideal-gas-law/captions.vtt",
+    "title": "The Ideal Gas Law",
+    "seconds": 296
+  },
+  "chem-3.8": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.8-drawing-solutions-at-the-particle-level/chem-3.8.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.8-drawing-solutions-at-the-particle-level/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.8-drawing-solutions-at-the-particle-level/captions.vtt",
+    "title": "Drawing Solutions at the Particle Level",
+    "seconds": 268
+  },
+  "chem-3.5": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.5-kinetic-molecular-theory/chem-3.5.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.5-kinetic-molecular-theory/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.5-kinetic-molecular-theory/captions.vtt",
+    "title": "Kinetic Molecular Theory",
+    "seconds": 283
+  },
+  "chem-3.10": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.10-solubility-like-dissolves-like/chem-3.10.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.10-solubility-like-dissolves-like/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.10-solubility-like-dissolves-like/captions.vtt",
+    "title": "Solubility: Like Dissolves Like",
+    "seconds": 260
+  },
+  "chem-3.9": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.9-separating-mixtures-chromatography-and-distillation/chem-3.9.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.9-separating-mixtures-chromatography-and-distillation/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.9-separating-mixtures-chromatography-and-distillation/captions.vtt",
+    "title": "Separating Mixtures: Chromatography & Distillation",
+    "seconds": 291
+  },
+  "chem-3.11": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.11-spectroscopy-and-the-em-spectrum/chem-3.11.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.11-spectroscopy-and-the-em-spectrum/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.11-spectroscopy-and-the-em-spectrum/captions.vtt",
+    "title": "Spectroscopy & the EM Spectrum",
+    "seconds": 299
+  },
+  "chem-3.12": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.12-properties-of-photons/chem-3.12.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.12-properties-of-photons/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.12-properties-of-photons/captions.vtt",
+    "title": "Properties of Photons",
+    "seconds": 283
+  },
+  "chem-3.6": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.6-real-gases-vs.-ideal-gases/chem-3.6.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.6-real-gases-vs.-ideal-gases/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.6-real-gases-vs.-ideal-gases/captions.vtt",
+    "title": "Real Gases vs. Ideal Gases",
+    "seconds": 276
+  },
+  "chem-3.13": {
+    "src": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.13-beer-lambert-law/chem-3.13.mp4",
+    "poster": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.13-beer-lambert-law/poster.jpg",
+    "captions": "media/videos/chem-u3-properties-of-substances-and-mixtures/chem-3.13-beer-lambert-law/captions.vtt",
+    "title": "Beer–Lambert Law",
+    "seconds": 303
+  },
+  "chem-4.1": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.1-physical-vs.-chemical-changes/chem-4.1.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.1-physical-vs.-chemical-changes/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.1-physical-vs.-chemical-changes/captions.vtt",
+    "title": "Physical vs. Chemical Changes",
+    "seconds": 263
+  },
+  "chem-4.5a": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.5a-stoichiometry-the-mole-ratio/chem-4.5a.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.5a-stoichiometry-the-mole-ratio/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.5a-stoichiometry-the-mole-ratio/captions.vtt",
+    "title": "Stoichiometry: The Mole Ratio",
+    "seconds": 280
+  },
+  "chem-4.7a": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.7a-types-of-reactions-and-precipitation/chem-4.7a.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.7a-types-of-reactions-and-precipitation/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.7a-types-of-reactions-and-precipitation/captions.vtt",
+    "title": "Types of Reactions & Precipitation",
+    "seconds": 278
+  },
+  "chem-4.2": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.2-net-ionic-equations/chem-4.2.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.2-net-ionic-equations/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.2-net-ionic-equations/captions.vtt",
+    "title": "Net Ionic Equations",
+    "seconds": 325
+  },
+  "chem-4.3": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.3-particle-diagrams-of-reactions/chem-4.3.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.3-particle-diagrams-of-reactions/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.3-particle-diagrams-of-reactions/captions.vtt",
+    "title": "Particle Diagrams of Reactions",
+    "seconds": 274
+  },
+  "chem-4.5b": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.5b-limiting-reactant/chem-4.5b.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.5b-limiting-reactant/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.5b-limiting-reactant/captions.vtt",
+    "title": "Limiting Reactant",
+    "seconds": 317
+  },
+  "chem-4.5c": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.5c-stoichiometry-with-gases-and-solutions/chem-4.5c.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.5c-stoichiometry-with-gases-and-solutions/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.5c-stoichiometry-with-gases-and-solutions/captions.vtt",
+    "title": "Stoichiometry with Gases & Solutions",
+    "seconds": 367
+  },
+  "chem-4.8": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.8-acids-and-bases-proton-transfer/chem-4.8.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.8-acids-and-bases-proton-transfer/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.8-acids-and-bases-proton-transfer/captions.vtt",
+    "title": "Acids & Bases: Proton Transfer",
+    "seconds": 271
+  },
+  "chem-4.6": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.6-introduction-to-titration/chem-4.6.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.6-introduction-to-titration/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.6-introduction-to-titration/captions.vtt",
+    "title": "Introduction to Titration",
+    "seconds": 347
+  },
+  "chem-4.7b": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.7b-oxidation-numbers-and-spotting-redox/chem-4.7b.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.7b-oxidation-numbers-and-spotting-redox/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.7b-oxidation-numbers-and-spotting-redox/captions.vtt",
+    "title": "Oxidation Numbers & Spotting Redox",
+    "seconds": 328
+  },
+  "chem-5.5": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.5-the-collision-model/chem-5.5.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.5-the-collision-model/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.5-the-collision-model/captions.vtt",
+    "title": "The Collision Model",
+    "seconds": 264
+  },
+  "chem-4.9": {
+    "src": "media/videos/chem-u4-chemical-reactions/chem-4.9-balancing-redox-with-half-reactions/chem-4.9.mp4",
+    "poster": "media/videos/chem-u4-chemical-reactions/chem-4.9-balancing-redox-with-half-reactions/poster.jpg",
+    "captions": "media/videos/chem-u4-chemical-reactions/chem-4.9-balancing-redox-with-half-reactions/captions.vtt",
+    "title": "Balancing Redox with Half-Reactions",
+    "seconds": 319
+  },
+  "chem-5.1": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.1-reaction-rates/chem-5.1.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.1-reaction-rates/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.1-reaction-rates/captions.vtt",
+    "title": "Reaction Rates",
+    "seconds": 305
+  },
+  "chem-5.2": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.2-rate-laws-and-the-method-of-initial-rates/chem-5.2.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.2-rate-laws-and-the-method-of-initial-rates/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.2-rate-laws-and-the-method-of-initial-rates/captions.vtt",
+    "title": "Rate Laws & the Method of Initial Rates",
+    "seconds": 281
+  },
+  "chem-5.4": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.4-elementary-reactions/chem-5.4.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.4-elementary-reactions/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.4-elementary-reactions/captions.vtt",
+    "title": "Elementary Reactions",
+    "seconds": 285
+  },
+  "chem-5.3": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.3-concentration-vs.-time-and-half-life/chem-5.3.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.3-concentration-vs.-time-and-half-life/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.3-concentration-vs.-time-and-half-life/captions.vtt",
+    "title": "Concentration vs. Time & Half-Life",
+    "seconds": 303
+  },
+  "chem-5.11": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.11-catalysis/chem-5.11.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.11-catalysis/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.11-catalysis/captions.vtt",
+    "title": "Catalysis",
+    "seconds": 261
+  },
+  "chem-5.6": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.6-reaction-energy-profiles/chem-5.6.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.6-reaction-energy-profiles/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.6-reaction-energy-profiles/captions.vtt",
+    "title": "Reaction Energy Profiles",
+    "seconds": 293
+  },
+  "chem-5.7": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.7-reaction-mechanisms/chem-5.7.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.7-reaction-mechanisms/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.7-reaction-mechanisms/captions.vtt",
+    "title": "Reaction Mechanisms",
+    "seconds": 260
+  },
+  "chem-5.10": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.10-multistep-energy-profiles/chem-5.10.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.10-multistep-energy-profiles/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.10-multistep-energy-profiles/captions.vtt",
+    "title": "Multistep Energy Profiles",
+    "seconds": 246
+  },
+  "chem-5.8": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.8-mechanisms-and-rate-laws-the-slow-step/chem-5.8.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.8-mechanisms-and-rate-laws-the-slow-step/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.8-mechanisms-and-rate-laws-the-slow-step/captions.vtt",
+    "title": "Mechanisms & Rate Laws: The Slow Step",
+    "seconds": 268
+  },
+  "chem-5.9": {
+    "src": "media/videos/chem-u5-kinetics/chem-5.9-pre-equilibrium-approximation/chem-5.9.mp4",
+    "poster": "media/videos/chem-u5-kinetics/chem-5.9-pre-equilibrium-approximation/poster.jpg",
+    "captions": "media/videos/chem-u5-kinetics/chem-5.9-pre-equilibrium-approximation/captions.vtt",
+    "title": "Pre-Equilibrium Approximation",
+    "seconds": 270
+  },
+  "chem-6.3": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.3-heat-transfer-and-thermal-equilibrium/chem-6.3.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.3-heat-transfer-and-thermal-equilibrium/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.3-heat-transfer-and-thermal-equilibrium/captions.vtt",
+    "title": "Heat Transfer & Thermal Equilibrium",
+    "seconds": 241
+  },
+  "chem-6.4": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.4-heat-capacity-and-calorimetry/chem-6.4.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.4-heat-capacity-and-calorimetry/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.4-heat-capacity-and-calorimetry/captions.vtt",
+    "title": "Heat Capacity & Calorimetry",
+    "seconds": 308
+  },
+  "chem-6.1": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.1-endothermic-vs.-exothermic/chem-6.1.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.1-endothermic-vs.-exothermic/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.1-endothermic-vs.-exothermic/captions.vtt",
+    "title": "Endothermic vs. Exothermic",
+    "seconds": 268
+  },
+  "chem-6.6": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.6-enthalpy-of-reaction/chem-6.6.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.6-enthalpy-of-reaction/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.6-enthalpy-of-reaction/captions.vtt",
+    "title": "Enthalpy of Reaction",
+    "seconds": 282
+  },
+  "chem-6.5": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.5-energy-of-phase-changes/chem-6.5.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.5-energy-of-phase-changes/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.5-energy-of-phase-changes/captions.vtt",
+    "title": "Energy of Phase Changes",
+    "seconds": 329
+  },
+  "chem-6.7": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.7-bond-enthalpies/chem-6.7.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.7-bond-enthalpies/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.7-bond-enthalpies/captions.vtt",
+    "title": "Bond Enthalpies",
+    "seconds": 331
+  },
+  "chem-7.1": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.1-what-is-equilibrium/chem-7.1.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.1-what-is-equilibrium/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.1-what-is-equilibrium/captions.vtt",
+    "title": "What Is Equilibrium?",
+    "seconds": 264
+  },
+  "chem-6.8": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.8-enthalpy-of-formation/chem-6.8.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.8-enthalpy-of-formation/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.8-enthalpy-of-formation/captions.vtt",
+    "title": "Enthalpy of Formation",
+    "seconds": 324
+  },
+  "chem-6.9": {
+    "src": "media/videos/chem-u6-thermochemistry/chem-6.9-hess-s-law/chem-6.9.mp4",
+    "poster": "media/videos/chem-u6-thermochemistry/chem-6.9-hess-s-law/poster.jpg",
+    "captions": "media/videos/chem-u6-thermochemistry/chem-6.9-hess-s-law/captions.vtt",
+    "title": "Hess's Law",
+    "seconds": 351
+  },
+  "chem-7.6": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.6-manipulating-k/chem-7.6.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.6-manipulating-k/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.6-manipulating-k/captions.vtt",
+    "title": "Manipulating K",
+    "seconds": 269
+  },
+  "chem-7.3": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.3-writing-k-and-q/chem-7.3.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.3-writing-k-and-q/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.3-writing-k-and-q/captions.vtt",
+    "title": "Writing K and Q",
+    "seconds": 263
+  },
+  "chem-7.4": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.4-calculating-k-and-what-its-size-means/chem-7.4.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.4-calculating-k-and-what-its-size-means/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.4-calculating-k-and-what-its-size-means/captions.vtt",
+    "title": "Calculating K & What Its Size Means",
+    "seconds": 293
+  },
+  "chem-7.8": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.8-particle-diagrams-of-equilibrium/chem-7.8.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.8-particle-diagrams-of-equilibrium/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.8-particle-diagrams-of-equilibrium/captions.vtt",
+    "title": "Particle Diagrams of Equilibrium",
+    "seconds": 264
+  },
+  "chem-7.7": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.7-q-vs.-k-and-ice-tables/chem-7.7.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.7-q-vs.-k-and-ice-tables/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.7-q-vs.-k-and-ice-tables/captions.vtt",
+    "title": "Q vs. K & ICE Tables",
+    "seconds": 299
+  },
+  "chem-7.9": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.9-le-ch-telier-s-principle/chem-7.9.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.9-le-ch-telier-s-principle/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.9-le-ch-telier-s-principle/captions.vtt",
+    "title": "Le Châtelier's Principle",
+    "seconds": 329
+  },
+  "chem-7.12": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.12-the-common-ion-effect/chem-7.12.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.12-the-common-ion-effect/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.12-the-common-ion-effect/captions.vtt",
+    "title": "The Common-Ion Effect",
+    "seconds": 286
+  },
+  "chem-8.1": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.1-ph-poh-and-water/chem-8.1.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.1-ph-poh-and-water/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.1-ph-poh-and-water/captions.vtt",
+    "title": "pH, pOH & Water",
+    "seconds": 290
+  },
+  "chem-7.11": {
+    "src": "media/videos/chem-u7-equilibrium/chem-7.11-solubility-equilibria-ksp/chem-7.11.mp4",
+    "poster": "media/videos/chem-u7-equilibrium/chem-7.11-solubility-equilibria-ksp/poster.jpg",
+    "captions": "media/videos/chem-u7-equilibrium/chem-7.11-solubility-equilibria-ksp/captions.vtt",
+    "title": "Solubility Equilibria (Ksp)",
+    "seconds": 312
+  },
+  "chem-8.3b": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.3b-weak-bases-kb-and-ka-kb-kw/chem-8.3b.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.3b-weak-bases-kb-and-ka-kb-kw/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.3b-weak-bases-kb-and-ka-kb-kw/captions.vtt",
+    "title": "Weak Bases, Kb & Ka × Kb = Kw",
+    "seconds": 290
+  },
+  "chem-8.3a": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.3a-weak-acids-and-ka/chem-8.3a.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.3a-weak-acids-and-ka/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.3a-weak-acids-and-ka/captions.vtt",
+    "title": "Weak Acids & Ka",
+    "seconds": 296
+  },
+  "chem-8.2": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.2-strong-acids-and-strong-bases/chem-8.2.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.2-strong-acids-and-strong-bases/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.2-strong-acids-and-strong-bases/captions.vtt",
+    "title": "Strong Acids & Strong Bases",
+    "seconds": 337
+  },
+  "chem-8.4": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.4-mixing-acids-and-bases/chem-8.4.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.4-mixing-acids-and-bases/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.4-mixing-acids-and-bases/captions.vtt",
+    "title": "Mixing Acids & Bases",
+    "seconds": 319
+  },
+  "chem-8.6": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.6-structure-and-acid-strength/chem-8.6.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.6-structure-and-acid-strength/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.6-structure-and-acid-strength/captions.vtt",
+    "title": "Structure & Acid Strength",
+    "seconds": 319
+  },
+  "chem-8.8": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.8-buffers-how-they-work/chem-8.8.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.8-buffers-how-they-work/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.8-buffers-how-they-work/captions.vtt",
+    "title": "Buffers: How They Work",
+    "seconds": 295
+  },
+  "chem-8.7": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.7-ph-vs.-pka-and-indicators/chem-8.7.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.7-ph-vs.-pka-and-indicators/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.7-ph-vs.-pka-and-indicators/captions.vtt",
+    "title": "pH vs. pKa & Indicators",
+    "seconds": 269
+  },
+  "chem-8.9": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.9-henderson-hasselbalch/chem-8.9.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.9-henderson-hasselbalch/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.9-henderson-hasselbalch/captions.vtt",
+    "title": "Henderson–Hasselbalch",
+    "seconds": 276
+  },
+  "chem-8.10": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.10-buffer-capacity/chem-8.10.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.10-buffer-capacity/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.10-buffer-capacity/captions.vtt",
+    "title": "Buffer Capacity",
+    "seconds": 281
+  },
+  "chem-8.5": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.5-titration-curves/chem-8.5.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.5-titration-curves/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.5-titration-curves/captions.vtt",
+    "title": "Titration Curves",
+    "seconds": 337
+  },
+  "chem-8.11": {
+    "src": "media/videos/chem-u8-acids-and-bases/chem-8.11-ph-and-solubility/chem-8.11.mp4",
+    "poster": "media/videos/chem-u8-acids-and-bases/chem-8.11-ph-and-solubility/poster.jpg",
+    "captions": "media/videos/chem-u8-acids-and-bases/chem-8.11-ph-and-solubility/captions.vtt",
+    "title": "pH & Solubility",
+    "seconds": 256
+  },
+  "chem-9.1": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.1-introduction-to-entropy/chem-9.1.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.1-introduction-to-entropy/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.1-introduction-to-entropy/captions.vtt",
+    "title": "Introduction to Entropy",
+    "seconds": 248
+  },
+  "chem-9.2": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.2-calculating-s/chem-9.2.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.2-calculating-s/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.2-calculating-s/captions.vtt",
+    "title": "Calculating ΔS°",
+    "seconds": 287
+  },
+  "chem-9.4": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.4-thermodynamic-vs.-kinetic-control/chem-9.4.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.4-thermodynamic-vs.-kinetic-control/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.4-thermodynamic-vs.-kinetic-control/captions.vtt",
+    "title": "Thermodynamic vs. Kinetic Control",
+    "seconds": 282
+  },
+  "chem-9.3": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.3-gibbs-free-energy-and-favorability/chem-9.3.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.3-gibbs-free-energy-and-favorability/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.3-gibbs-free-energy-and-favorability/captions.vtt",
+    "title": "Gibbs Free Energy & Favorability",
+    "seconds": 327
+  },
+  "chem-9.5": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.5-free-energy-and-equilibrium/chem-9.5.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.5-free-energy-and-equilibrium/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.5-free-energy-and-equilibrium/captions.vtt",
+    "title": "Free Energy & Equilibrium",
+    "seconds": 266
+  },
+  "chem-9.8": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.8-galvanic-and-electrolytic-cells/chem-9.8.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.8-galvanic-and-electrolytic-cells/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.8-galvanic-and-electrolytic-cells/captions.vtt",
+    "title": "Galvanic & Electrolytic Cells",
+    "seconds": 283
+  },
+  "chem-9.11": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.11-electrolysis-and-faraday-s-law/chem-9.11.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.11-electrolysis-and-faraday-s-law/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.11-electrolysis-and-faraday-s-law/captions.vtt",
+    "title": "Electrolysis & Faraday's Law",
+    "seconds": 263
+  },
+  "chem-9.9": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.9-cell-potential-and-free-energy/chem-9.9.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.9-cell-potential-and-free-energy/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.9-cell-potential-and-free-energy/captions.vtt",
+    "title": "Cell Potential & Free Energy",
+    "seconds": 268
+  },
+  "chem-9.6": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.6-free-energy-of-dissolution/chem-9.6.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.6-free-energy-of-dissolution/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.6-free-energy-of-dissolution/captions.vtt",
+    "title": "Free Energy of Dissolution",
+    "seconds": 259
+  },
+  "chem-9.7": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.7-coupled-reactions/chem-9.7.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.7-coupled-reactions/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.7-coupled-reactions/captions.vtt",
+    "title": "Coupled Reactions",
+    "seconds": 254
+  },
+  "chem-9.10": {
+    "src": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.10-cell-potential-under-nonstandard-conditions/chem-9.10.mp4",
+    "poster": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.10-cell-potential-under-nonstandard-conditions/poster.jpg",
+    "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.10-cell-potential-under-nonstandard-conditions/captions.vtt",
+    "title": "Cell Potential Under Nonstandard Conditions",
+    "seconds": 275
   }
 }

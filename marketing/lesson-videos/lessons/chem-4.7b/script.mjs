@@ -1,0 +1,100 @@
+// Narration for chem-4.7b "Oxidation Numbers & Spotting Redox". Every fact comes from the lesson
+// cards, quick checks and flashcards in app/src/content/chem/u4.ts ("not actual charges" and
+// "total increase equals total decrease" are from book.ts). One entry per sentence: the voice reads
+// `say`; captions show `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-4.7b',
+  title: 'Oxidation Numbers & Spotting Redox',
+  course: 'AP® Chemistry',
+  unit: 'Unit 4 · Chemical Reactions',
+  unitId: 'chem-u4',
+  unitTitle: 'Chemical Reactions',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Oxidation numbers, and spotting redox.', cap: 'Oxidation Numbers & Spotting Redox.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to assign oxidation numbers, and use them to see which species is oxidized, and which is reduced.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Batteries. Rusting. Photosynthesis. Even your own metabolism.', gap: 0.5 },
+      { say: 'They all run on one thing: electron transfer.', gap: 0.5 },
+      { say: 'But you cannot watch the electrons move. So how do you keep track of them?', gap: 0.5 },
+      { say: 'With oxidation numbers.', gap: 0.4 },
+      { say: 'They are a bookkeeping system that tracks where the electrons go.', gap: 0.5 },
+      { say: "They're not actual charges. They're a way to keep count.", gap: 0.9 },
+    ] },
+    { id: 'rules', beats: [
+      { say: 'Here are the rules. Apply them in order of priority.', gap: 0.5 },
+      { say: 'One: a free element is zero. Iron metal, oxygen gas, and chlorine gas are all zero.', cap: 'One: a free element is zero. Fe, O₂ and Cl₂ are all zero.', gap: 0.5 },
+      { say: 'Two: a monatomic ion equals its charge. A sodium ion is plus one. A sulfur ion with a two minus charge is minus two.', cap: 'Two: a monatomic ion equals its charge. Na⁺ is +1. S²⁻ is −2.', gap: 0.5 },
+      { say: 'Three: fluorine is always minus one in compounds.', cap: 'Three: fluorine is always −1 in compounds.', gap: 0.5 },
+      { say: "Four: oxygen is usually minus two. In peroxides, like hydrogen peroxide, it's minus one.", cap: "Four: oxygen is usually −2. In peroxides, like H₂O₂, it's −1.", gap: 0.5 },
+      { say: 'Five: hydrogen is plus one with nonmetals, but minus one with metals, as in sodium hydride.', cap: 'Five: hydrogen is +1 with nonmetals, but −1 with metals, as in NaH.', gap: 0.5 },
+      { say: "Six: the oxidation numbers add up to the overall charge. For a neutral compound, that's zero.", gap: 0.9 },
+    ] },
+    { id: 'solve', beats: [
+      { say: "Let's use the rules to solve for an unknown.", gap: 0.4 },
+      { say: 'What is the oxidation number of manganese in M n O four minus?', cap: 'What is the oxidation number of manganese in MnO₄⁻?', gap: 0.5 },
+      { say: 'Each oxygen is minus two, so four oxygens make minus eight.', cap: 'Each oxygen is −2, so four oxygens make −8.', gap: 0.4 },
+      { say: "The total must equal the ion's charge: minus one.", cap: "The total must equal the ion's charge: −1.", gap: 0.4 },
+      { say: 'So manganese, plus minus eight, equals minus one.', cap: 'So Mn + (−8) = −1.', gap: 0.4 },
+      { say: 'Manganese is plus seven.', cap: 'Manganese is +7.', gap: 0.6 },
+      { say: 'Same idea for nitrogen in N H four plus. Four hydrogens make plus four, and the total is plus one, so nitrogen is minus three.', cap: 'Same idea for nitrogen in NH₄⁺. Four hydrogens make +4, and the total is +1, so nitrogen is −3.', gap: 0.9 },
+    ] },
+    { id: 'oxred', beats: [
+      { say: 'So what do oxidation numbers tell you?', gap: 0.4 },
+      { say: 'Oxidation is the loss of electrons. The oxidation number goes up.', gap: 0.5 },
+      { say: 'Reduction is the gain of electrons. The oxidation number goes down. It is reduced.', gap: 0.5 },
+      { say: 'Electrons flow from the species that is oxidized, to the species that is reduced.', gap: 0.4 },
+      { say: "So one can't happen without the other.", gap: 0.5 },
+      { say: 'Every electron lost by one species is gained by another. So the total increase in oxidation number equals the total decrease.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's how to remember which is which.", gap: 0.4 },
+      { say: 'Oil rig.', cap: 'OIL RIG.', gap: 0.4 },
+      { say: 'Oxidation is loss. Reduction is gain. Of electrons.', cap: 'Oxidation Is Loss, Reduction Is Gain (of electrons).', gap: 0.6 },
+      { say: 'Or, if you like: Leo the lion says, G E R.', cap: 'Or, if you like: LEO the lion says GER.', gap: 0.4 },
+      { say: 'Lose electrons: oxidation. Gain electrons: reduction.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's find who is oxidized in a real reaction.", cap: "Let's find who's oxidized in a real reaction.", gap: 0.4 },
+      { say: 'Zinc metal reacts with copper two plus ions, to make zinc two plus ions and copper metal.', cap: 'Zinc metal reacts with Cu²⁺ ions, to make Zn²⁺ ions and copper metal.', gap: 0.5 },
+      { say: 'Zinc goes from zero to plus two. Its oxidation number went up, so zinc lost two electrons. Zinc is oxidized.', cap: 'Zinc goes from 0 to +2. Its oxidation number went up, so zinc lost 2 electrons. Zinc is oxidized.', gap: 0.5 },
+      { say: 'Copper goes from plus two to zero. Its oxidation number went down, so copper two plus gained two electrons. It is reduced.', cap: 'Copper goes from +2 to 0. Its oxidation number went down, so Cu²⁺ gained 2 electrons. It is reduced.', gap: 0.5 },
+      { say: 'The electrons are transferred from zinc to copper two plus.', cap: 'The electrons are transferred from Zn to Cu²⁺.', gap: 0.4 },
+      { say: 'Up by two, down by two. The changes match.', gap: 0.9 },
+    ] },
+    { id: 'spot', beats: [
+      { say: 'So how do you tell whether a reaction is redox at all?', gap: 0.4 },
+      { say: 'Check the oxidation numbers. A change in oxidation number reveals a redox reaction.', gap: 0.5 },
+      { say: 'When sodium reacts with chlorine gas to make sodium chloride, sodium goes from zero to plus one. It is oxidized.', cap: 'When sodium reacts with Cl₂ to make NaCl, sodium goes from 0 to +1. It is oxidized.', gap: 0.4 },
+      { say: 'Chlorine goes from zero to minus one. Chlorine gas is reduced.', cap: 'Chlorine goes from 0 to −1. Cl₂ is reduced.', gap: 0.5 },
+      { say: 'Now take silver nitrate plus potassium chloride, which makes silver chloride and potassium nitrate.', cap: 'Now take AgNO₃ + KCl, which makes AgCl and KNO₃.', gap: 0.4 },
+      { say: 'Silver stays plus one. Chlorine stays minus one. No oxidation numbers change.', cap: 'Silver stays +1. Chlorine stays −1. No oxidation numbers change.', gap: 0.4 },
+      { say: 'So this precipitation reaction is not redox.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'One thing you can skip.', gap: 0.4 },
+      { say: "The AP exam won't test the terms oxidizing agent and reducing agent.", cap: "The AP® exam won't test the terms “oxidizing agent” and “reducing agent”.", gap: 0.5 },
+      { say: 'Focus on three things: which species is oxidized, which is reduced, and the direction of electron flow.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'What is the oxidation number of sulfur in S O four two minus? Minus two, plus four, plus six, or plus eight?', cap: 'What is the oxidation number of sulfur in SO₄²⁻? −2, +4, +6, or +8?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is plus six.', cap: 'The answer is +6.', gap: 0.4 },
+      { say: 'Four oxygens make minus eight, and the total must be minus two.', cap: 'Four oxygens make −8, and the total must be −2.', gap: 0.3 },
+      { say: 'Sulfur, plus minus eight, equals minus two. So sulfur is plus six.', cap: 'S + (−8) = −2. So sulfur is +6.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Free elements are zero. Oxygen is minus two, hydrogen plus one, fluorine minus one. And the sum equals the charge.', cap: 'Free elements are 0. Oxygen is −2, hydrogen +1, fluorine −1. And the sum equals the charge.', gap: 0.5 },
+      { say: 'Oxidation is loss of electrons: the oxidation number goes up. Reduction is gain: it goes down. Oil rig.', cap: 'Oxidation is loss of electrons: the oxidation number goes up. Reduction is gain: it goes down. OIL RIG.', gap: 0.5 },
+      { say: 'And electrons go from the oxidized species to the reduced species.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

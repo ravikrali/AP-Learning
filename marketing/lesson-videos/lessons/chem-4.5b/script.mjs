@@ -1,0 +1,96 @@
+// Narration for chem-4.5b "Limiting Reactant". Every fact comes from the lesson cards, quick checks
+// and flashcards in app/src/content/chem/u4.ts (the excess-aluminum calculation and the reasons
+// yields fall short are from book.ts). One entry per sentence: the voice reads `say`; captions
+// show `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-4.5b',
+  title: 'Limiting Reactant',
+  course: 'AP® Chemistry',
+  unit: 'Unit 4 · Chemical Reactions',
+  unitId: 'chem-u4',
+  unitTitle: 'Chemical Reactions',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Limiting reactant.', cap: 'Limiting Reactant.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to find the reactant that runs out first, how much product it allows, and how to work out percent yield.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Let's start with a cookout.", gap: 0.4 },
+      { say: 'You have ten hot dogs and eight buns.', cap: 'You have 10 hot dogs and 8 buns.', gap: 0.4 },
+      { say: 'How many complete hot dogs can you make?', gap: 0.6 },
+      { say: 'Eight. The buns run out first.', cap: '8. The buns run out first.', gap: 0.5 },
+      { say: 'Two hot dogs are left over, with no buns.', cap: '2 hot dogs are left over, with no buns.', gap: 0.5 },
+      { say: 'In chemistry, the reactant that runs out first is the limiting reactant.', gap: 0.4 },
+      { say: 'And it decides how much product you get.', gap: 0.9 },
+    ] },
+    { id: 'limiting', beats: [
+      { say: 'So a reaction like this has two kinds of reactant.', gap: 0.4 },
+      { say: 'The limiting reactant is used up completely.', gap: 0.4 },
+      { say: 'So it determines the maximum, or theoretical, amount of product.', gap: 0.5 },
+      { say: 'The excess reactant is the other one. Some of it is left over.', gap: 0.6 },
+      { say: "Here's the catch.", gap: 0.3 },
+      { say: 'The limiting reactant is not necessarily the one with the smaller mass, or even the fewest moles.', gap: 0.5 },
+      { say: 'It depends on the mole ratio.', gap: 0.9 },
+    ] },
+    { id: 'test', beats: [
+      { say: 'So how do you find it? Use the product test.', gap: 0.4 },
+      { say: 'Calculate how much product each reactant could make on its own.', gap: 0.5 },
+      { say: 'The smaller answer wins.', gap: 0.5 },
+      { say: 'That reactant is the limiting one, and that smaller amount is the theoretical yield.', gap: 0.5 },
+      { say: 'It avoids comparing ratios directly, and it always works.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's try it with aluminum and chlorine.", gap: 0.4 },
+      { say: 'Two moles of aluminum react with three moles of chlorine gas to make two moles of aluminum chloride.', cap: '2Al + 3Cl₂ → 2AlCl₃', gap: 0.4 },
+      { say: 'Ten point zero grams of aluminum react with thirty point zero grams of chlorine. What mass of aluminum chloride forms?', cap: '10.0 g Al reacts with 30.0 g Cl₂. What mass of AlCl₃ forms?', gap: 0.6 },
+      { say: 'Step one: moles. Ten point zero grams, divided by twenty-six point nine eight, is zero point three seven one moles of aluminum.', cap: 'Step 1: moles. 10.0 ÷ 26.98 = 0.371 mol Al.', gap: 0.3 },
+      { say: 'Thirty point zero grams, divided by seventy point nine zero, is zero point four two three moles of chlorine.', cap: '30.0 ÷ 70.90 = 0.423 mol Cl₂.', gap: 0.5 },
+      { say: 'Step two: the product test. From aluminum, the ratio is two to two, so zero point three seven one moles of aluminum chloride.', cap: 'Step 2: the product test. From Al: 0.371 × (2/2) = 0.371 mol AlCl₃.', gap: 0.3 },
+      { say: "From chlorine, the ratio is two to three, so zero point two eight two moles. That's smaller.", cap: "From Cl₂: 0.423 × (2/3) = 0.282 mol AlCl₃. That's smaller.", gap: 0.5 },
+      { say: 'So chlorine is the limiting reactant.', cap: 'So Cl₂ is the limiting reactant.', gap: 0.5 },
+      { say: 'Step three: zero point two eight two moles, times one hundred thirty-three point three three grams per mole, is thirty-seven point six grams of aluminum chloride.', cap: 'Step 3: 0.282 mol × 133.33 g/mol = 37.6 g AlCl₃.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now look closely, because this is the trap.', gap: 0.4 },
+      { say: 'Chlorine had more mass than aluminum: thirty grams against ten.', cap: 'Cl₂ had more mass than Al: 30.0 g against 10.0 g.', gap: 0.4 },
+      { say: 'It even had more moles: zero point four two three against zero point three seven one.', cap: 'It even had more moles: 0.423 against 0.371.', gap: 0.4 },
+      { say: 'And it still ran out first.', gap: 0.5 },
+      { say: 'The equation needs three moles of chlorine for every two moles of aluminum.', cap: 'The equation needs 3 mol Cl₂ for every 2 mol Al.', gap: 0.4 },
+      { say: 'The mole ratio decides. Not the mass, and not the moles alone.', gap: 0.9 },
+    ] },
+    { id: 'excess', beats: [
+      { say: 'So how much aluminum is left over?', gap: 0.4 },
+      { say: 'Start from the limiting reactant. Zero point four two three moles of chlorine, times two over three, is zero point two eight two moles of aluminum used.', cap: 'Start from the limiting reactant. 0.423 mol Cl₂ × (2 mol Al / 3 mol Cl₂) = 0.282 mol Al used.', gap: 0.4 },
+      { say: "That's seven point six one grams of aluminum.", cap: "That's 7.61 g of Al.", gap: 0.4 },
+      { say: 'Ten point zero minus seven point six one leaves two point three nine grams of aluminum in excess.', cap: '10.0 g − 7.61 g leaves 2.39 g of Al in excess.', gap: 0.5 },
+      { say: 'Always calculate the excess from the limiting reactant, not from the product.', gap: 0.9 },
+    ] },
+    { id: 'yield', beats: [
+      { say: 'Real experiments rarely make the full theoretical amount.', gap: 0.4 },
+      { say: 'Percent yield equals the actual yield, divided by the theoretical yield, times one hundred.', cap: 'Percent yield = (actual yield ÷ theoretical yield) × 100', gap: 0.5 },
+      { say: 'If the lab made thirty point one grams of aluminum chloride, that is thirty point one over thirty-seven point six, times one hundred: eighty point one percent.', cap: 'If the lab made 30.1 g of AlCl₃: 30.1 ÷ 37.6 × 100 = 80.1%.', gap: 0.5 },
+      { say: "Some product is lost in transfers and filtering, side reactions can make other substances, and some reactions don't go to completion.", gap: 0.5 },
+      { say: 'A percent yield over one hundred percent signals an error, often a product that is still wet.', cap: 'A percent yield over 100% signals an error, often a product that is still wet.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Two H two plus O two makes two H two O. Three point zero moles of H two react with two point zero moles of O two. Which is limiting?', cap: '2H₂ + O₂ → 2H₂O. 3.0 mol H₂ reacts with 2.0 mol O₂. Which is limiting?', gap: 0.3 },
+      { say: 'H two, O two, neither because they are exactly balanced, or you can\'t tell without masses?', cap: 'H₂, O₂, neither (they are exactly balanced), or can\'t tell without masses?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is H two.', cap: 'The answer is H₂.', gap: 0.4 },
+      { say: 'Two point zero moles of O two would need four point zero moles of H two, but there are only three point zero.', cap: '2.0 mol O₂ would need 4.0 mol H₂, but there are only 3.0.', gap: 0.4 },
+      { say: 'Three point zero moles of H two only needs one point five moles of O two. So H two runs out first.', cap: '3.0 mol H₂ only needs 1.5 mol O₂. So H₂ runs out first.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'The limiting reactant runs out first and sets the maximum product.', gap: 0.5 },
+      { say: 'Product test: compute the product from each reactant. The smaller result wins.', gap: 0.5 },
+      { say: 'Percent yield is actual, divided by theoretical, times one hundred.', cap: 'Percent yield = actual ÷ theoretical × 100.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

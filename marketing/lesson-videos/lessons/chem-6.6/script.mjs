@@ -1,0 +1,90 @@
+// Narration for chem-6.6 "Enthalpy of Reaction". Every fact comes from the lesson cards,
+// quick checks and flashcards in app/src/content/chem/u6.ts (plus the lesson's prose in chem/book.ts).
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-6.6',
+  title: 'Enthalpy of Reaction',
+  course: 'AP® Chemistry',
+  unit: 'Unit 6 · Thermochemistry',
+  unitId: 'chem-u6',
+  unitTitle: 'Thermochemistry',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Enthalpy of reaction.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn what delta H really means, and how to scale it to any amount of reactant.", cap: "In the next few minutes, you'll learn what ΔH really means, and how to scale it to any amount of reactant.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Burning natural gas, which is methane, releases a lot of heat.', gap: 0.4 },
+      { say: 'Eight hundred ninety kilojoules for every mole burned.', cap: '890 kJ for every mole burned.', gap: 0.5 },
+      { say: 'That one number lets engineers calculate exactly how much fuel heats a house for a winter.', gap: 0.5 },
+      { say: 'So what does that number mean, and how do we use it?', gap: 0.9 },
+    ] },
+    { id: 'meaning', beats: [
+      { say: 'Here is the balanced equation for burning methane.', gap: 0.3 },
+      { say: 'One methane plus two oxygen gives one carbon dioxide and two liquid waters.', cap: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)', gap: 0.4 },
+      { say: 'Its delta H is negative eight hundred ninety kilojoules per mole of reaction.', cap: 'ΔH = −890 kJ/mol(rxn)', gap: 0.5 },
+      { say: 'That means: when one mole of methane reacts with two moles of oxygen, as written, eight hundred ninety kilojoules are released.', cap: 'That means: when 1 mol CH₄ reacts with 2 mol O₂, as written, 890 kJ are released.', gap: 0.5 },
+      { say: 'So delta H applies to the reaction as written.', cap: 'So ΔH applies to the reaction as written.', gap: 0.4 },
+      { say: 'And at constant pressure, delta H equals the heat of the reaction.', cap: 'And at constant pressure, ΔH equals the heat of the reaction.', gap: 0.9 },
+    ] },
+    { id: 'sign', beats: [
+      { say: 'Now look at the sign.', gap: 0.4 },
+      { say: 'Negative delta H means heat is released. The reaction is exothermic.', cap: 'Negative ΔH means heat is released. The reaction is exothermic.', gap: 0.5 },
+      { say: 'Positive delta H means heat is absorbed. The reaction is endothermic.', cap: 'Positive ΔH means heat is absorbed. The reaction is endothermic.', gap: 0.5 },
+      { say: 'Say a reaction in a solution has a delta H of plus fifty kilojoules per mole.', cap: 'Say a reaction in a solution has ΔH = +50 kJ/mol.', gap: 0.4 },
+      { say: 'It absorbs heat from the solution, so the solution cools. Its temperature falls.', gap: 0.9 },
+    ] },
+    { id: 'written', beats: [
+      { say: 'Because delta H belongs to the equation as written, changing the equation changes delta H.', cap: 'Because ΔH belongs to the equation as written, changing the equation changes ΔH.', gap: 0.5 },
+      { say: 'Double every coefficient, and delta H doubles.', cap: 'Double every coefficient, and ΔH doubles.', gap: 0.5 },
+      { say: 'Reverse the equation, and the sign flips: plus eight hundred ninety kilojoules.', cap: 'Reverse the equation, and the sign flips: +890 kJ.', gap: 0.5 },
+      { say: 'The physical states matter too.', gap: 0.3 },
+      { say: 'Forming water vapor instead of liquid water releases less energy, because some energy remains in the vapor.', gap: 0.9 },
+    ] },
+    { id: 'why', beats: [
+      { say: 'But why does the temperature change at all?', gap: 0.4 },
+      { say: 'Bonds break and new bonds form, so the products have a different chemical potential energy than the reactants.', gap: 0.5 },
+      { say: 'That energy difference shows up as a change in the kinetic energy of the particles.', gap: 0.4 },
+      { say: 'And we see that as a change in temperature.', gap: 0.5 },
+      { say: 'Then heat flows between the products and the surroundings, until they reach thermal equilibrium.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's scale delta H with stoichiometry.", cap: "Let's scale ΔH with stoichiometry.", gap: 0.4 },
+      { say: 'How much heat is released when four point zero zero grams of methane burns?', cap: 'How much heat is released when 4.00 g of CH₄ burns?', gap: 0.5 },
+      { say: 'Step one: grams to moles. Four point zero zero divided by sixteen point zero four is zero point two four nine moles.', cap: 'Step one: grams to moles. 4.00 ÷ 16.04 = 0.249 mol.', gap: 0.5 },
+      { say: 'Step two: multiply by eight hundred ninety kilojoules per mole.', cap: 'Step two: multiply by 890 kJ/mol.', gap: 0.4 },
+      { say: "That's two hundred twenty-two kilojoules released.", cap: "That's 222 kJ released.", gap: 0.5 },
+      { say: 'The same reasoning compares fuels: methane releases about fifty-five point five kilojoules per gram.', cap: 'The same reasoning compares fuels: methane releases about 55.5 kJ/g.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a trick that makes these problems easy.", gap: 0.4 },
+      { say: 'Treat delta H like a product in the equation.', cap: 'Treat ΔH like a product in the equation.', gap: 0.4 },
+      { say: 'Write the heat right into it: plus eight hundred ninety kilojoules on the product side.', cap: 'Write the heat right into it: + 890 kJ on the product side.', gap: 0.5 },
+      { say: 'Now one mole of methane goes with eight hundred ninety kilojoules, and so do two moles of oxygen.', cap: 'Now 1 mol CH₄ ↔ 890 kJ, and 2 mol O₂ ↔ 890 kJ.', gap: 0.5 },
+      { say: "It's just stoichiometry.", gap: 0.5 },
+      { say: 'Try it with ammonia: nitrogen plus three hydrogen gives two ammonia, with delta H of negative ninety-two kilojoules.', cap: 'Try it with ammonia: N₂ + 3H₂ → 2NH₃, ΔH = −92 kJ.', gap: 0.4 },
+      { say: 'Ninety-two kilojoules goes with two moles of ammonia.', cap: '92 kJ goes with 2 mol NH₃.', gap: 0.3 },
+      { say: 'So forming four point zero moles releases twice that: one hundred eighty-four kilojoules.', cap: 'So forming 4.0 mol releases twice that: 184 kJ.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Two hydrogen plus one oxygen gives two liquid waters, with delta H of negative five hundred seventy-two kilojoules. How much heat is released when one point zero zero mole of hydrogen reacts?', cap: '2H₂(g) + O₂(g) → 2H₂O(l), ΔH = −572 kJ. How much heat is released when 1.00 mol H₂ reacts?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is two hundred eighty-six kilojoules.', cap: 'The answer is 286 kJ.', gap: 0.4 },
+      { say: 'Five hundred seventy-two kilojoules is for two moles of hydrogen.', cap: '572 kJ is for 2 mol H₂.', gap: 0.3 },
+      { say: 'So one mole releases half of that: two hundred eighty-six kilojoules.', cap: 'So 1.00 mol releases half of that: 286 kJ.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Delta H applies to the reaction as written, per mole of reaction.', cap: 'ΔH applies to the reaction as written, per mole of reaction.', gap: 0.5 },
+      { say: 'Scale it with moles: the heat equals the moles times the size of delta H per mole of that substance.', cap: 'Scale it with moles: heat = n × |ΔH| per mole of that substance.', gap: 0.5 },
+      { say: 'Bond energy changes lead to particle kinetic energy changes, which we see as a temperature change.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

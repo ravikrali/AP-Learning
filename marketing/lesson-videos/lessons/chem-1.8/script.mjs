@@ -1,0 +1,86 @@
+// Narration for chem-1.8 "Valence Electrons & Ionic Compounds". Every fact comes from the lesson cards,
+// quick checks and the chem-1.8 book notes in app/src/content/chem/u1.ts and book.ts. One entry per sentence:
+// the voice reads `say`; captions show `cap` (or `say`). `gap` = seconds of silence after the sentence.
+export default {
+  id: 'chem-1.8',
+  title: 'Valence Electrons & Ionic Compounds',
+  course: 'AP® Chemistry',
+  unit: 'Unit 1 · Atomic Structure and Properties',
+  unitId: 'chem-u1',
+  unitTitle: 'Atomic Structure and Properties',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Valence electrons and ionic compounds.', gap: 0.5 },
+      { say: "In the next few minutes, you'll see why metals and nonmetals bond, how the periodic table predicts ion charges, and how to write the formula of a compound you've never seen.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'If you know the formula of table salt, you can predict the formula of a compound you have never seen.', gap: 0.5 },
+      { say: 'Like rubidium iodide.', gap: 0.5 },
+      { say: 'The periodic table is a pattern machine.', gap: 0.6 },
+      { say: "Let's see how it works.", gap: 0.8 },
+    ] },
+    { id: 'valence', beats: [
+      { say: 'Whether two elements form a bond depends on how their valence electrons interact with each other\'s nuclei.', gap: 0.6 },
+      { say: 'Metals on the left have few valence electrons and low ionization energy.', gap: 0.5 },
+      { say: 'They lose electrons easily, and become cations.', gap: 0.6 },
+      { say: 'Nonmetals on the right have high electronegativity.', gap: 0.5 },
+      { say: 'They gain electrons, and become anions.', gap: 0.6 },
+      { say: 'A metal plus a nonmetal usually makes an ionic compound.', gap: 0.9 },
+    ] },
+    { id: 'noble', beats: [
+      { say: 'Main-group elements usually gain or lose electrons until they match a noble gas.', gap: 0.5 },
+      { say: 'Magnesium is neon, three s two. It loses two electrons, and becomes magnesium two plus, with the configuration of neon.', cap: 'Magnesium is [Ne] 3s². It loses two electrons and becomes Mg²⁺, with the configuration of neon.', gap: 0.5 },
+      { say: 'Sulfur is neon, three s two, three p four. It gains two electrons, and becomes sulfide, S two minus, with the configuration of argon.', cap: 'Sulfur is [Ne] 3s² 3p⁴. It gains two electrons and becomes S²⁻, with the configuration of argon.', gap: 0.5 },
+      { say: 'Why does magnesium stop at two plus? A third electron would come from the core, and that takes far more energy.', gap: 0.5 },
+      { say: 'So magnesium three plus does not form in chemical reactions.', cap: 'So Mg³⁺ does not form in chemical reactions.', gap: 0.9 },
+    ] },
+    { id: 'column', beats: [
+      { say: 'Here is the pattern.', gap: 0.4 },
+      { say: 'Elements in the same group have the same number of valence electrons.', gap: 0.5 },
+      { say: 'So they form analogous compounds.', gap: 0.5 },
+      { say: 'Sodium chloride, potassium chloride, sodium bromide, potassium iodide. Group one plus group seventeen gives one to one.', cap: 'NaCl, KCl, NaBr, KI. Group 1 plus Group 17 gives 1 : 1.', gap: 0.5 },
+      { say: 'Magnesium oxide, calcium oxide, calcium sulfide. Group two plus group sixteen is also one to one.', cap: 'MgO, CaO, CaS. Group 2 plus Group 16 is also 1 : 1.', gap: 0.5 },
+      { say: 'And water and hydrogen sulfide, from group sixteen plus hydrogen.', cap: 'And H₂O and H₂S, from Group 16 plus hydrogen.', gap: 0.9 },
+    ] },
+    { id: 'charges', beats: [
+      { say: 'Now learn the typical charges, straight from the position on the table.', gap: 0.5 },
+      { say: 'Group one is plus one. Group two is plus two. Group thirteen is plus three, like aluminum three plus.', cap: 'Group 1 is +1. Group 2 is +2. Group 13 is +3, like Al³⁺.', gap: 0.5 },
+      { say: 'Group fifteen is minus three. Group sixteen is minus two. Group seventeen is minus one.', cap: 'Group 15 is −3. Group 16 is −2. Group 17 is −1.', gap: 0.6 },
+      { say: 'Nitrogen is in group fifteen, with five valence electrons. It gains three to reach a noble-gas configuration, so it becomes nitrogen three minus.', cap: 'Nitrogen is in Group 15, with 5 valence electrons. It gains 3 to reach a noble-gas configuration, so it becomes N³⁻.', gap: 0.5 },
+      { say: 'Check it in lithium nitride. Three lithium ions balance one nitride ion.', cap: 'Check it in Li₃N. Three Li⁺ balance one N³⁻.', gap: 0.9 },
+    ] },
+    { id: 'predict', beats: [
+      { say: 'Worked example.', gap: 0.4 },
+      { say: 'Aluminum and oxygen form Al two O three. Predict the formula of gallium and sulfur.', cap: 'Aluminum and oxygen form Al₂O₃. Predict the formula of gallium and sulfur.', gap: 0.6 },
+      { say: 'Gallium is directly below aluminum, in group thirteen.', gap: 0.5 },
+      { say: 'Sulfur is directly below oxygen, in group sixteen.', gap: 0.5 },
+      { say: 'Analogous elements form analogous compounds.', gap: 0.5 },
+      { say: 'So the answer is Ga two S three.', cap: 'So the answer is Ga₂S₃.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Two things to watch for.', gap: 0.5 },
+      { say: 'Ionic means a metal plus a nonmetal, with very different electronegativities. Potassium and fluorine make ionic K F.', cap: 'Ionic means a metal plus a nonmetal, with very different electronegativities. K and F make ionic KF.', gap: 0.5 },
+      { say: 'Carbon and oxygen, nitrogen and hydrogen, sulfur and oxygen are all nonmetal plus nonmetal, so they are covalent.', cap: 'C and O, N and H, S and O are all nonmetal plus nonmetal, so they are covalent.', gap: 0.5 },
+      { say: 'And analogies work best within the main groups. Transition metals often form ions with more than one charge, so analogies for them are less reliable.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Which is the most likely formula for a compound of lithium and selenium? A: Li Se. B: Li two Se. C: Li Se two. Or D: Li three Se two.', cap: 'Which is the most likely formula for a compound of lithium and selenium? A: LiSe. B: Li₂Se. C: LiSe₂. Or D: Li₃Se₂.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is B.', gap: 0.4 },
+      { say: 'Lithium is group one, plus one. Selenium is group sixteen, minus two.', gap: 0.3 },
+      { say: 'Two lithium ions balance one selenide ion, so it is Li two Se, just like sodium oxide.', cap: 'Two Li⁺ balance one Se²⁻, so it is Li₂Se, just like Na₂O.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Valence electron and nucleus interactions decide whether atoms bond.', gap: 0.5 },
+      { say: 'Same group means analogous compounds. Sodium chloride matches potassium bromide.', cap: 'Same group means analogous compounds. NaCl matches KBr.', gap: 0.5 },
+      { say: 'And predict charges from position: plus one, plus two, plus three, then minus three, minus two, minus one.', cap: 'And predict charges from position: +1, +2, +3, then −3, −2, −1.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

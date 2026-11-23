@@ -48,7 +48,7 @@
     html: () => `${EZ.intro?.art ?? ''}
       <div class="brandcol" style="top:150px"><div class="biglogo" data-at="in+0.15" data-fx="pop">${MARK}<span>EzIQ</span></div></div>
       <div class="brandcol" style="top:372px"><div class="pill" data-at="in+0.7"><b>${T.course}</b> &nbsp;·&nbsp; ${T.unit}</div></div>
-      <div class="brandcol" style="top:470px"><h1 class="title" data-at="0-0.35" data-fx="up">${titleHtml(T.title)}</h1></div>
+      <div class="brandcol" style="top:470px"><h1 class="title" style="font-size:${Math.round(124 * Math.min(1, 26 / T.title.length))}px" data-at="0-0.35" data-fx="up">${titleHtml(T.title)}</h1></div>
       <div class="brandcol" style="top:720px"><div class="chips">${(EZ.intro?.chips ?? []).map((c) => `<div data-at="${c[0]}" data-fx="pop">${c[1]}</div>`).join('')}</div></div>
       <div class="tm" data-at="in+0.9" data-fx="fade"><b>${OWN}</b>${NOTICE}</div>`,
     update: (c) => EZ.intro?.update?.(c),

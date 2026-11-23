@@ -1,0 +1,85 @@
+// Narration for chem-3.7 "Solutions & Molarity". Every fact comes from the lesson cards and quick
+// checks in app/src/content/chem/u3.ts (the volumetric flask line is from book.ts). One entry per
+// sentence: the voice reads `say`; captions show `cap` (or `say`). `gap` = seconds of silence after.
+export default {
+  id: 'chem-3.7',
+  title: 'Solutions & Molarity',
+  course: 'AP® Chemistry',
+  unit: 'Unit 3 · Properties of Substances and Mixtures',
+  unitId: 'chem-u3',
+  unitTitle: 'Properties of Substances and Mixtures',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Solutions and molarity.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn what makes a mixture a solution, how to calculate molarity, how to count the ions in a solution, and how to handle a dilution.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'What do a sports drink, the air you breathe, and a brass trumpet have in common?', gap: 0.6 },
+      { say: 'They are all solutions.', gap: 0.5 },
+      { say: "A solution doesn't have to be a liquid.", gap: 0.4 },
+      { say: 'It just has to be uniform throughout.', gap: 0.8 },
+    ] },
+    { id: 'mixture', beats: [
+      { say: 'So what exactly is a solution?', gap: 0.4 },
+      { say: 'A solution is a homogeneous mixture. Its properties are the same throughout the sample.', gap: 0.5 },
+      { say: 'It can be a solid, like an alloy. A liquid, like salt water. Or a gas, like air.', gap: 0.6 },
+      { say: 'A heterogeneous mixture is different. Its properties depend on where you look.', gap: 0.5 },
+      { say: 'Think of sand in water, or salad dressing.', gap: 0.8 },
+    ] },
+    { id: 'molarity', beats: [
+      { say: 'To describe a solution, we usually give its molarity.', gap: 0.4 },
+      { say: 'Molarity, written capital M, is moles of solute divided by liters of solution.', cap: 'Molarity, written M, is moles of solute ÷ liters of solution.', gap: 0.5 },
+      { say: 'The units are moles per liter.', cap: 'The units are mol/L.', gap: 0.5 },
+      { say: 'So a two point zero molar sodium chloride solution has two point zero moles of sodium chloride in every liter of solution.', cap: 'So a 2.0 M NaCl solution has 2.0 mol NaCl in every liter of solution.', gap: 0.5 },
+      { say: 'Notice the word solution. Not every liter of water added!', gap: 0.5 },
+      { say: "That's why a volumetric flask is used, rather than a beaker. It measures the total volume of solution precisely.", gap: 0.6 },
+      { say: 'You can rearrange the formula as needed. Moles equals molarity times liters. And liters equals moles divided by molarity.', cap: 'Rearrange as needed: moles = M × L, and L = moles ÷ M.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's make a solution.", gap: 0.4 },
+      { say: 'Five point eight five grams of sodium chloride is dissolved to make two hundred fifty point zero milliliters of solution. What is the molarity?', cap: '5.85 g of NaCl is dissolved to make 250.0 mL of solution. What is the molarity?', gap: 0.6 },
+      { say: 'Step one: find the moles. Five point eight five grams, divided by fifty-eight point four four grams per mole, is zero point one zero zero moles.', cap: 'Step 1: find the moles. 5.85 g ÷ 58.44 g/mol = 0.100 mol.', gap: 0.5 },
+      { say: 'Step two: convert the volume to liters. Two hundred fifty point zero milliliters is zero point two five zero zero liters.', cap: 'Step 2: convert the volume to liters. 250.0 mL = 0.2500 L.', gap: 0.5 },
+      { say: 'Step three: divide. Zero point one zero zero moles, divided by zero point two five zero zero liters, is zero point four zero zero molar.', cap: 'Step 3: divide. 0.100 mol ÷ 0.2500 L = 0.400 M.', gap: 0.6 },
+      { say: 'The answer: zero point four zero zero molar sodium chloride.', cap: 'The answer: 0.400 M NaCl.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a trick: count the ions!", gap: 0.4 },
+      { say: 'Ionic solutes split into ions.', gap: 0.4 },
+      { say: 'Take a zero point one zero molar solution of calcium chloride.', cap: 'Take a 0.10 M solution of CaCl₂.', gap: 0.4 },
+      { say: 'Each formula unit gives one calcium ion and two chloride ions.', cap: 'Each formula unit gives one Ca²⁺ ion and two Cl⁻ ions.', gap: 0.5 },
+      { say: 'So the calcium ion concentration is zero point one zero molar, and the chloride concentration is zero point two zero molar.', cap: 'So [Ca²⁺] = 0.10 M, and [Cl⁻] = 0.20 M.', gap: 0.6 },
+      { say: 'The AP exam loves to ask: which solution has the highest concentration of ions?', cap: 'The AP® exam loves to ask: which solution has the highest concentration of ions?', gap: 0.4 },
+      { say: 'Multiply the molarity by the number of ions per formula unit.', gap: 0.5 },
+      { say: 'At zero point one zero molar, sodium chloride gives zero point two zero molar of ions. Magnesium chloride gives zero point three zero. Aluminum nitrate gives four ions, so zero point four zero molar.', cap: 'At 0.10 M, NaCl gives 0.20 M of ions. MgCl₂ gives 0.30 M. Al(NO₃)₃ gives 4 ions, so 0.40 M.', gap: 0.5 },
+      { say: "And glucose doesn't ionize, so it makes no ions at all.", gap: 0.9 },
+    ] },
+    { id: 'dilution', beats: [
+      { say: 'Last idea: dilution.', gap: 0.4 },
+      { say: "Adding water doesn't change the moles of solute.", gap: 0.4 },
+      { say: 'So, M one V one equals M two V two.', cap: 'So, M₁V₁ = M₂V₂.', gap: 0.6 },
+      { say: 'Example: dilute fifty point zero milliliters of two point zero zero molar hydrochloric acid to two hundred point zero milliliters.', cap: 'Example: dilute 50.0 mL of 2.00 M HCl to 200.0 mL.', gap: 0.5 },
+      { say: 'Two point zero zero, times fifty point zero, equals M two times two hundred point zero.', cap: '(2.00)(50.0) = M₂(200.0)', gap: 0.5 },
+      { say: 'So M two is zero point five zero zero molar.', cap: 'So M₂ = 0.500 M.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'How many moles of potassium nitrate are in seventy-five point zero milliliters of a zero point two zero zero molar potassium nitrate solution?', cap: 'How many moles of KNO₃ are in 75.0 mL of a 0.200 M KNO₃ solution?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is zero point zero one five zero moles.', cap: 'The answer is 0.0150 mol.', gap: 0.4 },
+      { say: 'First, convert milliliters to liters. Seventy-five point zero milliliters is zero point zero seven five zero liters.', cap: 'First, convert mL to L. 75.0 mL = 0.0750 L.', gap: 0.4 },
+      { say: 'Then, moles equals molarity times liters. Zero point two zero zero, times zero point zero seven five zero, is zero point zero one five zero moles.', cap: 'Then, moles = M × L. 0.200 mol/L × 0.0750 L = 0.0150 mol.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A solution is homogeneous, or uniform. A heterogeneous mixture varies by location.', gap: 0.5 },
+      { say: 'Molarity is moles of solute per liter of solution.', cap: 'M = mol solute / L solution.', gap: 0.5 },
+      { say: 'Ion concentration is the molarity times the ions per formula unit. And for dilution, M one V one equals M two V two.', cap: 'Ion concentration = M × ions per formula unit. Dilution: M₁V₁ = M₂V₂.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

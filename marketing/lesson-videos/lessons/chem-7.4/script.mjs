@@ -1,0 +1,97 @@
+// Narration for chem-7.4 "Calculating K & What Its Size Means". Every fact comes from the lesson
+// cards, quick checks and flashcards in app/src/content/chem/u7.ts (plus the lesson's prose in
+// chem/book.ts: K is the same for any starting mixture, and the hydrogen and oxygen example of a
+// large K with a slow reaction). One entry per sentence: the voice reads `say`; captions show `cap`
+// (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-7.4',
+  title: 'Calculating K & What Its Size Means',
+  course: 'AP® Chemistry',
+  unit: 'Unit 7 · Equilibrium',
+  unitId: 'chem-u7',
+  unitTitle: 'Equilibrium',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Calculating K, and what its size means.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to calculate K from equilibrium data, and to read its size at a glance.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'The equilibrium constant, K, covers an enormous range.' },
+      { say: 'It can be as huge as ten to the fiftieth.', cap: 'It can be as huge as 10⁵⁰.', gap: 0.4 },
+      { say: 'Or as tiny as ten to the negative fiftieth.', cap: 'Or as tiny as 10⁻⁵⁰.', gap: 0.5 },
+      { say: 'One glance at its size tells you whether a reaction makes mostly products, or barely happens at all.', gap: 0.5 },
+      { say: "First, let's see where the number comes from.", gap: 0.8 },
+    ] },
+    { id: 'calc', beats: [
+      { say: 'Here is a reaction that runs both ways: dinitrogen tetroxide gas, in equilibrium with two nitrogen dioxide gas.', cap: 'Here is a reaction that runs both ways: N₂O₄(g) ⇌ 2NO₂(g).', gap: 0.5 },
+      { say: 'At equilibrium, at a certain temperature, the dinitrogen tetroxide is zero point zero four five zero molar.', cap: 'At equilibrium, at a certain temperature, [N₂O₄] = 0.0450 M.', gap: 0.4 },
+      { say: 'The nitrogen dioxide is zero point zero one six zero molar.', cap: '[NO₂] = 0.0160 M.', gap: 0.5 },
+      { say: 'Step one: write the K expression.', gap: 0.3 },
+      { say: 'Nitrogen dioxide goes on top, squared. Dinitrogen tetroxide goes on the bottom.', cap: 'Kc = [NO₂]² / [N₂O₄]', gap: 0.5 },
+      { say: 'Step two: plug in the equilibrium concentrations.', gap: 0.3 },
+      { say: 'Zero point zero one six zero, squared, divided by zero point zero four five zero.', cap: '(0.0160)² / 0.0450', gap: 0.4 },
+      { say: 'K c equals five point six nine times ten to the negative third.', cap: 'Kc = 5.69 × 10⁻³', gap: 0.5 },
+      { say: 'Notice there are no units. K is unitless, as used in AP Chemistry.', cap: 'Notice there are no units. K is unitless, as used in AP® Chemistry.', gap: 0.8 },
+    ] },
+    { id: 'calc2', beats: [
+      { say: "Let's do one more." },
+      { say: 'Hydrogen gas plus iodine gas, in equilibrium with two hydrogen iodide.', cap: 'H₂(g) + I₂(g) ⇌ 2HI(g)', gap: 0.4 },
+      { say: 'At equilibrium, the hydrogen and the iodine are each zero point zero two zero molar.', cap: 'At equilibrium, [H₂] = 0.020 M and [I₂] = 0.020 M.', gap: 0.3 },
+      { say: 'The hydrogen iodide is zero point one four molar.', cap: '[HI] = 0.14 M.', gap: 0.5 },
+      { say: 'On top: hydrogen iodide, squared. That is zero point zero one nine six.', cap: 'On top: (0.14)² = 0.0196', gap: 0.4 },
+      { say: 'On the bottom: hydrogen times iodine. That is zero point zero zero zero four zero.', cap: 'On the bottom: (0.020)(0.020) = 0.00040', gap: 0.4 },
+      { say: 'Divide, and K equals forty-nine.', cap: 'Divide: K = 49.', gap: 0.5 },
+      { say: 'Same recipe every time: write the expression, plug in the equilibrium concentrations, and calculate.', gap: 0.8 },
+    ] },
+    { id: 'size', beats: [
+      { say: 'So what does the size of K tell you?' },
+      { say: 'Products are on top of the K expression.', gap: 0.3 },
+      { say: 'So a big K means a big numerator, and that means mostly products.', gap: 0.6 },
+      { say: 'When K is much greater than one, like ten to the tenth, the mixture at equilibrium is mostly products.', cap: 'When K ≫ 1, like 10¹⁰, the mixture at equilibrium is mostly products.', gap: 0.3 },
+      { say: 'The reaction goes essentially to completion.', gap: 0.5 },
+      { say: 'When K is about one, there are significant amounts of both.', cap: 'When K ≈ 1, there are significant amounts of both.', gap: 0.5 },
+      { say: 'When K is much less than one, like ten to the negative tenth, it is mostly reactants.', cap: 'When K ≪ 1, like 10⁻¹⁰, it is mostly reactants.', gap: 0.3 },
+      { say: 'The reaction barely proceeds.', gap: 0.5 },
+      { say: 'Think of K as a product favored meter.', cap: 'Think of K as a "product-favored" meter.', gap: 0.8 },
+    ] },
+    { id: 'temp', beats: [
+      { say: 'Next question: what changes K?' },
+      { say: 'For a given reaction at a given temperature, K is the same, no matter what concentrations you start with.', gap: 0.5 },
+      { say: 'Different starting mixtures reach different equilibrium concentrations.', gap: 0.3 },
+      { say: 'But plug any of them into the K expression, and you get the same value.', gap: 0.6 },
+      { say: 'Adding more reactant does not change K. Neither does compressing the container, or adding a catalyst.', gap: 0.5 },
+      { say: 'Concentration and pressure changes shift the position of equilibrium, but they do not change K.', gap: 0.5 },
+      { say: 'K depends only on temperature.', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: "Now, here's the trap." },
+      { say: 'K says nothing about speed.', gap: 0.5 },
+      { say: 'A reaction with a K of ten to the fortieth can still be incredibly slow.', cap: 'A reaction with K = 10⁴⁰ can still be incredibly slow.', gap: 0.5 },
+      { say: 'Take hydrogen and oxygen forming water. At room temperature, its K is enormous.', gap: 0.4 },
+      { say: 'Yet a mixture of the two gases can sit unchanged for years, because the reaction has a large activation energy.', gap: 0.6 },
+      { say: 'K tells you how far a reaction goes, not how fast. Speed is kinetics, not equilibrium.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'For a reaction, K equals two point five times ten to the negative twelfth. At equilibrium, the mixture contains what?', cap: 'For a reaction, K = 2.5 × 10⁻¹². At equilibrium, the mixture contains…', gap: 0.3 },
+      { say: 'Mostly products?', gap: 0.2 },
+      { say: 'Mostly reactants?', gap: 0.2 },
+      { say: 'Equal amounts?', gap: 0.2 },
+      { say: 'Or nothing, because the reaction is complete?', cap: 'Or nothing: the reaction is complete?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is mostly reactants.', gap: 0.4 },
+      { say: 'K is much less than one, so the numerator, the products, is tiny.', cap: 'K ≪ 1, so the numerator (the products) is tiny.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Plug the equilibrium concentrations into the K expression.', gap: 0.5 },
+      { say: 'K much greater than one: mostly products. K much less than one: mostly reactants.', cap: 'K ≫ 1: mostly products. K ≪ 1: mostly reactants.', gap: 0.5 },
+      { say: 'K tells you the extent of a reaction, not its speed. And only temperature changes it.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

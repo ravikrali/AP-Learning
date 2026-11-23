@@ -1,0 +1,88 @@
+// Narration for chem-6.3 "Heat Transfer & Thermal Equilibrium". Every fact comes from the lesson
+// cards, quick checks and flashcards in app/src/content/chem/u6.ts, plus the lesson's prose in
+// chem/book.ts. One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-6.3',
+  title: 'Heat Transfer & Thermal Equilibrium',
+  course: 'AP® Chemistry',
+  unit: 'Unit 6 · Thermochemistry',
+  unitId: 'chem-u6',
+  unitTitle: 'Thermochemistry',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Heat transfer and thermal equilibrium.', gap: 0.5 },
+      { say: "In the next few minutes, you'll see how heat really moves between particles, when it stops, and why heat and temperature are not the same thing.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Drop an ice cube into a glass of lemonade.', gap: 0.5 },
+      { say: 'The drink cools down.', gap: 0.3 },
+      { say: 'And the ice warms up.', gap: 0.5 },
+      { say: 'This keeps going until the two reach the same temperature.', gap: 0.5 },
+      { say: 'But what is actually happening between the particles?', gap: 0.5 },
+      { say: "To answer that, let's zoom all the way in.", gap: 0.9 },
+    ] },
+    { id: 'collide', beats: [
+      { say: 'Every object is made of particles that are always moving.', gap: 0.4 },
+      { say: 'Particles in a warmer object have a greater average kinetic energy.', gap: 0.4 },
+      { say: 'On average, they move faster.', gap: 0.5 },
+      { say: 'Particles in a cooler object have a lower average kinetic energy. They move slower.', gap: 0.6 },
+      { say: 'Now put the two objects in thermal contact.', gap: 0.4 },
+      { say: 'Where they touch, their particles collide.', gap: 0.4 },
+      { say: 'In each collision, energy passes from the faster particle to the slower one.', gap: 0.5 },
+      { say: "The fast particle slows down a little, and the slow one speeds up. That's heat transfer.", cap: "The fast particle slows down a little, and the slow one speeds up. That's heat transfer.", gap: 0.6 },
+      { say: 'So, at the particle level, thermal energy is passed along by collisions.', gap: 0.4 },
+      { say: 'No atoms move from one object to the other. Only energy is passed along.', gap: 0.9 },
+    ] },
+    { id: 'equil', beats: [
+      { say: 'How long does this go on?', gap: 0.4 },
+      { say: 'As collisions continue, the hot object cools down, and the cool object warms up.', gap: 0.5 },
+      { say: 'The transfer continues until the average kinetic energy is the same in both.', gap: 0.5 },
+      { say: 'At that point, their temperatures are equal.', gap: 0.4 },
+      { say: 'This is called thermal equilibrium.', gap: 0.6 },
+      { say: 'And remember the direction.', gap: 0.3 },
+      { say: 'Heat always flows from hot to cold, never the other way on its own.', gap: 0.9 },
+    ] },
+    { id: 'between', beats: [
+      { say: 'So where does the final temperature end up?', gap: 0.4 },
+      { say: 'It lies between the two starting temperatures.', gap: 0.5 },
+      { say: 'It sits closer to the starting temperature of the object with the larger heat capacity.', gap: 0.4 },
+      { say: "Heat capacity here means mass times specific heat. That object's temperature changes the least for the same transfer of energy.", gap: 0.6 },
+      { say: 'Drop a small hot metal into a large mass of cool water.', gap: 0.4 },
+      { say: "The water's temperature changes only slightly.", gap: 0.4 },
+      { say: "The metal cools almost all the way to the water's starting temperature.", gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap: temperature and heat are different things.', gap: 0.5 },
+      { say: 'Temperature measures the average kinetic energy of the particles.', gap: 0.4 },
+      { say: 'Thermal energy is the total kinetic energy of all the particles, so it depends on how much substance there is, as well as the temperature.', gap: 0.5 },
+      { say: 'Heat, written q, is the energy transferred, from a warmer object to a cooler one.', cap: 'Heat (q) is the energy transferred, from a warmer object to a cooler one.', gap: 0.6 },
+      { say: 'Compare a cup of boiling water with a bathtub of warm water.', gap: 0.4 },
+      { say: 'The cup is hotter. It has the higher temperature.', gap: 0.4 },
+      { say: 'But the bathtub has far more particles, so it can hold more thermal energy, and transfer more heat.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'A hot metal block is placed in cool water. At thermal equilibrium, which is true?', gap: 0.4 },
+      { say: 'A: the metal is still hotter than the water.', gap: 0.2 },
+      { say: 'B: the metal and water have the same temperature.', gap: 0.2 },
+      { say: 'C: the metal and water have the same total energy.', gap: 0.2 },
+      { say: 'D: heat flows from the water to the metal forever.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is B.', gap: 0.4 },
+      { say: 'At thermal equilibrium, the average kinetic energy, and so the temperature, is the same in both.', gap: 0.4 },
+      { say: 'Their total energies do not need to be equal.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Warmer means a higher average kinetic energy of the particles.', gap: 0.5 },
+      { say: 'Collisions transfer energy from hot to cold.', gap: 0.5 },
+      { say: 'And thermal equilibrium means equal temperatures, which means equal average kinetic energy.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

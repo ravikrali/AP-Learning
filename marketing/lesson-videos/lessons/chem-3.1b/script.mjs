@@ -1,0 +1,107 @@
+// Narration for chem-3.1b "Comparing IMFs: Boiling Points & Vapor Pressure". Every fact comes from
+// the lesson cards, quick checks and flashcards in app/src/content/chem/u3.ts (the vapor pressure
+// scene is from book.ts). One entry per sentence: the voice reads `say`; captions show `cap` (or
+// `say`). `gap` = seconds of silence after the sentence.
+export default {
+  id: 'chem-3.1b',
+  title: 'Comparing IMFs: Boiling Points & Vapor Pressure',
+  course: 'AP® Chemistry',
+  unit: 'Unit 3 · Properties of Substances and Mixtures',
+  unitId: 'chem-u3',
+  unitTitle: 'Properties of Substances and Mixtures',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Comparing I M Fs: boiling points and vapor pressure.', cap: 'Comparing IMFs: boiling points and vapor pressure.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn how intermolecular forces set boiling points, a two-step way to compare them, and how to explain your answer for full credit.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Here's a puzzle.", gap: 0.4 },
+      { say: 'Water has a molar mass of eighteen grams per mole, and it boils at one hundred degrees Celsius.', cap: 'Water has a molar mass of 18 g/mol, and it boils at 100 °C.', gap: 0.4 },
+      { say: 'Methane is sixteen grams per mole, and it boils at minus one hundred sixty-two degrees Celsius.', cap: 'Methane is 16 g/mol, and it boils at −162 °C.', gap: 0.5 },
+      { say: 'Almost the same size, yet a two hundred sixty-two degree difference!', cap: 'Almost the same size, yet a 262-degree difference!', gap: 0.5 },
+      { say: 'Intermolecular forces explain it.', gap: 0.4 },
+      { say: 'And which has the higher boiling point is one of the most common A P Chemistry questions of all.', cap: 'And "which has the higher boiling point?" is one of the most common AP® Chemistry questions of all.', gap: 0.8 },
+    ] },
+    { id: 'rule', beats: [
+      { say: 'Start with the big rule.', gap: 0.4 },
+      { say: 'Boiling and vaporizing completely overcome the intermolecular forces.', gap: 0.5 },
+      { say: 'So stronger I M Fs mean a higher boiling point.', cap: 'So stronger IMFs mean a higher boiling point.', gap: 0.5 },
+      { say: 'Stronger I M Fs also mean a lower vapor pressure, because fewer molecules escape into the gas.', cap: 'Stronger IMFs also mean a lower vapor pressure, because fewer molecules escape into the gas.', gap: 0.6 },
+      { say: 'Melting points also tend to follow I M F strength, but less neatly.', cap: 'Melting points also tend to follow IMF strength, but less neatly.', gap: 0.4 },
+      { say: 'Melting only rearranges the interactions, so how the particles pack matters too.', gap: 0.9 },
+    ] },
+    { id: 'vapor', beats: [
+      { say: 'So what is vapor pressure?', gap: 0.4 },
+      { say: "In a closed container, molecules keep escaping from the liquid's surface, and returning to it.", gap: 0.5 },
+      { say: "The pressure of the vapor at equilibrium is the liquid's vapor pressure.", gap: 0.5 },
+      { say: 'It goes up with temperature, as more molecules have enough energy to escape.', gap: 0.5 },
+      { say: 'A liquid boils when its vapor pressure equals the external pressure.', gap: 0.5 },
+      { say: "That's why water boils at a lower temperature at high altitude, where the air pressure is lower.", gap: 0.9 },
+    ] },
+    { id: 'step1', beats: [
+      { say: 'Now, the two-step comparison.', gap: 0.4 },
+      { say: 'Step one: are the molecules about the same size, with a similar electron count?', gap: 0.4 },
+      { say: 'Then compare the types of I M Fs.', cap: 'Then compare the types of IMFs.', gap: 0.4 },
+      { say: 'Hydrogen bonding beats dipole dipole, which beats dispersion forces only.', cap: 'Hydrogen bonding beats dipole–dipole, which beats LDFs only.', gap: 0.5 },
+      { say: 'Water has hydrogen bonds. Methane has only London dispersion forces.', gap: 0.4 },
+      { say: 'So water boils far higher. Puzzle solved.', gap: 0.9 },
+    ] },
+    { id: 'step2', beats: [
+      { say: 'Step two: are the sizes very different?', gap: 0.4 },
+      { say: 'Then dispersion forces can win. Compare the electron count, or polarizability.', cap: 'Then LDFs can win. Compare the electron count, or polarizability.', gap: 0.5 },
+      { say: 'The halogens are all nonpolar, so they have dispersion forces only.', cap: 'The halogens are all nonpolar, so they have LDFs only.', gap: 0.4 },
+      { say: 'Iodine has the most electrons, the most polarizable cloud, and the strongest dispersion forces.', cap: 'I₂ has the most electrons, the most polarizable cloud, and the strongest LDFs.', gap: 0.4 },
+      { say: 'At room temperature, iodine is a solid, bromine is a liquid, and chlorine and fluorine are gases.', cap: 'At room temperature, I₂ is a solid, Br₂ is a liquid, and Cl₂ and F₂ are gases.', gap: 0.5 },
+      { say: 'Iodine even boils at one hundred eighty-four degrees Celsius. That is higher than water, with dispersion forces only!', cap: 'I₂ even boils at 184 °C. That is higher than water, with LDFs only!', gap: 0.9 },
+    ] },
+    { id: 'shape', beats: [
+      { say: 'And a tiebreaker: shape.', gap: 0.4 },
+      { say: 'Long, straight molecules have more surface contact, so their dispersion forces are stronger.', cap: 'Long, straight molecules have more surface contact, so their LDFs are stronger.', gap: 0.5 },
+      { say: 'En-pentane and neo-pentane are both C five H twelve.', cap: 'n-pentane and neopentane are both C₅H₁₂.', gap: 0.4 },
+      { say: 'But the long en-pentane boils at thirty-six degrees Celsius,', cap: 'But the long n-pentane boils at 36 °C,', gap: 0.2 },
+      { say: 'and the ball-shaped neo-pentane boils at just nine point five.', cap: 'and the ball-shaped neopentane boils at just 9.5 °C.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's try a classic example.", gap: 0.4 },
+      { say: 'H F boils at twenty degrees Celsius. H C L boils at minus eighty-five, even though H C L has more electrons.', cap: 'HF boils at 20 °C. HCl boils at −85 °C, even though HCl has more electrons.', gap: 0.5 },
+      { say: "First, name the I M Fs. In H F, hydrogen is bonded to fluorine, so there's hydrogen bonding, plus dipole dipole and dispersion forces.", cap: "First, name the IMFs. In HF, H is bonded to F, so there's hydrogen bonding, plus dipole–dipole and LDFs.", gap: 0.4 },
+      { say: 'H C L has dipole dipole and dispersion forces, but no hydrogen bonding.', cap: 'HCl has dipole–dipole and LDFs, but no hydrogen bonding.', gap: 0.5 },
+      { say: "H C L's dispersion forces are a bit stronger. But the hydrogen bonds between H F molecules are much stronger overall.", cap: "HCl's LDFs are a bit stronger. But the hydrogen bonds between HF molecules are much stronger overall.", gap: 0.5 },
+      { say: 'Stronger I M Fs need more energy to overcome, so H F has the higher boiling point.', cap: 'Stronger IMFs need more energy to overcome, so HF has the higher boiling point.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap.', gap: 0.4 },
+      { say: 'Never say a molecule boils because its bonds break.', gap: 0.4 },
+      { say: 'Boiling separates molecules. The covalent bonds inside stay intact.', gap: 0.4 },
+      { say: 'Graders take points off for this!', gap: 0.6 },
+      { say: 'Water boils at one hundred degrees, and H two S at minus sixty.', cap: 'H₂O boils at 100 °C, and H₂S at −60 °C.', gap: 0.4 },
+      { say: 'The reason is hydrogen bonding between water molecules. Not a stronger O H bond, because boiling never breaks it.', cap: 'The reason is hydrogen bonding between water molecules. Not a stronger O–H bond, because boiling never breaks it.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Which has the highest vapor pressure at twenty-five degrees Celsius? A: water. B: C H three O H. C: C H three C H two O H. Or D: C H three O C H three, dimethyl ether.', cap: 'Which has the highest vapor pressure at 25 °C? A: H₂O. B: CH₃OH. C: CH₃CH₂OH. Or D: CH₃OCH₃, dimethyl ether.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is D: dimethyl ether.', cap: 'The answer is D: CH₃OCH₃, dimethyl ether.', gap: 0.4 },
+      { say: 'Highest vapor pressure means the weakest I M Fs.', cap: 'Highest vapor pressure means the weakest IMFs.', gap: 0.4 },
+      { say: "Dimethyl ether has no O H bond, so no hydrogen bonding between its molecules. They escape most easily. It's a gas at room temperature.", cap: "CH₃OCH₃ has no O–H bond, so no hydrogen bonding between its molecules. They escape most easily. It's a gas at room temperature.", gap: 0.9 },
+    ] },
+    { id: 'frq', beats: [
+      { say: 'One tip for free response questions: compare both substances.', cap: 'One tip for free-response questions: compare BOTH substances.', gap: 0.5 },
+      { say: 'Name the I M Fs in both. Say which is stronger, and why. Then link it to the property.', cap: 'Name the IMFs in both. Say which is stronger, and why. Then link it to the property.', gap: 0.5 },
+      { say: 'Just saying H F has hydrogen bonds is only half the story.', cap: 'Just saying "HF has hydrogen bonds" is only half the story.', gap: 0.5 },
+      { say: 'A full answer: H F molecules form hydrogen bonds, which are stronger than the dipole dipole and dispersion forces between H C L molecules,', cap: 'A full answer: HF molecules form hydrogen bonds, which are stronger than the dipole–dipole and dispersion forces between HCl molecules,', gap: 0.2 },
+      { say: 'so more energy is needed to separate H F molecules.', cap: 'so more energy is needed to separate HF molecules.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Stronger I M Fs mean a higher boiling point, and a lower vapor pressure.', cap: 'Stronger IMFs mean a higher boiling point, and a lower vapor pressure.', gap: 0.5 },
+      { say: 'Similar size: compare the I M F types. Very different size: dispersion forces, from the electron count, can dominate.', cap: 'Similar size: compare the IMF types. Very different size: LDFs (electron count) can dominate.', gap: 0.5 },
+      { say: 'And explain both substances, linking more energy needed to overcome the forces to the property.', cap: 'And explain both substances, linking "more energy needed to overcome" to the property.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

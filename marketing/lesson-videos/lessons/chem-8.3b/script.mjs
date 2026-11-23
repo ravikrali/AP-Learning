@@ -1,0 +1,85 @@
+// Narration for chem-8.3b "Weak Bases, Kb & Ka × Kb = Kw". Every fact comes from the lesson cards, quick
+// checks and flashcards in app/src/content/chem/u8.ts (the 0.20 M NH3 example, Kb(NH3) = 1.8 x 10^-5,
+// Ka(NH4+) = 5.6 x 10^-10, the HX / HY pKa check, the HF try question). One entry per sentence: the voice
+// reads `say`; captions show `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-8.3b',
+  title: 'Weak Bases, Kb & Ka × Kb = Kw',
+  course: 'AP® Chemistry',
+  unit: 'Unit 8 · Acids and Bases',
+  unitId: 'chem-u8',
+  unitTitle: 'Acids and Bases',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Weak bases, K B, and K A times K B equals K W.', cap: 'Weak bases, Kb & Ka × Kb = Kw.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn how a weak base makes hydroxide, how to find its P H, and how K A and K B are linked.", cap: "In the next few minutes, you'll learn how a weak base makes hydroxide, how to find its pH, and how Ka and Kb are linked.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Ammonia cleaner has a strong smell.', gap: 0.4 },
+      { say: 'But ammonia is a weak base.', gap: 0.5 },
+      { say: 'Only a tiny fraction of its molecules grab a proton from water.', gap: 0.5 },
+      { say: 'Most of them stay just as they are.', gap: 0.5 },
+      { say: 'The good news: the math is the mirror image of weak acids.', gap: 0.8 },
+    ] },
+    { id: 'kb', beats: [
+      { say: "Here's the reaction." },
+      { say: 'Ammonia takes a proton from water. That makes an ammonium ion and a hydroxide ion.', cap: 'NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)', gap: 0.5 },
+      { say: 'Call the base B. After it gains a proton, it becomes H B plus.', cap: 'Call the base B. After it gains a proton, it becomes HB⁺.', gap: 0.5 },
+      { say: 'K B is the hydroxide concentration, times the H B plus concentration, divided by the base concentration.', cap: 'Kb = [OH⁻][HB⁺] / [B]', gap: 0.5 },
+      { say: 'And P K B is the negative log of K B.', cap: 'And pKb = −log Kb.', gap: 0.8 },
+    ] },
+    { id: 'shortcut', beats: [
+      { say: 'Same idea as acids: only a small percentage of the base reacts.', gap: 0.5 },
+      { say: 'So the hydroxide concentration ends up much smaller than the starting base concentration.', cap: 'So [OH⁻] ≪ [B]initial.', gap: 0.5 },
+      { say: 'That gives you a shortcut.', gap: 0.3 },
+      { say: 'Hydroxide is about the square root of K B times C, the starting concentration of the base.', cap: '[OH⁻] ≈ √(Kb · C), where C is the starting concentration of the base.', gap: 0.5 },
+      { say: 'But careful: this gives you hydroxide, not hydronium.', cap: 'But careful: this gives you [OH⁻], not [H₃O⁺].', gap: 0.4 },
+      { say: 'So find P O H first, and then P H.', cap: 'So find pOH first, and then pH.', gap: 0.8 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's find the P H of zero point two zero molar ammonia. K B is one point eight times ten to the minus five.", cap: "Let's find the pH of 0.20 M NH₃. Kb = 1.8 × 10⁻⁵.", gap: 0.5 },
+      { say: 'Step one: hydroxide is about the square root of one point eight times ten to the minus five, times zero point two zero.', cap: 'Step one: [OH⁻] ≈ √(1.8 × 10⁻⁵ × 0.20)', gap: 0.3 },
+      { say: "That's one point nine times ten to the minus three molar.", cap: '= 1.9 × 10⁻³ M', gap: 0.5 },
+      { say: 'Step two: P O H is the negative log of that: two point seven two.', cap: 'Step two: pOH = −log(1.9 × 10⁻³) = 2.72', gap: 0.5 },
+      { say: 'Step three: P H is fourteen minus two point seven two, which is eleven point two eight.', cap: 'Step three: pH = 14.00 − 2.72 = 11.28', gap: 0.5 },
+      { say: 'Notice how small the hydroxide is next to the zero point two zero molar we started with.', cap: 'Notice how small [OH⁻] is next to the 0.20 M we started with.', gap: 0.8 },
+    ] },
+    { id: 'pair', beats: [
+      { say: 'Now the big link between acids and bases.', gap: 0.4 },
+      { say: 'Ammonia and ammonium are a conjugate acid base pair.', cap: 'NH₃ and NH₄⁺ are a conjugate acid–base pair.', gap: 0.5 },
+      { say: 'For any conjugate pair, K A times K B equals K W, which is one point zero times ten to the minus fourteen.', cap: 'For any conjugate pair: Ka × Kb = Kw = 1.0 × 10⁻¹⁴', gap: 0.5 },
+      { say: 'In log form, P K A plus P K B equals fourteen, at twenty-five degrees Celsius.', cap: 'In log form: pKa + pKb = 14 (at 25 °C).', gap: 0.5 },
+      { say: 'So if you know one, you can find the other.', gap: 0.4 },
+      { say: 'K B for ammonia is one point eight times ten to the minus five.', cap: 'Kb(NH₃) = 1.8 × 10⁻⁵', gap: 0.4 },
+      { say: 'So K A for ammonium is one point zero times ten to the minus fourteen, divided by one point eight times ten to the minus five.', cap: 'So Ka(NH₄⁺) = 1.0 × 10⁻¹⁴ / 1.8 × 10⁻⁵', gap: 0.3 },
+      { say: "That's five point six times ten to the minus ten.", cap: '= 5.6 × 10⁻¹⁰', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Here is what that equation really means.', gap: 0.4 },
+      { say: 'K A times K B is fixed. So when one goes up, the other must go down.', cap: 'Ka × Kb is fixed. So when one goes up, the other must go down.', gap: 0.5 },
+      { say: 'A stronger acid has a weaker conjugate base. And a weaker acid has a stronger one.', gap: 0.5 },
+      { say: 'Try it. Acid H X has a P K A of three. Acid H Y has a P K A of nine. Which has the stronger conjugate base?', cap: 'Try it. Acid HX has pKa = 3. Acid HY has pKa = 9. Which has the stronger conjugate base?', gap: 0.6 },
+      { say: 'The trap is to pick X minus, because H X is the stronger acid.', cap: 'The trap is to pick X⁻, because HX is the stronger acid.', gap: 0.5 },
+      { say: 'But H Y is the weaker acid, with the larger P K A. So its conjugate base, Y minus, is the stronger base.', cap: 'But HY is the weaker acid, with the larger pKa. So its conjugate base, Y⁻, is the stronger base.', gap: 0.5 },
+      { say: 'Check with P K B: fourteen minus nine is five for Y minus, against eleven for X minus.', cap: 'Check with pKb: 14 − 9 = 5 for Y⁻, vs. 11 for X⁻.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Hydrofluoric acid, H F, has a K A of six point eight times ten to the minus four. What is K B for its conjugate base, fluoride?', cap: 'HF has Ka = 6.8 × 10⁻⁴. What is Kb for its conjugate base, F⁻?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'Use K B equals K W divided by K A.', cap: 'Use Kb = Kw / Ka.', gap: 0.4 },
+      { say: 'One point zero times ten to the minus fourteen, divided by six point eight times ten to the minus four, is one point five times ten to the minus eleven.', cap: '1.0 × 10⁻¹⁴ / 6.8 × 10⁻⁴ = 1.5 × 10⁻¹¹', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'K B is hydroxide times H B plus, over the base. Hydroxide is about the square root of K B times C. Then go from P O H to P H.', cap: 'Kb = [OH⁻][HB⁺]/[B]. [OH⁻] ≈ √(Kb·C), then pOH → pH.', gap: 0.5 },
+      { say: 'K A times K B equals K W. And P K A plus P K B equals fourteen.', cap: 'Ka × Kb = Kw. pKa + pKb = 14.', gap: 0.5 },
+      { say: 'A stronger acid has a weaker conjugate base, and the other way around.', cap: 'Stronger acid ↔ weaker conjugate base.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

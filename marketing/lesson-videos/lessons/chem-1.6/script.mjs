@@ -1,0 +1,96 @@
+// Narration for chem-1.6 "Photoelectron Spectroscopy (PES)". Every fact comes from the lesson cards, quick
+// checks and flashcards in app/src/content/chem/u1.ts (and the chem-1.6 notes in book.ts). One entry per
+// sentence: the voice reads `say`; captions show `cap` (or `say`). `gap` = seconds of silence after it.
+export default {
+  id: 'chem-1.6',
+  title: 'Photoelectron Spectroscopy (PES)',
+  course: 'AP® Chemistry',
+  unit: 'Unit 1 · Atomic Structure and Properties',
+  unitId: 'chem-u1',
+  unitTitle: 'Atomic Structure and Properties',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Photoelectron spectroscopy.', gap: 0.5 },
+      { say: "In the next few minutes, you'll see how scientists measure electrons, how to read a PES spectrum, and how to turn its peaks into an electron configuration.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'How do we know that electrons sit in subshells like one s, two s and two p?', cap: 'How do we know that electrons sit in subshells like 1s, 2s and 2p?', gap: 0.5 },
+      { say: 'We can not see them.', gap: 0.5 },
+      { say: 'So we shine high-energy light on atoms, knock electrons out, and measure how hard each one was to remove.', gap: 0.6 },
+      { say: 'That technique is called PES.', gap: 0.5 },
+      { say: 'It gives a fingerprint of the electron configuration.', gap: 0.8 },
+    ] },
+    { id: 'how', beats: [
+      { say: 'Here is how it works.', gap: 0.4 },
+      { say: 'Atoms are struck by high-energy photons, such as X-rays or ultraviolet light.', gap: 0.5 },
+      { say: 'A photon can eject an electron.', gap: 0.5 },
+      { say: 'The electron leaves with some kinetic energy.', gap: 0.5 },
+      { say: 'The binding energy is the photon energy, minus the kinetic energy of the ejected electron.', gap: 0.6 },
+      { say: 'Electrons from the same subshell all have about the same binding energy.', gap: 0.5 },
+      { say: 'That is why the spectrum shows separate peaks, rather than a smear.', gap: 0.9 },
+    ] },
+    { id: 'read', beats: [
+      { say: 'Now, reading a spectrum. This one is sodium.', gap: 0.5 },
+      { say: 'Each peak is one subshell.', gap: 0.5 },
+      { say: 'The position of a peak is its binding energy. That is the energy needed to remove an electron from that subshell.', gap: 0.5 },
+      { say: 'Higher binding energy means the electron is held more tightly, and sits closer to the nucleus.', gap: 0.5 },
+      { say: 'By convention, binding energy increases to the left. So the core one s peak is far left, and the valence electrons are on the right.', cap: 'By convention, binding energy increases to the left. So the core 1s peak is far left, and the valence electrons are on the right.', gap: 0.5 },
+      { say: 'The height of a peak is proportional to the number of electrons in that subshell.', gap: 0.9 },
+    ] },
+    { id: 'sodium', beats: [
+      { say: 'Test yourself on sodium.', gap: 0.4 },
+      { say: 'Which peak has the lowest binding energy? The three s peak.', cap: 'Which peak has the lowest binding energy? The 3s peak.', gap: 0.5 },
+      { say: 'That single electron is the farthest from the nucleus, and the most shielded, so it is the easiest to remove.', gap: 0.5 },
+      { say: 'And why is the two p peak about three times taller than the two s peak?', cap: 'And why is the 2p peak about three times taller than the 2s peak?', gap: 0.5 },
+      { say: 'Because two p holds six electrons, and two s holds two. That is a three to one ratio.', cap: 'Because 2p holds 6 electrons, and 2s holds 2. That is a 3 : 1 ratio.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: 'Here is a trick. Decode any PES in three steps.', cap: 'Here is a trick: decode any PES in 3 steps.', gap: 0.5 },
+      { say: 'Step one. Count the peaks from high energy to low. One s, two s, two p, three s, three p.', cap: 'Step 1: count the peaks from high energy to low. 1s, 2s, 2p, 3s, 3p.', gap: 0.5 },
+      { say: 'Step two. Read the relative heights as electron counts. An s peak is two at most, a p peak is six, and a d peak is ten.', cap: 'Step 2: read the relative heights as electron counts. s peaks are 2 at most, p is 6, d is 10.', gap: 0.5 },
+      { say: 'Step three. Add them up. For a neutral atom, the total equals the atomic number.', cap: 'Step 3: add them up. For a neutral atom, the total equals the atomic number.', gap: 0.6 },
+      { say: 'Example. Heights of two, two, six, one give one s two, two s two, two p six, three s one.', cap: 'Example: heights 2 : 2 : 6 : 1 give 1s² 2s² 2p⁶ 3s¹.', gap: 0.5 },
+      { say: 'That is eleven electrons. The element is sodium.', cap: 'That is 11 electrons. The element is sodium.', gap: 0.9 },
+    ] },
+    { id: 'compare', beats: [
+      { say: 'Now, comparing two elements.', gap: 0.4 },
+      { say: 'The same subshell sits at a different energy in a different element.', gap: 0.5 },
+      { say: 'The one s peak of fluorine is at a higher binding energy than the one s peak of oxygen.', cap: 'The 1s peak of fluorine is at a higher binding energy than the 1s peak of oxygen.', gap: 0.5 },
+      { say: 'Why? Fluorine has more protons. Nine, compared with eight.', cap: 'Why? Fluorine has more protons: 9, compared with 8.', gap: 0.5 },
+      { say: "The greater nuclear charge pulls those one s electrons more strongly. That is Coulomb's law.", cap: "The greater nuclear charge pulls those 1s electrons more strongly. That is Coulomb's law.", gap: 0.5 },
+      { say: 'So a bigger Z shifts every peak to a higher binding energy.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Watch out for this trap.', gap: 0.4 },
+      { say: 'A taller peak does not mean higher energy.', gap: 0.5 },
+      { say: 'Height tells you how many electrons are there.', gap: 0.5 },
+      { say: 'Position tells you how tightly they are held.', gap: 0.5 },
+      { say: 'Those are two different questions.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'A PES spectrum has three peaks, with relative heights two, two, three. Which element is it? A: lithium. B: boron. C: nitrogen. Or D: neon.', cap: 'A PES spectrum has three peaks with relative heights 2 : 2 : 3. Which element is it? A: Lithium. B: Boron. C: Nitrogen. Or D: Neon.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is C, nitrogen.', gap: 0.4 },
+      { say: 'Three peaks mean one s, two s and two p.', cap: 'Three peaks mean 1s, 2s and 2p.', gap: 0.3 },
+      { say: 'That is one s two, two s two, two p three. Seven electrons, so nitrogen.', cap: 'That is 1s² 2s² 2p³. Seven electrons, so nitrogen.', gap: 0.9 },
+    ] },
+    { id: 'frq', beats: [
+      { say: 'A tip for free-response questions.', gap: 0.4 },
+      { say: 'To explain why one peak is at higher energy, use Coulomb\'s law with specifics.', gap: 0.5 },
+      { say: 'For example: the one s electrons are closer to the nucleus than the two s electrons, so they feel a stronger attraction, and need more energy to remove.', cap: 'For example: the 1s electrons are closer to the nucleus than the 2s electrons, so they feel a stronger attraction, and need more energy to remove.', gap: 0.5 },
+      { say: 'Name the subshells, and connect distance or charge to attraction, and then to energy.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Peak position is binding energy, how tightly held. Peak height is the number of electrons.', gap: 0.5 },
+      { say: 'Read the peaks in order, one s, two s, two p, and so on, to rebuild the electron configuration.', cap: 'Read the peaks in order, 1s, 2s, 2p, and so on, to rebuild the electron configuration.', gap: 0.5 },
+      { say: 'And more protons means the same subshell has a higher binding energy.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

@@ -1,0 +1,88 @@
+// Narration for chem-1.7 "Periodic Trends". Every fact comes from the lesson cards and quick checks in
+// app/src/content/chem/u1.ts. One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+export default {
+  id: 'chem-1.7',
+  title: 'Periodic Trends',
+  course: 'AP® Chemistry',
+  unit: 'Unit 1 · Atomic Structure and Properties',
+  unitId: 'chem-u1',
+  unitTitle: 'Atomic Structure and Properties',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Periodic trends.', gap: 0.5 },
+      { say: "In the next few minutes, you'll see the two moves that explain every trend, the four trends themselves, how ions change size, and how to read an element's group from its ionization energies.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Why is fluorine the greediest element for electrons, and cesium the most generous?', gap: 0.5 },
+      { say: 'Every periodic trend comes down to one tug-of-war.', gap: 0.5 },
+      { say: 'The nucleus on one side. The electrons on the other.', gap: 0.9 },
+    ] },
+    { id: 'moves', beats: [
+      { say: 'Two moves explain every trend.', gap: 0.6 },
+      { say: 'First, across a period, from left to right.', gap: 0.4 },
+      { say: 'Protons increase. But the new electrons go into the same shell, so the core shielding stays about the same.', gap: 0.5 },
+      { say: 'Effective nuclear charge rises, so the valence electrons are pulled in tighter.', gap: 0.7 },
+      { say: 'Second, down a group.', gap: 0.4 },
+      { say: 'Each row adds a new shell. Valence electrons are farther away, and more shielded.', gap: 0.5 },
+      { say: 'So they are held more loosely.', gap: 0.9 },
+    ] },
+    { id: 'trends', beats: [
+      { say: 'Now, the four trends.', gap: 0.5 },
+      { say: 'Atomic radius decreases across, and increases down.', gap: 0.5 },
+      { say: 'Ionization energy increases across, and decreases down.', gap: 0.5 },
+      { say: 'Electronegativity increases across, and decreases down.', gap: 0.5 },
+      { say: 'Electronegativity is how strongly an atom in a bond pulls the shared electrons. Fluorine is the highest.', gap: 0.5 },
+      { say: 'And electron affinity, the energy released when an atom gains an electron, generally gets more released across, and less released down.', gap: 0.9 },
+    ] },
+    { id: 'ions', beats: [
+      { say: 'Next, the size of ions.', gap: 0.5 },
+      { say: 'Cations are smaller than their atoms.', gap: 0.4 },
+      { say: 'Losing electrons often removes a whole shell, and the remaining electrons feel more pull. Sodium plus is smaller than sodium.', cap: 'Losing electrons often removes a whole shell, and the remaining electrons feel more pull. Na⁺ is smaller than Na.', gap: 0.5 },
+      { say: 'Anions are larger than their atoms.', gap: 0.4 },
+      { say: 'Extra electrons increase repulsion, while the nuclear charge stays the same. Chloride is larger than chlorine.', cap: 'Extra electrons increase repulsion, while the nuclear charge stays the same. Cl⁻ is larger than Cl.', gap: 0.5 },
+      { say: 'Isoelectronic ions have the same number of electrons. For those, more protons means smaller.', gap: 0.5 },
+      { say: 'So oxide is larger than fluoride, which is larger than sodium plus, which is larger than magnesium two plus.', cap: 'So O²⁻ is larger than F⁻, which is larger than Na⁺, which is larger than Mg²⁺.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a trick. Successive ionization energies reveal the group.", gap: 0.5 },
+      { say: 'Remove electrons one by one. The energy climbs gradually, until you hit a core electron.', gap: 0.5 },
+      { say: 'Then it jumps hugely.', gap: 0.5 },
+      { say: 'The number of electrons removed before the big jump equals the number of valence electrons.', gap: 0.6 },
+      { say: 'For example: seven hundred thirty-eight, fourteen fifty-one, then seventy-seven thirty-three kilojoules per mole.', cap: 'For example: IE₁ = 738, IE₂ = 1451, IE₃ = 7733 kJ/mol.', gap: 0.5 },
+      { say: 'The jump comes after two electrons, so it is a group two element. This is magnesium.', cap: 'The jump comes after 2 electrons, so it is a Group 2 element. This is magnesium.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, a trap.', gap: 0.4 },
+      { say: "Don't explain trends with \"atoms want a full octet.\"", gap: 0.5 },
+      { say: "That isn't accepted as a reason on AP free response.", cap: "That isn't accepted as a reason on AP® free response.", gap: 0.5 },
+      { say: 'Always use protons, or nuclear charge. Distance, meaning shells. And shielding.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Which has the largest radius? A: oxide. B: fluoride. C: sodium plus. Or D: magnesium two plus. All have ten electrons.', cap: 'Which has the largest radius? A: O²⁻. B: F⁻. C: Na⁺. Or D: Mg²⁺. All have 10 electrons.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is A.', gap: 0.4 },
+      { say: 'All four have ten electrons, so compare protons.', cap: 'All four have 10 electrons, so compare protons.', gap: 0.3 },
+      { say: 'Oxide has the fewest protons, eight, so its electrons feel the weakest pull and spread out the most.', cap: 'O²⁻ has the fewest protons, 8, so its electrons feel the weakest pull and spread out the most.', gap: 0.9 },
+    ] },
+    { id: 'frq', beats: [
+      { say: 'A tip for free response.', gap: 0.5 },
+      { say: 'Use the Coulomb sentence. Name the particles, the cause, and the effect.', gap: 0.5 },
+      { say: 'Not: "Mg has a higher I E because it is farther right."', cap: 'Not: "Mg has a higher IE because it\'s farther right."', gap: 0.5 },
+      { say: 'Instead: magnesium has more protons, twelve versus eleven, than sodium, while its valence electrons are in the same shell, with similar shielding.', cap: 'Instead: Mg has more protons, 12 vs. 11, than Na, while its valence electrons are in the same shell (n = 3) with similar shielding.', gap: 0.5 },
+      { say: 'The greater Coulombic attraction between the nucleus and the valence electrons means more energy is needed to remove one.', gap: 0.5 },
+      { say: 'Trends are where. Coulomb\'s law is why. AP points come from the why.', cap: "Trends are where. Coulomb's law is why. AP® points come from the why.", gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Across: more protons, same shell, stronger pull. So a smaller radius, and a higher ionization energy and electronegativity.', gap: 0.5 },
+      { say: 'Down: more shells, more shielding, weaker pull. So a bigger radius, and a lower ionization energy and electronegativity.', gap: 0.5 },
+      { say: 'And a big jump in successive ionization energies means you have reached the core electrons.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}
