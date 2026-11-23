@@ -1,0 +1,86 @@
+// Narration for chem-2.6 "Resonance & Formal Charge". Every fact comes from the lesson cards and
+// quick checks in app/src/content/chem/u2.ts. `say` = what the voice reads; `cap` = caption.
+export default {
+  id: 'chem-2.6',
+  title: 'Resonance & Formal Charge',
+  course: 'AP® Chemistry',
+  unit: 'Unit 2 · Compound Structure and Properties',
+  unitId: 'chem-u2',
+  unitTitle: 'Compound Structure and Properties',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Resonance and formal charge.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn why some molecules have no single correct drawing, how to calculate formal charge, and how to pick the best Lewis diagram.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Draw the nitrate ion, and you'll find the double bond could go to any of the three oxygens.", cap: 'Draw the nitrate ion, NO₃⁻, and you\'ll find the double bond could go to any of the three oxygens.', gap: 0.6 },
+      { say: 'Which one is right?', gap: 0.7 },
+      { say: 'Trick question. None of them alone.', gap: 0.6 },
+      { say: 'The real ion is a blend of all three.', gap: 0.9 },
+    ] },
+    { id: 'resonance', beats: [
+      { say: 'Sometimes more than one valid Lewis diagram can be drawn, without moving any atoms. Only the electrons move.', gap: 0.5 },
+      { say: 'Then the real structure is a resonance hybrid. It is an average of them all.', gap: 0.6 },
+      { say: 'The nitrate ion has three resonance structures.', gap: 0.5 },
+      { say: 'In reality, all three nitrogen oxygen bonds are identical.', cap: 'In reality, all three N–O bonds are identical.', gap: 0.5 },
+      { say: 'Each one is about one and one third bonds. That is four bonds, shared over three positions.', cap: 'Each one is about 1⅓ bonds. That is 4 bonds, shared over 3 positions.', gap: 0.6 },
+      { say: 'So each bond is longer than a double bond, and shorter than a single bond.', gap: 0.6 },
+      { say: 'Ozone works the same way. Its two oxygen oxygen bonds are identical, with bond order one and a half.', cap: 'Ozone, O₃, works the same way. Its two O–O bonds are identical, with bond order 1½.', gap: 0.6 },
+      { say: 'Resonance is a refinement of the Lewis model. We need it to predict bond lengths and properties correctly.', gap: 0.9 },
+    ] },
+    { id: 'formal', beats: [
+      { say: 'Next: formal charge. It is a bookkeeping tool.', gap: 0.5 },
+      { say: 'Formal charge equals valence electrons, minus lone pair electrons, minus one half of the bonding electrons.', cap: 'Formal charge = valence e⁻ − lone-pair e⁻ − ½ bonding e⁻.', gap: 0.7 },
+      { say: 'A quicker way: formal charge equals valence electrons, minus dots plus lines, around that atom.', cap: 'A quicker way: formal charge = valence e⁻ − (dots + lines) around that atom.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: 'Here is the dots plus sticks shortcut.', gap: 0.5 },
+      { say: 'For each atom, formal charge equals the group number, minus dots plus sticks.', cap: 'For each atom, FC = group number − (dots + sticks).', gap: 0.5 },
+      { say: 'Count each lone pair dot individually. A lone pair is two dots.', gap: 0.5 },
+      { say: 'Count each bond line once.', gap: 0.6 },
+      { say: 'Take oxygen with two lone pairs and two bonds. Six, minus four plus two, equals zero.', cap: 'Take oxygen with 2 lone pairs and 2 bonds: 6 − (4 + 2) = 0.', gap: 0.9 },
+    ] },
+    { id: 'rules', beats: [
+      { say: 'So what makes the best Lewis diagram?', gap: 0.5 },
+      { say: 'One: formal charges as close to zero as possible.', cap: 'One: formal charges as close to 0 as possible.', gap: 0.5 },
+      { say: 'Two: any negative formal charge goes on the most electronegative atom.', gap: 0.6 },
+      { say: 'And the formal charges always add up to the overall charge of the species.', gap: 0.6 },
+      { say: 'Check the ammonium ion. Nitrogen has five valence electrons, four bonds, and no lone pairs.', cap: 'Check the ammonium ion, NH₄⁺. Nitrogen has 5 valence electrons, 4 bonds, and no lone pairs.', gap: 0.5 },
+      { say: 'Five minus four is plus one. That matches the ion, and each hydrogen is zero.', cap: '5 − 4 = +1. That matches the ion, and each H is 0.', gap: 0.9 },
+    ] },
+    { id: 'co2', beats: [
+      { say: 'Which carbon dioxide drawing is best?', gap: 0.4 },
+      { say: 'Compare oxygen double bond carbon double bond oxygen, with oxygen triple bond carbon single bond oxygen. Each oxygen has enough lone pairs for an octet.', cap: 'Compare O=C=O with O≡C–O. Each O has enough lone pairs for an octet.', gap: 0.7 },
+      { say: 'In the first, each oxygen has two lone pairs and two bonds. Six, minus four plus two, is zero. Carbon is four, minus zero plus four, also zero.', cap: 'In the first, each O has 2 lone pairs and 2 bonds. 6 − (4 + 2) = 0. Carbon: 4 − (0 + 4) = 0.', gap: 0.7 },
+      { say: 'In the second, the triple bonded oxygen has one lone pair and three bonds. Six, minus two plus three, is plus one.', cap: 'In the second, the triple-bonded O has 1 lone pair and 3 bonds. 6 − (2 + 3) = +1.', gap: 0.6 },
+      { say: 'The single bonded oxygen has three lone pairs and one bond. Six, minus six plus one, is minus one. Carbon is zero.', cap: 'The single-bonded O has 3 lone pairs and 1 bond. 6 − (6 + 1) = −1. Carbon is 0.', gap: 0.7 },
+      { say: 'All zeros beat plus one and minus one. So oxygen double bond carbon double bond oxygen is the better structure.', cap: 'All zeros beat +1 and −1. So O=C=O is the better structure.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, two traps.', gap: 0.5 },
+      { say: 'Resonance structures are not flipping back and forth, like a light switch.', gap: 0.5 },
+      { say: 'The molecule is one blended structure, all the time.', gap: 0.6 },
+      { say: 'And formal charge is not the same as a real charge, or an oxidation number.', gap: 0.5 },
+      { say: 'It is a tool for comparing Lewis diagrams.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'The carbonate ion has three resonance structures. What is the average carbon oxygen bond order? One, one and one third, one and a half, or two?', cap: 'The carbonate ion, CO₃²⁻, has three resonance structures. What is the average C–O bond order? 1, 1⅓, 1½, or 2?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is one and one third.', cap: 'The answer is 1⅓.', gap: 0.4 },
+      { say: 'Each structure has one double bond plus two single bonds. That is four bonds, shared over three positions.', cap: 'Each structure has 1 double bond plus 2 single bonds. That is 4 bonds, shared over 3 positions.', gap: 0.4 },
+      { say: 'Four divided by three is one and one third. All three bonds are identical in reality.', cap: '4 ÷ 3 = 1⅓. All three C–O bonds are identical in reality.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Resonance: several valid diagrams, where only electrons move. The real structure is a blend, with averaged bonds.', gap: 0.5 },
+      { say: 'Formal charge equals valence electrons, minus dots plus sticks.', cap: 'FC = valence e⁻ − (dots + sticks).', gap: 0.5 },
+      { say: 'The best structure has formal charges closest to zero, with any negative charge on the most electronegative atom.', cap: 'The best structure has formal charges closest to 0, with any negative charge on the most electronegative atom.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

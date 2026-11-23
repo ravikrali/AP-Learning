@@ -50,7 +50,12 @@ svg [data-at], svg .tb { transform-box: fill-box; transform-origin: center; }
 .banner { position: absolute; left: 120px; width: 1680px; padding: 24px 40px; border-radius: 28px; text-align: center; font-size: 50px; font-weight: 900; background: linear-gradient(90deg, rgba(91,91,214,.5), rgba(60,199,188,.32)); border: 2px solid rgba(141,141,240,.7); }
 .pri { color: var(--primary); } .teal { color: var(--accent); } .warm { color: var(--warm); } .gold { color: var(--gold); } .good { color: var(--good); } .bad { color: var(--bad); } .muted { color: var(--muted); }
 .arr { display: inline-block; width: .9em; height: .62em; margin: 0 .22em; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Cpath d='M1 10h25M18 2l9 8-9 8' fill='none' stroke='black' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
-sup { font-size: .6em; }
+/* raised and lowered text that also works directly inside a flex or grid box */
+sup, sub { font-size: .6em; vertical-align: baseline; position: relative; line-height: 0; }
+sup { top: -.55em; } sub { top: .28em; }
+
+/* coloured SVG text (a fill attribute loses to the rule above) */
+svg .f-pri { fill: var(--primary); } svg .f-teal { fill: var(--accent); } svg .f-warm { fill: var(--warm); } svg .f-bad { fill: var(--bad); } svg .f-good { fill: var(--good); } svg .f-gold { fill: var(--gold); } svg .f-muted { fill: var(--muted); } svg .f-dark { fill: #10131c; }
 
 /* intro and outro */
 .brandcol { position: absolute; left: 0; width: 1920px; text-align: center; }

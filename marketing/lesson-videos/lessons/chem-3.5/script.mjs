@@ -1,0 +1,91 @@
+// Narration for chem-3.5 "Kinetic Molecular Theory". Every fact comes from the lesson cards, quick
+// checks and flashcards in app/src/content/chem/u3.ts (the gas-law explanations and the peak of the
+// Maxwell–Boltzmann curve are from book.ts). One entry per sentence: the voice reads `say`; captions
+// show `cap` (or `say`). `gap` = seconds of silence after.
+export default {
+  id: 'chem-3.5',
+  title: 'Kinetic Molecular Theory',
+  course: 'AP® Chemistry',
+  unit: 'Unit 3 · Properties of Substances and Mixtures',
+  unitId: 'chem-u3',
+  unitTitle: 'Properties of Substances and Mixtures',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Kinetic molecular theory.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn how moving particles create pressure, what temperature really measures, and how to read a Maxwell Boltzmann curve.", cap: "In the next few minutes, you'll learn how moving particles create pressure, what temperature really measures, and how to read a Maxwell–Boltzmann curve.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'The air molecules around you are zooming at about five hundred meters per second.', cap: 'The air molecules around you are zooming at about 500 m/s.', gap: 0.4 },
+      { say: "That's faster than a passenger jet.", gap: 0.5 },
+      { say: 'And each one smashes into something billions of times every second.', gap: 0.5 },
+      { say: 'Kinetic molecular theory, or K M T, turns that chaos into simple predictions.', cap: 'Kinetic molecular theory, or KMT, turns that chaos into simple predictions.', gap: 0.8 },
+    ] },
+    { id: 'motion', beats: [
+      { say: 'Here is the first core idea.', gap: 0.4 },
+      { say: 'Gas particles are in constant, random motion.', gap: 0.4 },
+      { say: 'They collide with each other, and with the walls of their container.', gap: 0.5 },
+      { say: 'Those wall collisions create pressure.', gap: 0.4 },
+      { say: 'Pressure is the force from countless collisions with the walls.', gap: 0.4 },
+      { say: 'More frequent or harder collisions mean higher pressure.', gap: 0.9 },
+    ] },
+    { id: 'laws', beats: [
+      { say: 'This explains the gas laws at the particle level.', gap: 0.5 },
+      { say: 'Raise the temperature at constant volume, and the particles move faster.', gap: 0.3 },
+      { say: 'They hit the walls more often, and with more force. So pressure goes up.', gap: 0.6 },
+      { say: 'Shrink the volume at constant temperature, and the particles have less distance to travel between collisions.', gap: 0.3 },
+      { say: 'They hit the walls more often, but their speed does not change.', gap: 0.6 },
+      { say: 'Add more moles at constant volume and temperature, and more particles means more collisions per second.', gap: 0.6 },
+      { say: 'On the AP exam, mention both frequency and force when temperature changes. Mention only frequency when volume or moles change.', cap: 'On the AP® exam, mention both frequency and force when temperature changes. Mention only frequency when volume or moles change.', gap: 0.9 },
+    ] },
+    { id: 'energy', beats: [
+      { say: 'Now, what does temperature actually measure?', gap: 0.4 },
+      { say: 'Kelvin temperature is proportional to the average kinetic energy of the particles.', gap: 0.5 },
+      { say: 'And kinetic energy equals one half m v squared.', cap: 'And KE = ½mv².', gap: 0.5 },
+      { say: 'So at the same temperature, all gases have the same average kinetic energy.', gap: 0.5 },
+      { say: 'But look at the formula. The energy depends on both mass and speed.', gap: 0.4 },
+      { say: 'A lighter particle must move faster to have the same kinetic energy.', gap: 0.9 },
+    ] },
+    { id: 'mb', beats: [
+      { say: 'Not every particle moves at the same speed.', gap: 0.4 },
+      { say: 'The Maxwell Boltzmann distribution shows how many particles have each speed.', cap: 'The Maxwell–Boltzmann distribution shows how many particles have each speed.', gap: 0.4 },
+      { say: 'The peak marks the most probable speed.', gap: 0.5 },
+      { say: 'Now heat the gas.', gap: 0.3 },
+      { say: 'At a higher temperature, the curve shifts right, and gets flatter and wider. More particles move at high speeds.', gap: 0.5 },
+      { say: 'The area under the curve is the total number of particles. So it stays the same.', gap: 0.5 },
+      { say: "That's why the hotter curve is lower, as well as wider.", gap: 0.5 },
+      { say: 'A lighter gas at the same temperature does the same thing to its speed curve. It shifts right and flattens.', gap: 0.4 },
+      { say: 'But the energy distribution depends only on temperature.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a trick: light means fast, heavy means slow.", gap: 0.4 },
+      { say: 'At the same temperature, compare molar masses.', gap: 0.4 },
+      { say: 'Hydrogen gas, at two grams per mole, is fastest on average. Then helium at four, nitrogen at twenty-eight, oxygen at thirty-two, and carbon dioxide at forty-four.', cap: 'H₂ at 2 g/mol is fastest on average. Then He at 4, N₂ at 28, O₂ at 32, and CO₂ at 44.', gap: 0.5 },
+      { say: 'But their average kinetic energy is equal, because the temperature is the same.', gap: 0.5 },
+      { say: 'AP loves testing that difference!', cap: 'AP® loves testing that difference!', gap: 0.5 },
+      { say: 'So if you see chlorine gas, at seventy point nine grams per mole, next to hydrogen, nitrogen and oxygen, the heaviest, chlorine, is the slowest.', cap: 'So if you see Cl₂, at 70.9 g/mol, next to H₂, N₂ and O₂, the heaviest, Cl₂, is the slowest.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Samples of helium and argon are both at three hundred kelvin. Which statement is true?', cap: 'Samples of He and Ar are both at 300 K. Which statement is true?', gap: 0.5 },
+      { say: 'A. They have the same average kinetic energy, but helium atoms move faster on average.', cap: 'A. They have the same average kinetic energy, but He atoms move faster on average.', gap: 0.3 },
+      { say: 'B. Argon atoms have higher average kinetic energy.', cap: 'B. Ar atoms have higher average kinetic energy.', gap: 0.3 },
+      { say: 'C. They have the same average speed.', gap: 0.3 },
+      { say: 'Or D. Helium atoms have higher average kinetic energy.', cap: 'Or D. He atoms have higher average kinetic energy.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is A.', gap: 0.4 },
+      { say: 'Same temperature means the same average kinetic energy.', gap: 0.4 },
+      { say: 'Since kinetic energy equals one half m v squared, the lighter helium atoms must have a higher average speed.', cap: 'Since KE = ½mv², the lighter He atoms must have a higher average speed.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Kelvin temperature is proportional to average kinetic energy. And kinetic energy equals one half m v squared.', cap: 'Kelvin T ∝ average KE. KE = ½mv².', gap: 0.5 },
+      { say: 'At the same temperature, particles have the same average kinetic energy, and lighter particles are faster.', cap: 'Same T: same average KE, and lighter particles are faster.', gap: 0.5 },
+      { say: 'Hotter, or lighter, and the Maxwell Boltzmann curve shifts right and flattens. The area stays the same.', cap: 'Hotter (or lighter): the M–B curve shifts right and flattens. The area stays the same.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

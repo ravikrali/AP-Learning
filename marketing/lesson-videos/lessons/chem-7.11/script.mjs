@@ -1,0 +1,96 @@
+// Narration for chem-7.11 "Solubility Equilibria (Ksp)". Every fact comes from the lesson cards,
+// quick checks and flashcards in app/src/content/chem/u7.ts, plus the lesson's prose in chem/book.ts
+// (the saturated solution, "Will a precipitate form?" and "Molar solubility versus Ksp").
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-7.11',
+  title: 'Solubility Equilibria (Ksp)',
+  course: 'AP® Chemistry',
+  unit: 'Unit 7 · Equilibrium',
+  unitId: 'chem-u7',
+  unitTitle: 'Equilibrium',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Solubility equilibria, and K s p.', cap: 'Solubility equilibria (Ksp).', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to write K s p, link it to molar solubility, and compare how well salts dissolve.", cap: "In the next few minutes, you'll learn to write Ksp, link it to molar solubility, and compare how well salts dissolve.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Kidney stones are mostly calcium oxalate.' },
+      { say: 'It is a slightly soluble salt.', gap: 0.4 },
+      { say: 'A little of it dissolves into ions.', gap: 0.4 },
+      { say: 'But when those ions get too concentrated, the solid precipitates.', gap: 0.5 },
+      { say: 'So how much can dissolve?', gap: 0.4 },
+      { say: 'K s p tells you exactly.', cap: 'Ksp tells you exactly.', gap: 0.8 },
+    ] },
+    { id: 'ksp', beats: [
+      { say: 'Dissolving a salt is a reversible equilibrium.' },
+      { say: 'A slightly soluble solid, sitting in its saturated solution, is at equilibrium with its ions.', gap: 0.5 },
+      { say: 'Silver chloride solid dissolves into silver ions and chloride ions.', cap: 'AgCl(s) ⇌ Ag⁺(aq) + Cl⁻(aq)', gap: 0.4 },
+      { say: 'Its solubility product is K s p equals silver ion times chloride ion.', cap: 'Its solubility product is Ksp = [Ag⁺][Cl⁻].', gap: 0.5 },
+      { say: 'Calcium fluoride gives one calcium ion and two fluoride ions.', cap: 'CaF₂(s) ⇌ Ca²⁺(aq) + 2F⁻(aq)', gap: 0.4 },
+      { say: 'So K s p equals calcium ion, times fluoride ion squared.', cap: 'So Ksp = [Ca²⁺][F⁻]².', gap: 0.5 },
+      { say: 'Each ion concentration is raised to its coefficient.', gap: 0.4 },
+      { say: 'And notice: there is no solid in the expression!', gap: 0.6 },
+      { say: 'Salts with a K s p greater than one match the soluble salts from the solubility rules, like the always soluble sodium, potassium, ammonium and nitrate salts.', cap: 'Salts with Ksp > 1 match the soluble salts from the solubility rules, like the "always soluble" Na⁺, K⁺, NH₄⁺ and NO₃⁻ salts.', gap: 0.8 },
+    ] },
+    { id: 'molar', beats: [
+      { say: 'Next: molar solubility, called s.', gap: 0.3 },
+      { say: 'It is the moles of salt that dissolve per liter.', gap: 0.5 },
+      { say: 'Use the formula to write each ion in terms of s.', gap: 0.5 },
+      { say: 'For an A B salt, like silver chloride, each unit gives one of each ion: s and s. So K s p equals s squared.', cap: 'For an AB salt, like AgCl, each unit gives one of each ion: s and s. So Ksp = s².', gap: 0.5 },
+      { say: 'For an A B two salt, like calcium fluoride, the ions are s and two s. So K s p equals s times two s squared: four s cubed.', cap: 'For an AB₂ salt, like CaF₂, the ions are s and 2s. So Ksp = s(2s)² = 4s³.', gap: 0.5 },
+      { say: 'For an A two B salt, like silver chromate, it is two s and s. That is also four s cubed.', cap: 'For an A₂B salt, like Ag₂CrO₄, it is 2s and s. That is also 4s³.', gap: 0.8 },
+    ] },
+    { id: 'agcl', beats: [
+      { say: "Let's find a molar solubility." },
+      { say: 'K s p of silver chloride is one point eight times ten to the negative tenth.', cap: 'Ksp of AgCl = 1.8 × 10⁻¹⁰.', gap: 0.5 },
+      { say: 'It is an A B salt, so K s p equals s squared.', cap: 'It is an AB salt, so Ksp = s².', gap: 0.4 },
+      { say: 'Take the square root.', gap: 0.4 },
+      { say: 'The molar solubility is one point three times ten to the negative fifth molar.', cap: 'The molar solubility is 1.3 × 10⁻⁵ M.', gap: 0.8 },
+    ] },
+    { id: 'chromate', beats: [
+      { say: 'Now go the other way: from solubility to K s p.', cap: 'Now go the other way: from solubility to Ksp.' },
+      { say: 'The molar solubility of silver chromate is six point five times ten to the negative fifth molar.', cap: 'The molar solubility of Ag₂CrO₄ is 6.5 × 10⁻⁵ M.', gap: 0.5 },
+      { say: 'Each unit gives two silver ions, so silver ion is two s: one point three times ten to the negative fourth molar.', cap: 'Each unit gives two Ag⁺, so [Ag⁺] = 2s = 1.3 × 10⁻⁴ M.', gap: 0.4 },
+      { say: 'Chromate is just s: six point five times ten to the negative fifth.', cap: '[CrO₄²⁻] = s = 6.5 × 10⁻⁵ M.', gap: 0.5 },
+      { say: 'So K s p equals two s squared times s, which is four s cubed.', cap: 'So Ksp = (2s)²(s) = 4s³.', gap: 0.4 },
+      { say: 'That gives one point one times ten to the negative twelfth.', cap: 'That gives 1.1 × 10⁻¹².', gap: 0.8 },
+    ] },
+    { id: 'precip', beats: [
+      { say: 'K s p also tells you whether a precipitate will form.', cap: 'Ksp also tells you whether a precipitate will form.' },
+      { say: 'Compare the ion product, Q, with K s p.', cap: 'Compare the ion product, Q, with Ksp.', gap: 0.5 },
+      { say: 'Mix equal volumes of zero point zero zero one zero molar silver nitrate and sodium chloride.', cap: 'Mix equal volumes of 0.0010 M AgNO₃ and 0.0010 M NaCl.', gap: 0.4 },
+      { say: 'Mixing halves each concentration, to zero point zero zero zero five zero molar.', cap: 'Mixing halves each concentration, to 0.00050 M.', gap: 0.4 },
+      { say: 'So Q is two point five times ten to the negative seventh.', cap: 'So Q = 2.5 × 10⁻⁷.', gap: 0.5 },
+      { say: 'That is far greater than K s p, so silver chloride precipitates until Q equals K s p.', cap: 'That is far greater than Ksp, so AgCl precipitates until Q = Ksp.', gap: 0.5 },
+      { say: 'If Q were less than K s p, no precipitate would form.', cap: 'If Q were less than Ksp, no precipitate would form.', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: "Now, a common trap." },
+      { say: 'You can compare solubilities by K s p only for salts of the same type, with the same ion ratio.', cap: 'You can compare solubilities by Ksp only for salts of the same type, with the same ion ratio.', gap: 0.5 },
+      { say: 'Silver chloride, silver bromide and silver iodide are all A B salts, so the largest K s p is the most soluble: silver chloride.', cap: 'AgCl, AgBr and AgI are all AB salts, so the largest Ksp is the most soluble: AgCl.', gap: 0.5 },
+      { say: 'But silver chloride versus silver chromate? One is s squared, the other is four s cubed.', cap: 'But AgCl versus Ag₂CrO₄? One is s², the other is 4s³.', gap: 0.4 },
+      { say: 'You have to calculate s for each!', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Calcium fluoride has a K s p of three point nine times ten to the negative eleventh. What is its molar solubility?', cap: 'CaF₂ has Ksp = 3.9 × 10⁻¹¹. What is its molar solubility?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is two point one times ten to the negative fourth molar.', cap: 'The answer is 2.1 × 10⁻⁴ M.', gap: 0.4 },
+      { say: 'Calcium fluoride is an A B two salt, so K s p equals four s cubed.', cap: 'CaF₂ is an AB₂ salt, so Ksp = 4s³.', gap: 0.3 },
+      { say: 'Divide by four, and take the cube root: s is two point one times ten to the negative fourth.', cap: 's = ∛(3.9 × 10⁻¹¹ / 4) = 2.1 × 10⁻⁴ M', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'K s p is the product of the ion concentrations, each raised to its coefficient. No solid.', cap: 'Ksp is the product of the ion concentrations, each raised to its coefficient. No solid.', gap: 0.5 },
+      { say: 'For an A B salt, K s p equals s squared. For A B two or A two B, it is four s cubed.', cap: 'AB: Ksp = s². AB₂ or A₂B: Ksp = 4s³.', gap: 0.5 },
+      { say: 'And compare K s p directly only for salts with the same ion ratio.', cap: 'Compare Ksp directly only for salts with the same ion ratio.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

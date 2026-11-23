@@ -1,0 +1,93 @@
+// Narration for chem-3.13 "Beer–Lambert Law". Every fact comes from the lesson cards and quick
+// checks in app/src/content/chem/u3.ts (the "why proportional" and colour lines are from book.ts).
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`). `gap` = silence after.
+export default {
+  id: 'chem-3.13',
+  title: 'Beer–Lambert Law',
+  course: 'AP® Chemistry',
+  unit: 'Unit 3 · Properties of Substances and Mixtures',
+  unitId: 'chem-u3',
+  unitTitle: 'Properties of Substances and Mixtures',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'The Beer Lambert law.', cap: 'The Beer–Lambert law.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn how light tells you the concentration of a solution, how to use a calibration line, and how to handle lab error questions.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Think about a cup of tea.', gap: 0.4 },
+      { say: 'The darker the tea, the stronger it is.', gap: 0.6 },
+      { say: 'A spectrophotometer turns that idea into precise numbers.', gap: 0.5 },
+      { say: 'It shines light through a sample, and measures how much of that light is absorbed.', gap: 0.5 },
+      { say: 'Labs use it to measure concentrations without any chemical reaction at all.', gap: 0.8 },
+    ] },
+    { id: 'equation', beats: [
+      { say: 'The Beer Lambert law is one short equation.', cap: 'The Beer–Lambert law is one short equation.', gap: 0.4 },
+      { say: 'A equals epsilon b c.', cap: 'A = εbc', gap: 0.6 },
+      { say: 'A is the absorbance. It has no units.', gap: 0.4 },
+      { say: 'Epsilon is the molar absorptivity: how strongly that substance absorbs a particular wavelength.', cap: 'ε is the molar absorptivity: how strongly that substance absorbs a particular wavelength.', gap: 0.3 },
+      { say: 'Its units are per molar, per centimeter.', cap: 'Its units are M⁻¹cm⁻¹.', gap: 0.4 },
+      { say: 'b is the path length, the width of the cuvette, in centimeters. It is usually one point zero zero centimeter.', cap: 'b is the path length, the width of the cuvette, in centimeters. It is usually 1.00 cm.', gap: 0.4 },
+      { say: 'And c is the concentration, in molarity.', cap: 'And c is the concentration, in M.', gap: 0.9 },
+    ] },
+    { id: 'proportion', beats: [
+      { say: 'In most experiments, b and the wavelength are held constant.', gap: 0.4 },
+      { say: 'So absorbance is directly proportional to concentration.', gap: 0.6 },
+      { say: 'Here is why.', gap: 0.3 },
+      { say: "Double the concentration, and you double the number of absorbing particles in the beam's path.", gap: 0.4 },
+      { say: 'So the absorbance doubles too.', gap: 0.5 },
+      { say: 'Doubling the path length does the same thing. That is why A depends on both.', gap: 0.9 },
+    ] },
+    { id: 'calibration', beats: [
+      { say: 'So how do you find an unknown concentration? With a calibration curve.', gap: 0.5 },
+      { say: 'First, measure the absorbance of several solutions of known concentration. These are your standards.', gap: 0.4 },
+      { say: 'Plot them, and they make a straight line.', gap: 0.5 },
+      { say: "Then measure the unknown's absorbance, and read its concentration from the line.", gap: 0.6 },
+      { say: 'One catch: epsilon belongs to one substance at one wavelength.', cap: 'One catch: ε belongs to one substance at one wavelength.', gap: 0.4 },
+      { say: 'So make the line with the same substance, the same wavelength, and the same cuvette as the unknown.', gap: 0.9 },
+    ] },
+    { id: 'lmax', beats: [
+      { say: 'Which wavelength should you choose?', gap: 0.4 },
+      { say: 'A colored solution absorbs some wavelengths of light, and transmits the rest. The color you see is the light that gets through.', gap: 0.5 },
+      { say: 'A blue copper two solution, for example, absorbs strongly in the orange red part of the spectrum.', cap: 'A blue copper(II) solution, for example, absorbs strongly in the orange-red part of the spectrum.', gap: 0.5 },
+      { say: 'Set the instrument to the wavelength of maximum absorbance, called lambda max.', cap: 'Set the instrument to the wavelength of maximum absorbance, called λmax.', gap: 0.4 },
+      { say: 'There, a small change in concentration gives the largest change in absorbance. That is maximum sensitivity.', gap: 0.4 },
+      { say: 'And small errors in setting the wavelength have the least effect.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's find a concentration.", gap: 0.4 },
+      { say: 'A dye has a molar absorptivity of one point five zero times ten to the fourth. In a one point zero zero centimeter cuvette, its absorbance is zero point four five zero.', cap: 'A dye has ε = 1.50 × 10⁴ M⁻¹cm⁻¹. In a 1.00 cm cuvette, its absorbance is 0.450.', gap: 0.5 },
+      { say: 'Step one: rearrange. c equals A, divided by epsilon times b.', cap: 'Step 1: rearrange. c = A / (εb).', gap: 0.5 },
+      { say: 'Step two: plug in. Zero point four five zero, divided by one point five zero times ten to the fourth, times one point zero zero.', cap: 'Step 2: plug in. 0.450 / [(1.50 × 10⁴)(1.00)]', gap: 0.5 },
+      { say: 'The concentration is three point zero zero times ten to the minus five molar.', cap: 'The concentration is 3.00 × 10⁻⁵ M.', gap: 0.6 },
+      { say: 'You can rearrange for epsilon the same way. Epsilon equals A divided by b c.', cap: 'You can rearrange for ε the same way: ε = A/(bc).', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'At constant epsilon and b, if the concentration of a solution is tripled, what happens to its absorbance?', cap: 'At constant ε and b, if the concentration of a solution is tripled, what happens to its absorbance?', gap: 0.4 },
+      { say: 'Is it cut to one third, does it stay the same, does it triple, or does it increase nine times?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer: it triples.', gap: 0.4 },
+      { say: 'A equals epsilon b c, so A is proportional to c. Triple c, and you triple A.', cap: 'A = εbc, so A ∝ c. Triple c, and you triple A.', gap: 0.9 },
+    ] },
+    { id: 'frq', beats: [
+      { say: 'One tip for free response questions.', cap: 'One tip for free-response questions.' },
+      { say: 'The AP exam often asks how a lab error affects a result.', cap: 'The AP® exam often asks how a lab error affects a result.', gap: 0.4 },
+      { say: 'Ask yourself: does the measured absorbance go up, or down?', gap: 0.5 },
+      { say: 'Fingerprints or scratches on the cuvette block extra light. A is too high, so the calculated concentration is too high.', gap: 0.5 },
+      { say: 'A cuvette still wet with water dilutes the sample. A is too low, so the concentration is too low.', gap: 0.5 },
+      { say: 'And a wavelength set away from lambda max lowers the sensitivity, with smaller absorbance values for every solution.', cap: 'And a wavelength set away from λmax lowers the sensitivity, with smaller absorbance values for every solution.', gap: 0.5 },
+      { say: 'Always state the direction, and the reason.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A equals epsilon b c. With b and the wavelength fixed, absorbance is proportional to concentration.', cap: 'A = εbc. With b and the wavelength fixed, absorbance is proportional to concentration.', gap: 0.5 },
+      { say: 'Use a calibration line from standards to find unknown concentrations.', gap: 0.5 },
+      { say: 'Measure at lambda max for maximum sensitivity. And for lab errors, ask: does A go up, or down?', cap: 'Measure at λmax for maximum sensitivity. And for lab errors, ask: does A go up, or down?', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

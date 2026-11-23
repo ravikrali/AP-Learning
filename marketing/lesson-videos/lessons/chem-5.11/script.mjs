@@ -1,0 +1,96 @@
+// Narration for chem-5.11 "Catalysis". Every fact comes from the lesson cards, quick checks and
+// flashcards in app/src/content/chem/u5.ts (and the lesson's extra prose in book.ts).
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-5.11',
+  title: 'Catalysis',
+  course: 'AP® Chemistry',
+  unit: 'Unit 5 · Kinetics',
+  unitId: 'chem-u5',
+  unitTitle: 'Kinetics',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Catalysis.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn how a catalyst speeds up a reaction, what it does not change, and the three ways catalysts work.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Your body runs thousands of reactions at thirty-seven degrees Celsius.', cap: 'Your body runs thousands of reactions at 37 °C.', gap: 0.4 },
+      { say: 'In a test tube, those same reactions would take years.', gap: 0.6 },
+      { say: 'The secret is enzymes, nature’s catalysts.', gap: 0.5 },
+      { say: 'And a car’s catalytic converter uses the same trick to clean its exhaust.', gap: 0.5 },
+      { say: 'So what is that trick?', gap: 0.9 },
+    ] },
+    { id: 'pathway', beats: [
+      { say: 'Here is an energy profile for a reaction without a catalyst.', gap: 0.4 },
+      { say: 'To react, the reactants have to climb over this hill. Its height is the activation energy, E a.', cap: 'To react, the reactants have to climb over this hill. Its height is the activation energy, Ea.', gap: 0.6 },
+      { say: 'A catalyst speeds up the reaction by providing a new reaction pathway, a new mechanism, with a lower activation energy.', gap: 0.6 },
+      { say: 'The catalyzed path has a lower maximum, and it often has more humps, because it involves more steps.', gap: 0.6 },
+      { say: 'Now look at the two ends.', gap: 0.3 },
+      { say: 'The reactants and the products sit at the same energies on both paths.', gap: 0.4 },
+      { say: 'So delta H does not change.', cap: 'So ΔH does not change.', gap: 0.5 },
+      { say: 'A catalyst can also increase the number of effective collisions.', gap: 0.9 },
+    ] },
+    { id: 'cycle', beats: [
+      { say: 'Here is the other key idea: a catalyst is not consumed overall.', gap: 0.5 },
+      { say: 'It is often used in the slow step, and then regenerated in a later step.', gap: 0.5 },
+      { say: 'In a mechanism, it shows up as a reactant in an early step, and as a product in a later step.', gap: 0.5 },
+      { say: 'So it cancels out, and it does not appear in the overall equation.', gap: 0.5 },
+      { say: 'Consumed, then regenerated: its net amount stays constant.', gap: 0.5 },
+      { say: 'And if it takes part in the slow step, it can appear in the rate law.', gap: 0.9 },
+    ] },
+    { id: 'binding', beats: [
+      { say: 'Now, the three ways catalysts work.', gap: 0.4 },
+      { say: 'Way one: binding and orienting.', gap: 0.4 },
+      { say: 'The catalyst binds the reactants and holds them in a favorable orientation, or lowers E a.', cap: 'The catalyst binds the reactants and holds them in a favorable orientation, or lowers Ea.', gap: 0.5 },
+      { say: 'Many enzymes work this way. Their active sites bind specific reactant molecules.', gap: 0.5 },
+      { say: 'That forms a new catalyst–reactant intermediate.', gap: 0.5 },
+      { say: 'Then the product leaves, and the enzyme is free to work again.', gap: 0.9 },
+    ] },
+    { id: 'acidbase', beats: [
+      { say: 'Way two: acid–base catalysis.', gap: 0.4 },
+      { say: 'Here, a reactant or an intermediate gains or loses a proton.', gap: 0.5 },
+      { say: 'That creates a new intermediate.', gap: 0.4 },
+      { say: 'And the new intermediate opens up new elementary steps, a different route to the products.', gap: 0.9 },
+    ] },
+    { id: 'surface', beats: [
+      { say: 'Way three: surface catalysis.', gap: 0.4 },
+      { say: 'Reactants bind to a surface, like the platinum in a catalytic converter.', cap: 'Reactants bind to a surface, like the platinum (Pt) in a catalytic converter.', gap: 0.5 },
+      { say: 'On the surface, they form bound intermediates that react more easily.', gap: 0.5 },
+      { say: 'Binding creates new elementary steps with a lower activation energy.', gap: 0.5 },
+      { say: 'The products leave, and the surface is ready for more.', gap: 0.5 },
+      { say: 'The surface does not heat the reactants, and it is not consumed.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap.', gap: 0.4 },
+      { say: 'A catalyst does not make a reaction more product favored.', cap: 'A catalyst does not make a reaction more product-favored.', gap: 0.4 },
+      { say: 'And it does not change delta H.', cap: 'And it does not change ΔH.', gap: 0.6 },
+      { say: 'It lowers the activation energy for the reverse reaction by the same amount as for the forward reaction.', gap: 0.5 },
+      { say: 'So it speeds up the forward and reverse reactions alike, and it does not change the position of an equilibrium.', gap: 0.5 },
+      { say: 'It just provides a faster route.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Adding a catalyst to a reaction:', gap: 0.3 },
+      { say: 'A. lowers delta H.', cap: 'A. lowers ΔH.', gap: 0.2 },
+      { say: 'B. raises the energy of the products.', gap: 0.2 },
+      { say: 'C. provides a pathway with a lower activation energy.', gap: 0.2 },
+      { say: 'D. is used up as the reaction proceeds.', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is C.', gap: 0.4 },
+      { say: 'A catalyst gives an alternative pathway with a lower E a.', cap: 'A catalyst gives an alternative pathway with a lower Ea.', gap: 0.3 },
+      { say: 'Delta H is unchanged, the products sit where they were, and the catalyst is regenerated.', cap: 'ΔH is unchanged, the products sit where they were, and the catalyst is regenerated.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A catalyst gives a new mechanism with a lower activation energy. Delta H is unchanged.', cap: 'A catalyst gives a new mechanism with a lower Ea. ΔH is unchanged.', gap: 0.5 },
+      { say: 'It is consumed and then regenerated, so its net amount is constant.', gap: 0.5 },
+      { say: 'The types: enzyme binding, acid–base, and surface catalysis.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

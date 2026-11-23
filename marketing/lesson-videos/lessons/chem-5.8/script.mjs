@@ -1,0 +1,90 @@
+// Narration for chem-5.8 "Mechanisms & Rate Laws: The Slow Step". Every fact comes from the lesson
+// cards, quick checks and flashcards in app/src/content/chem/u5.ts (and book.ts for the one-step
+// mechanism that is ruled out, and the exam explanation). One entry per sentence: the voice reads
+// `say`; captions show `cap` (or `say`). Formulas are spelled for the voice ("N O two").
+export default {
+  id: 'chem-5.8',
+  title: 'Mechanisms & Rate Laws: The Slow Step',
+  course: 'AP® Chemistry',
+  unit: 'Unit 5 · Kinetics',
+  unitId: 'chem-u5',
+  unitTitle: 'Kinetics',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Mechanisms and rate laws: the slow step.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn which step sets the speed of a reaction, how to get a rate law from a mechanism, and how to test whether a mechanism fits the data.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Picture a team relay race.', gap: 0.4 },
+      { say: 'Two runners are fast. One runner is slow.', gap: 0.5 },
+      { say: 'No matter how fast the others go, the team can only finish as fast as its slowest runner allows.', gap: 0.6 },
+      { say: 'A reaction mechanism works the same way.', gap: 0.4 },
+      { say: 'The slowest elementary step controls the overall rate.', gap: 0.9 },
+    ] },
+    { id: 'rds', beats: [
+      { say: 'That slowest step has a name.', gap: 0.4 },
+      { say: 'It is called the rate-determining step.', gap: 0.6 },
+      { say: 'Careful: it is the slowest step. Not simply the first step, and not the last step.', gap: 0.6 },
+      { say: 'Think of it as a bottleneck. Everything has to pass through it, and it can only go so fast.', gap: 0.5 },
+      { say: 'Fast steps elsewhere cannot make the whole reaction go any faster.', gap: 0.6 },
+      { say: 'Now here is the key rule.', gap: 0.3 },
+      { say: 'If the first step is the slow one, the overall rate law is simply the rate law of that slow step.', gap: 0.5 },
+      { say: 'And because it is an elementary step, you write its rate law straight from its molecularity.', gap: 0.5 },
+      { say: 'For a slow first step, ay plus bee, that gives: rate equals kay, times ay, times bee.', cap: 'For a slow first step, A + B, that gives rate = k[A][B].', gap: 0.9 },
+    ] },
+    { id: 'tests', beats: [
+      { say: 'So how do you check whether a proposed mechanism is any good?', gap: 0.4 },
+      { say: 'It has to pass two tests.', gap: 0.5 },
+      { say: 'Test one: its steps must add up to the overall equation.', gap: 0.5 },
+      { say: 'Test two: its predicted rate law must match the experimental rate law.', gap: 0.5 },
+      { say: 'Pass both, and the mechanism is consistent with experiment.', gap: 0.4 },
+      { say: 'Fail either one, and it is out.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's check one.", gap: 0.4 },
+      { say: 'For N O two plus C O gives N O plus C O two, experiment shows: rate equals kay, times N O two squared.', cap: 'For NO₂ + CO → NO + CO₂, experiment shows rate = k[NO₂]².', gap: 0.5 },
+      { say: 'Step one is slow: two N O two gives N O three plus N O.', cap: 'Step 1 is slow: 2NO₂ → NO₃ + NO.', gap: 0.4 },
+      { say: 'Step two is fast: N O three plus C O gives N O two plus C O two.', cap: 'Step 2 is fast: NO₃ + CO → NO₂ + CO₂.', gap: 0.6 },
+      { say: 'Test one. Do the steps add up? N O three cancels, and one N O two cancels. Yes, they do.', cap: 'Test 1. Do the steps add up? NO₃ cancels, and one NO₂ cancels. Yes, they do.', gap: 0.5 },
+      { say: 'Test two. The slow step is elementary and bimolecular, so its rate law is: rate equals kay, times N O two squared.', cap: 'Test 2. The slow step is elementary and bimolecular, so its rate law is rate = k[NO₂]².', gap: 0.5 },
+      { say: 'That matches the experiment.', gap: 0.4 },
+      { say: 'So the mechanism is consistent with the data.', gap: 0.6 },
+      { say: 'And notice: C O does not appear in the rate law at all. Hold that thought.', cap: 'And notice: CO does not appear in the rate law at all. Hold that thought.', gap: 0.9 },
+    ] },
+    { id: 'ruleout', beats: [
+      { say: 'Now compare a different idea: a single step, N O two plus C O gives N O plus C O two.', cap: 'Now compare a different idea: a single step, NO₂ + CO → NO + CO₂.', gap: 0.5 },
+      { say: 'Test one is easy. One step is already the overall equation.', gap: 0.5 },
+      { say: 'But as an elementary step, it would give: rate equals kay, times N O two, times C O.', cap: 'But as an elementary step, it would give rate = k[NO₂][CO].', gap: 0.5 },
+      { say: 'That does not match the experiment.', gap: 0.4 },
+      { say: 'So this mechanism is ruled out, even though it adds up to the correct overall equation.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's the trick that explains a classic puzzle.", gap: 0.4 },
+      { say: 'Look back at the two-step mechanism. Where is C O in the rate law?', cap: 'Look back at the two-step mechanism. Where is CO in the rate law?', gap: 0.5 },
+      { say: "It isn't there.", gap: 0.5 },
+      { say: 'C O first shows up in step two, after the slow step.', cap: 'CO first shows up in step 2, after the slow step.', gap: 0.5 },
+      { say: 'Anything that first appears after the slow step has no effect on the rate. It is zero order.', gap: 0.5 },
+      { say: "That's why a reactant can be missing from a rate law.", gap: 0.6 },
+      { say: 'On the exam, explain it like this: it first takes part in a fast step after the slow step, so changing its concentration does not change the overall rate.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Step one is slow: ex plus why gives ex why. Step two is fast: ex why plus ex gives ex two why.', cap: 'Step 1 (slow): X + Y → XY. Step 2 (fast): XY + X → X₂Y.', gap: 0.4 },
+      { say: 'Which rate law does this mechanism predict?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is B: rate equals kay, times ex, times why.', cap: 'The answer is B: rate = k[X][Y].', gap: 0.4 },
+      { say: 'The rate law comes from the slow step, ex plus why, which is bimolecular.', cap: 'The rate law comes from the slow step, X + Y, which is bimolecular.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'When the first step is slow, the rate law comes from that slow step\'s molecularity.', gap: 0.5 },
+      { say: 'A valid mechanism adds up to the overall equation, and matches the experimental rate law.', gap: 0.5 },
+      { say: 'And species that appear only after the slow step are zero order.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

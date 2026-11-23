@@ -1,0 +1,90 @@
+// Narration for chem-5.6 "Reaction Energy Profiles". Every fact comes from the lesson cards, quick
+// checks and flashcards in app/src/content/chem/u5.ts, plus the lesson's prose in chem/book.ts.
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-5.6',
+  title: 'Reaction Energy Profiles',
+  course: 'AP® Chemistry',
+  unit: 'Unit 5 · Kinetics',
+  unitId: 'chem-u5',
+  unitTitle: 'Kinetics',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Reaction energy profiles.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to read one diagram that shows a reaction's activation energy and its enthalpy change, forward and in reverse.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Think of a reaction as a hike over a mountain pass.', gap: 0.5 },
+      { say: 'You start in one valley, and you want to reach the next valley, on the other side.', gap: 0.5 },
+      { say: 'The pass is the transition state.', gap: 0.4 },
+      { say: 'The climb up to it is the activation energy.', gap: 0.4 },
+      { say: 'And the difference in height between the two valleys is delta H.', cap: 'And the difference in height between the two valleys is ΔH.', gap: 0.6 },
+      { say: 'An energy profile is that same hike, drawn as a graph.', gap: 0.9 },
+    ] },
+    { id: 'profile', beats: [
+      { say: "Here's a reaction energy profile.", gap: 0.4 },
+      { say: 'It shows how the potential energy changes as reactants turn into products.', gap: 0.5 },
+      { say: "The x axis is the reaction coordinate. It's the progress from reactants to products, as bonds break and form.", cap: "The x-axis is the reaction coordinate. It's the progress from reactants to products, as bonds break and form.", gap: 0.5 },
+      { say: 'The y axis is potential energy.', cap: 'The y-axis is potential energy.', gap: 0.4 },
+      { say: 'The reactants start on the left, and the products end on the right.', gap: 0.4 },
+      { say: 'In between, the curve climbs to a peak.', gap: 0.4 },
+      { say: 'That peak is the transition state: the highest energy point along the reaction coordinate.', cap: 'That peak is the transition state: the highest-energy point along the reaction coordinate.', gap: 0.5 },
+      { say: 'There, the old bonds are partly broken, and the new bonds are partly formed.', gap: 0.9 },
+    ] },
+    { id: 'measure', beats: [
+      { say: "Now let's measure two things on this graph.", gap: 0.4 },
+      { say: 'First, the activation energy. It equals the energy of the transition state, minus the energy of the reactants.', cap: 'First, the activation energy, Ea. It equals the energy of the transition state minus the energy of the reactants.', gap: 0.5 },
+      { say: "It's the height of the climb, measured from the reactants up to the peak.", gap: 0.6 },
+      { say: 'Second, delta H. It equals the energy of the products, minus the energy of the reactants.', cap: 'Second, ΔH. It equals the energy of the products minus the energy of the reactants.', gap: 0.5 },
+      { say: 'Here, the products are lower than the reactants, so delta H is negative. The reaction is exothermic.', cap: 'Here, the products are lower than the reactants, so ΔH is negative. The reaction is exothermic.', gap: 0.6 },
+      { say: 'Now raise the products above the reactants. Delta H is positive, and the reaction is endothermic.', cap: 'Now raise the products above the reactants. ΔH is positive, and the reaction is endothermic.', gap: 0.9 },
+    ] },
+    { id: 'reverse', beats: [
+      { say: 'What about the reverse reaction?', gap: 0.4 },
+      { say: 'Run the profile backwards. Now the products are the starting point.', gap: 0.5 },
+      { say: 'So the reverse activation energy equals the energy of the transition state, minus the energy of the products.', cap: 'So Ea(reverse) equals the energy of the transition state minus the energy of the products.', gap: 0.5 },
+      { say: 'Same peak, but a different starting level.', gap: 0.5 },
+      { say: 'In an exothermic reaction, the products sit lower, so the climb back up is taller.', gap: 0.4 },
+      { say: 'The reverse reaction has the larger activation energy.', gap: 0.6 },
+      { say: "In an endothermic reaction, it's the other way round. The reverse reaction is exothermic, and it has the smaller activation energy.", gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap.', gap: 0.4 },
+      { say: 'Measure each activation energy from the right starting level.', gap: 0.5 },
+      { say: 'The forward climb always starts at the reactants.', gap: 0.4 },
+      { say: 'The reverse climb always starts at the products.', gap: 0.5 },
+      { say: "And don't mix up the two arrows.", gap: 0.3 },
+      { say: 'The activation energy reaches up to the peak. Delta H only compares the two ends: products minus reactants.', cap: 'The activation energy reaches up to the peak. ΔH only compares the two ends: products − reactants.', gap: 0.9 },
+    ] },
+    { id: 'rate', beats: [
+      { say: 'So why does the activation energy matter?', gap: 0.4 },
+      { say: 'It sets the threshold. Particles must collide with enough energy to get over the barrier.', gap: 0.5 },
+      { say: 'With a small activation energy, a large fraction of collisions get over, so the rate constant, kay, is large.', cap: 'With a small activation energy, a large fraction of collisions get over, so the rate constant, k, is large.', gap: 0.5 },
+      { say: 'With a large activation energy, the reaction is slow at the same temperature.', gap: 0.5 },
+      { say: 'Raising the temperature increases kay for every reaction.', cap: 'Raising the temperature increases k for every reaction.', gap: 0.5 },
+      { say: 'The Arrhenius equation links these ideas: a higher temperature, or a lower activation energy, gives a larger kay.', cap: 'The Arrhenius equation links these ideas: a higher temperature, or a lower activation energy, gives a larger k.', gap: 0.5 },
+      { say: 'You only need this idea qualitatively. Arrhenius calculations are not on the A P exam.', cap: 'You only need this idea qualitatively. Arrhenius calculations are not on the AP® exam.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'The reactants are at fifty kilojoules, the transition state is at one hundred thirty, and the products are at twenty. What is the activation energy for the forward reaction?', cap: 'The reactants are at 50 kJ, the transition state is at 130 kJ, and the products are at 20 kJ. What is Ea for the forward reaction?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is eighty kilojoules.', cap: 'The answer is 80 kJ.', gap: 0.4 },
+      { say: 'Transition state minus reactants: one hundred thirty minus fifty is eighty.', cap: 'Transition state − reactants: 130 − 50 = 80 kJ.', gap: 0.5 },
+      { say: 'Delta H is twenty minus fifty, which is negative thirty kilojoules, so the reaction is exothermic.', cap: 'ΔH = 20 − 50 = −30 kJ, so the reaction is exothermic.', gap: 0.4 },
+      { say: 'And the reverse activation energy is one hundred thirty minus twenty: one hundred ten kilojoules. Larger, just as expected.', cap: 'And Ea(reverse) = 130 − 20 = 110 kJ. Larger, just as expected.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'The activation energy equals the transition state, minus the reactants.', cap: 'Ea = transition state − reactants.', gap: 0.5 },
+      { say: 'Delta H equals the products, minus the reactants. Negative is exothermic. Positive is endothermic.', cap: 'ΔH = products − reactants. Negative = exothermic. Positive = endothermic.', gap: 0.5 },
+      { say: 'And in an exothermic reaction, the reverse activation energy is larger than the forward one.', cap: 'Exothermic: the reverse Ea is larger than the forward Ea.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

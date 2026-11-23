@@ -1,0 +1,86 @@
+// Narration for chem-4.5a "Stoichiometry: The Mole Ratio". Every fact comes from the lesson cards,
+// quick checks and flashcards in app/src/content/chem/u4.ts (the methane mass check and the
+// units-cancel habit are from book.ts). One entry per sentence: the voice reads `say`; captions
+// show `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-4.5a',
+  title: 'Stoichiometry: The Mole Ratio',
+  course: 'AP® Chemistry',
+  unit: 'Unit 4 · Chemical Reactions',
+  unitId: 'chem-u4',
+  unitTitle: 'Chemical Reactions',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Stoichiometry: the mole ratio.', cap: 'Stoichiometry: The Mole Ratio.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to read a balanced equation as a recipe, cross the stoichiometry bridge, and turn grams of one substance into grams of another.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Let's start in the kitchen.", gap: 0.4 },
+      { say: 'A recipe says two eggs for every one cup of flour.', cap: 'A recipe says 2 eggs for every 1 cup of flour.', gap: 0.5 },
+      { say: 'How many eggs for three cups? Easy: six!', cap: 'How many eggs for 3 cups? Easy: 6!', gap: 0.6 },
+      { say: 'Stoichiometry is just following a chemical recipe.', gap: 0.4 },
+      { say: 'And the balanced equation is the recipe.', gap: 0.5 },
+      { say: 'It is a recipe in moles. Its mole ratios predict how much of one substance reacts with, or is made from, a given amount of another.', gap: 0.9 },
+    ] },
+    { id: 'ratio', beats: [
+      { say: "Here's a real chemical recipe: making ammonia.", gap: 0.4 },
+      { say: 'N two, plus three H two, makes two N H three.', cap: 'N₂ + 3H₂ → 2NH₃', gap: 0.5 },
+      { say: 'Read it like this: one mole of N two reacts with three moles of H two to make two moles of N H three.', cap: 'Read it like this: 1 mol N₂ reacts with 3 mol H₂ to make 2 mol NH₃.', gap: 0.5 },
+      { say: 'The same ratio works for single molecules: one N two, three H two, two N H three.', cap: 'The same ratio works for single molecules: one N₂, three H₂, two NH₃.', gap: 0.5 },
+      { say: 'Count the atoms. Two nitrogen and six hydrogen on each side.', gap: 0.5 },
+      { say: 'Atoms are conserved, so you can predict product amounts from the reactants, and the other way around.', gap: 0.5 },
+      { say: 'The key point: the coefficients compare moles, or molecules. Not grams.', gap: 0.9 },
+    ] },
+    { id: 'bridge', beats: [
+      { say: 'So how do you get from grams of one substance to grams of another?', gap: 0.4 },
+      { say: 'You cross the stoichiometry bridge.', gap: 0.5 },
+      { say: 'Grams of A, to moles of A, to moles of B, to grams of B.', gap: 0.6 },
+      { say: 'Step one: divide by the molar mass of A.', gap: 0.5 },
+      { say: 'Step two: multiply by the mole ratio, the coefficient of B over the coefficient of A. That ratio is the bridge between the two substances.', gap: 0.5 },
+      { say: 'Step three: multiply by the molar mass of B.', gap: 0.6 },
+      { say: 'Remember: you can only cross from A to B on the mole level.', gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's make some ammonia.", gap: 0.4 },
+      { say: 'How many grams of N H three can be made from ten point zero grams of H two, with plenty of N two?', cap: 'How many grams of NH₃ can be made from 10.0 g of H₂, with plenty of N₂?', gap: 0.6 },
+      { say: 'Step one: grams to moles. Ten point zero grams, divided by two point zero one six grams per mole, is four point nine six moles of H two.', cap: 'Step 1: grams to moles. 10.0 g ÷ 2.016 g/mol = 4.96 mol H₂.', gap: 0.5 },
+      { say: 'Step two: the mole ratio. Four point nine six moles of H two, times two moles of N H three over three moles of H two, is three point three one moles of N H three.', cap: 'Step 2: the mole ratio. 4.96 mol H₂ × (2 mol NH₃ / 3 mol H₂) = 3.31 mol NH₃.', gap: 0.5 },
+      { say: 'Step three: moles to grams. Three point three one moles, times seventeen point zero three grams per mole, is fifty-six point three grams of N H three.', cap: 'Step 3: moles to grams. 3.31 mol × 17.03 g/mol = 56.3 g NH₃.', gap: 0.9 },
+    ] },
+    { id: 'check', beats: [
+      { say: 'Two habits make these answers check themselves.', gap: 0.4 },
+      { say: 'First, write every step with units. Every unit except the one you want should cancel.', gap: 0.6 },
+      { say: 'Second, mass is conserved. Atoms are neither created nor destroyed in a reaction.', gap: 0.5 },
+      { say: 'Burn ten point zero grams of methane, and it takes thirty-nine point nine grams of oxygen. That is forty-nine point nine grams in all.', cap: 'Burn 10.0 g of methane, and it takes 39.9 g of O₂. That is 49.9 g in all.', gap: 0.5 },
+      { say: 'The products are twenty-seven point four grams of carbon dioxide and twenty-two point five grams of water. Also forty-nine point nine grams.', cap: 'The products are 27.4 g of CO₂ and 22.5 g of H₂O. Also 49.9 g.', gap: 0.5 },
+      { say: 'Checking that the masses add up is a quick way to catch an error.', gap: 0.9 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap.', gap: 0.4 },
+      { say: 'Never use the coefficients with grams.', gap: 0.5 },
+      { say: 'Take two H two, plus O two, makes two H two O.', cap: '2H₂ + O₂ → 2H₂O', gap: 0.4 },
+      { say: 'Saying that two grams of H two react with one gram of O two is wrong.', cap: 'Saying that 2 g of H₂ react with 1 g of O₂ is wrong.', gap: 0.5 },
+      { say: 'The two to one ratio is in moles.', cap: 'The 2 : 1 ratio is in moles.', gap: 0.5 },
+      { say: 'Convert to moles first. Always.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Using that same equation, how many moles of O two are needed to react with six point zero moles of H two?', cap: 'Using that same equation, how many moles of O₂ are needed to react with 6.0 mol H₂?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is three point zero moles of O two.', cap: 'The answer is 3.0 mol O₂.', gap: 0.4 },
+      { say: 'The mole ratio of O two to H two is one to two.', cap: 'The mole ratio O₂ : H₂ is 1 : 2.', gap: 0.4 },
+      { say: 'So six point zero moles of H two, times one mole of O two over two moles of H two, gives three point zero moles of O two.', cap: 'So 6.0 mol H₂ × (1 mol O₂ / 2 mol H₂) = 3.0 mol O₂.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Balanced coefficients are mole ratios.', gap: 0.5 },
+      { say: 'To go from grams of A to grams of B: grams to moles, across the mole ratio, then moles back to grams.', gap: 0.5 },
+      { say: 'And never apply the coefficients directly to grams.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

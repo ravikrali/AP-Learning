@@ -1,0 +1,101 @@
+// Narration for chem-8.6 "Structure & Acid Strength". Every fact comes from the lesson cards, quick checks and
+// flashcards in app/src/content/chem/u8.ts (plus chem/book.ts: binary acids down a group, and how distance
+// weakens the inductive effect). One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-8.6',
+  title: 'Structure & Acid Strength',
+  course: 'AP® Chemistry',
+  unit: 'Unit 8 · Acids and Bases',
+  unitId: 'chem-u8',
+  unitTitle: 'Acids and Bases',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Structure and acid strength.', cap: 'Structure & acid strength.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn why some acids give up a proton so easily, and how to rank acids just by looking at their structure.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Here are two acids made of the same atoms: H C L O four, and H C L O.', cap: 'Here are two acids made of the same atoms: HClO₄ and HClO.', gap: 0.4 },
+      { say: 'The only difference is the number of oxygens.', gap: 0.4 },
+      { say: 'Yet H C L O four is a strong acid, and H C L O is weak.', cap: 'Yet HClO₄ is a strong acid, and HClO is weak.', gap: 0.5 },
+      { say: 'Why?', gap: 0.5 },
+      { say: 'The secret is how stable the conjugate base is, after the proton leaves.', gap: 0.8 },
+    ] },
+    { id: 'idea', beats: [
+      { say: "Here's the big idea." },
+      { say: 'When an acid, H A, gives up its proton, it leaves behind A minus, with a negative charge.', cap: 'When an acid, HA, gives up H⁺, it leaves behind A⁻, with a negative charge.', gap: 0.4 },
+      { say: 'The more stable, the happier, that negative charge is, the more easily H A lets go of the proton.', cap: 'The more stable, the "happier", that negative charge is, the more easily HA lets go of the proton.', gap: 0.4 },
+      { say: 'So a more stable conjugate base means a stronger acid.', gap: 0.6 },
+      { say: 'Three things stabilize A minus.', cap: 'Three things stabilize A⁻.', gap: 0.3 },
+      { say: 'Electronegativity: electronegative atoms hold the negative charge well.', gap: 0.3 },
+      { say: 'The inductive effect: electronegative atoms nearby pull electron density away from the O H bond.', cap: 'The inductive effect: electronegative atoms nearby pull electron density away from the O–H bond.', gap: 0.3 },
+      { say: 'And resonance: the charge spreads over several atoms.', gap: 0.5 },
+      { say: 'Strong acids have very weak conjugate bases, like chloride, nitrate and perchlorate.', cap: 'Strong acids have very weak conjugate bases, like Cl⁻, NO₃⁻ and ClO₄⁻.', gap: 0.8 },
+    ] },
+    { id: 'oxy', beats: [
+      { say: 'Pattern one: more oxygen atoms.' },
+      { say: 'Line up the chlorine oxyacids: H C L O four, H C L O three, H C L O two, and H C L O.', cap: 'Line up the chlorine oxyacids: HClO₄, HClO₃, HClO₂ and HClO.', gap: 0.4 },
+      { say: 'That is the order of strength, from strongest to weakest.', gap: 0.5 },
+      { say: 'The extra oxygen atoms pull electron density away from the O H bond.', cap: 'The extra oxygen atoms pull electron density away from the O–H bond.', gap: 0.4 },
+      { say: 'And they give the anion more resonance, so the negative charge spreads out.', gap: 0.5 },
+      { say: 'More oxygens, stronger acid.', gap: 0.8 },
+    ] },
+    { id: 'central', beats: [
+      { say: 'Pattern two: a more electronegative central atom.' },
+      { say: 'Compare H O C L, H O B R, and H O I.', cap: 'Compare HOCl, HOBr and HOI.', gap: 0.4 },
+      { say: 'Same layout. Only the atom on the oxygen changes: chlorine, bromine, or iodine.', gap: 0.5 },
+      { say: 'The more electronegative that atom, the more it pulls on the O H bond, and the more stable the conjugate base.', cap: 'The more electronegative that atom, the more it pulls on the O–H bond, and the more stable the conjugate base.', gap: 0.5 },
+      { say: 'So the order is H O C L, then H O B R, then H O I.', cap: 'So the order is HOCl > HOBr > HOI.', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, a trap.' },
+      { say: 'For binary acids down a group, electronegativity does not win.', gap: 0.4 },
+      { say: 'The hydrogen halides get stronger going down: H F, then H C L, then H B R, then H I.', cap: 'The hydrogen halides get stronger going down: HF < HCl < HBr < HI.', gap: 0.5 },
+      { say: 'Here, bond strength and size win.', gap: 0.4 },
+      { say: 'As the halogen atom gets larger, the bond gets longer and weaker, so the proton comes off more easily.', gap: 0.4 },
+      { say: 'And the negative charge on the larger anion is spread over a greater volume.', gap: 0.8 },
+    ] },
+    { id: 'inductive', beats: [
+      { say: 'Pattern three: electronegative substituents.' },
+      { say: 'Compare acetic acid with trichloroacetic acid.', cap: 'Compare acetic acid, CH₃COOH, with trichloroacetic acid, CCl₃COOH.', gap: 0.4 },
+      { say: 'Three hydrogen atoms are swapped for three chlorine atoms.', gap: 0.4 },
+      { say: 'The chlorines pull electron density away, and stabilize the conjugate base. That is the inductive effect.', gap: 0.5 },
+      { say: 'So trichloroacetic acid is much stronger.', gap: 0.4 },
+      { say: 'The farther those atoms are from the C O O H group, the smaller their effect.', cap: 'The farther those atoms are from the –COOH group, the smaller their effect.', gap: 0.6 },
+      { say: 'Carboxylic acids are a common class of weak acid.', gap: 0.3 },
+      { say: 'Their conjugate base, the carboxylate ion, is stabilized by resonance between its two oxygen atoms.', gap: 0.8 },
+    ] },
+    { id: 'bases', beats: [
+      { say: 'What about bases?' },
+      { say: 'The strong bases are the Group one hydroxides, and Group two hydroxides like calcium and barium hydroxide.', cap: 'The strong bases are the Group 1 hydroxides, and Group 2 hydroxides like Ca(OH)₂ and Ba(OH)₂.', gap: 0.3 },
+      { say: 'Their conjugate acid, water, is very weak.', gap: 0.5 },
+      { say: 'Weak bases include nitrogen bases with a lone pair on the nitrogen, like ammonia and amines.', cap: 'Weak bases include nitrogen bases with a lone pair on N, like ammonia (NH₃) and amines (CH₃NH₂).', gap: 0.4 },
+      { say: 'And carboxylate ions, like acetate, are weak bases too.', cap: 'And carboxylate ions, like acetate (CH₃COO⁻), are weak bases too.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Which is the strongest acid? H O I, H O B R, H O C L, or are they all equal?', cap: 'Which is the strongest acid? HOI, HOBr, HOCl, or are they all equal?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is H O C L.', cap: 'The answer is HOCl.', gap: 0.4 },
+      { say: 'Chlorine is the most electronegative central atom. It pulls electron density from the O H bond, and best stabilizes the conjugate base.', cap: 'Chlorine is the most electronegative central atom. It pulls electron density from the O–H bond, and best stabilizes the conjugate base.', gap: 0.9 },
+    ] },
+    { id: 'frq', beats: [
+      { say: 'One tip for free response questions.', cap: 'One tip for free-response questions.' },
+      { say: 'Explain acid strength through the conjugate base.', gap: 0.5 },
+      { say: 'For example: the additional electronegative oxygen atoms in H C L O three withdraw electron density,', cap: 'For example: the additional electronegative oxygen atoms in HClO₃ withdraw electron density,', gap: 0.2 },
+      { say: 'and delocalize the negative charge on C L O three minus through resonance.', cap: 'and delocalize the negative charge on ClO₃⁻ through resonance.', gap: 0.3 },
+      { say: 'That stabilizes the conjugate base, so H C L O three is a stronger acid than H C L O two.', cap: 'That stabilizes the conjugate base, so HClO₃ is a stronger acid than HClO₂.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A more stable conjugate base means a stronger acid.', gap: 0.5 },
+      { say: 'More oxygens, a more electronegative central atom, and electronegative substituents all make an acid stronger.', gap: 0.5 },
+      { say: 'Carboxylic acids are weak acids. Ammonia, amines and carboxylates are weak bases.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

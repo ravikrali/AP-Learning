@@ -1,0 +1,91 @@
+// Narration for chem-5.7 "Reaction Mechanisms". Every fact comes from the lesson cards, quick
+// checks and flashcards in app/src/content/chem/u5.ts (and book.ts for the "supported, not
+// proven" prose). One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// Formulas are spelled for the voice ("N O two"). `gap` = seconds of silence after the sentence.
+export default {
+  id: 'chem-5.7',
+  title: 'Reaction Mechanisms',
+  course: 'AP® Chemistry',
+  unit: 'Unit 5 · Kinetics',
+  unitId: 'chem-u5',
+  unitTitle: 'Kinetics',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Reaction mechanisms.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn what a mechanism is, how to add up its steps, and how to spot an intermediate and a catalyst at a glance.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Think of a balanced equation as a movie poster.', gap: 0.4 },
+      { say: 'It shows you the start and the finish.', gap: 0.5 },
+      { say: "But it doesn't show you what happens in between.", gap: 0.6 },
+      { say: 'A mechanism is the whole movie, scene by scene.', gap: 0.5 },
+      { say: 'It tells the story of how the reaction really happens.', gap: 0.9 },
+    ] },
+    { id: 'pieces', beats: [
+      { say: 'So what is a mechanism?', gap: 0.4 },
+      { say: 'It is a series of elementary steps.', gap: 0.5 },
+      { say: 'When you add up the steps, they must give the overall balanced equation.', gap: 0.6 },
+      { say: 'Along the way, two kinds of species can show up that are not in the overall equation.', gap: 0.5 },
+      { say: 'An intermediate is produced in one step, and consumed in a later step.', gap: 0.4 },
+      { say: 'It exists only while the reaction is running.', gap: 0.6 },
+      { say: 'A catalyst is consumed in an early step, and regenerated later.', gap: 0.4 },
+      { say: "It's present at the start, and at the end.", gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's try one.", gap: 0.4 },
+      { say: 'Step one: N O two plus N O two gives N O three plus N O.', cap: 'Step 1: NO₂ + NO₂ → NO₃ + NO', gap: 0.4 },
+      { say: 'Step two: N O three plus C O gives N O two plus C O two.', cap: 'Step 2: NO₃ + CO → NO₂ + CO₂', gap: 0.6 },
+      { say: 'First, add the two steps together, as if they were one equation.', gap: 0.5 },
+      { say: 'Now cancel anything that appears on both sides.', gap: 0.4 },
+      { say: 'N O three is on both sides, so it cancels.', cap: 'NO₃ is on both sides, so it cancels.', gap: 0.4 },
+      { say: 'One N O two is on both sides too, so one of them cancels.', cap: 'One NO₂ is on both sides too, so one of them cancels.', gap: 0.6 },
+      { say: 'What is left is the overall reaction: N O two plus C O gives N O plus C O two.', cap: 'What is left is the overall reaction: NO₂ + CO → NO + CO₂.', gap: 0.6 },
+      { say: 'And N O three is the intermediate. It is made in step one, and used in step two.', cap: 'And NO₃ is the intermediate. It is made in step 1, and used in step 2.', gap: 0.9 },
+    ] },
+    { id: 'catalyst', beats: [
+      { say: 'Now a mechanism with a catalyst.', gap: 0.4 },
+      { say: 'Step one: H two O two plus I minus gives water plus I O minus.', cap: 'Step 1: H₂O₂ + I⁻ → H₂O + IO⁻', gap: 0.4 },
+      { say: 'Step two: H two O two plus I O minus gives water, oxygen, and I minus.', cap: 'Step 2: H₂O₂ + IO⁻ → H₂O + O₂ + I⁻', gap: 0.6 },
+      { say: 'Follow I minus. It is used in step one, and regenerated in step two. So it is the catalyst.', cap: 'Follow I⁻. It is used in step 1, and regenerated in step 2. So it is the catalyst.', gap: 0.5 },
+      { say: 'Now follow I O minus. It is made in step one, and used in step two. So it is the intermediate.', cap: 'Now follow IO⁻. It is made in step 1, and used in step 2. So it is the intermediate.', gap: 0.5 },
+      { say: 'Cancel them both, and the overall reaction is: two H two O two gives two H two O plus O two.', cap: 'Cancel them both, and the overall reaction is: 2H₂O₂ → 2H₂O + O₂.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a quick trick to tell them apart in one glance.", gap: 0.5 },
+      { say: 'Look at where the species first appears.', gap: 0.4 },
+      { say: 'An intermediate first appears on the right, as a product. Later, it shows up on the left.', gap: 0.4 },
+      { say: 'Made, then used.', gap: 0.6 },
+      { say: 'A catalyst first appears on the left, as a reactant. Later, it shows up on the right.', gap: 0.4 },
+      { say: 'Used, then given back.', gap: 0.6 },
+      { say: 'And neither one appears in the overall equation.', gap: 0.9 },
+    ] },
+    { id: 'evidence', beats: [
+      { say: 'So how do chemists know a mechanism is right?', gap: 0.4 },
+      { say: "Here's the catch: a mechanism can never be proven. It can only be supported.", gap: 0.5 },
+      { say: 'Several different mechanisms can add up to the same overall equation.', gap: 0.5 },
+      { say: 'Detecting an intermediate in an experiment is strong evidence for one proposed mechanism over another.', gap: 0.5 },
+      { say: 'The mechanism must also agree with the experimental rate law. More on that in the next lesson.', gap: 0.5 },
+      { say: 'On the exam, say a mechanism is consistent with the data, not proven.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Step one: C L two gives two C L. Step two: C L plus C H C L three gives H C L plus C C L three. Step three: C C L three plus C L gives C C L four.', cap: 'Step 1: Cl₂ → 2Cl. Step 2: Cl + CHCl₃ → HCl + CCl₃. Step 3: CCl₃ + Cl → CCl₄.', gap: 0.4 },
+      { say: 'Which species are intermediates?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is B: C L and C C L three.', cap: 'The answer is B: Cl and CCl₃.', gap: 0.4 },
+      { say: 'C L is made in step one, and used in steps two and three.', cap: 'Cl is made in step 1, and used in steps 2 and 3.', gap: 0.3 },
+      { say: 'C C L three is made in step two, and used in step three.', cap: 'CCl₃ is made in step 2, and used in step 3.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A mechanism is a series of elementary steps that add up to the overall equation.', gap: 0.5 },
+      { say: 'An intermediate is made, then used. A catalyst is used, then regenerated.', gap: 0.5 },
+      { say: 'And detecting an intermediate supports a mechanism.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

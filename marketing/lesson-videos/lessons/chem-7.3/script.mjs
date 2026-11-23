@@ -1,0 +1,96 @@
+// Narration for chem-7.3 "Writing K and Q". Every fact comes from the lesson cards, quick checks and
+// flashcards in app/src/content/chem/u7.ts (plus the lesson's prose in chem/book.ts: Kc vs. Kp and why
+// solids and pure liquids are left out). One entry per sentence: the voice reads `say`; captions show
+// `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-7.3',
+  title: 'Writing K and Q',
+  course: 'AP® Chemistry',
+  unit: 'Unit 7 · Equilibrium',
+  unitId: 'chem-u7',
+  unitTitle: 'Equilibrium',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Writing K and Q.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn to write the equilibrium constant for a reaction, what to leave out of it, and its twin, the reaction quotient.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Every reaction at equilibrium has a magic ratio.', gap: 0.4 },
+      { say: "It's a ratio of products to reactants, at a given temperature.", gap: 0.5 },
+      { say: 'That ratio is the equilibrium constant, K.', gap: 0.6 },
+      { say: 'So how do you write it for a real reaction?', gap: 0.8 },
+    ] },
+    { id: 'law', beats: [
+      { say: 'The rule is called the law of mass action.' },
+      { say: 'Take a general reaction: a A plus b B, in equilibrium with c C plus d D.', cap: 'Take a general reaction: aA + bB ⇌ cC + dD.', gap: 0.5 },
+      { say: 'Products go on top. Reactants go on the bottom.', gap: 0.5 },
+      { say: 'Then each concentration is raised to its coefficient.', gap: 0.5 },
+      { say: 'So K c equals C to the c, times D to the d, over A to the a, times B to the b.', cap: 'So Kc = [C]ᶜ[D]ᵈ / [A]ᵃ[B]ᵇ.', gap: 0.5 },
+      { say: 'The square brackets stand for molar concentrations.', gap: 0.4 },
+      { say: 'Dissolved species always appear as molarities.', gap: 0.8 },
+    ] },
+    { id: 'kp', beats: [
+      { say: 'For gases, you can use partial pressures instead.' },
+      { say: 'That gives K p: the same shape, with pressures in place of concentrations.', cap: 'That gives Kp: the same shape, with pressures in place of concentrations.', gap: 0.5 },
+      { say: 'Take two sulfur dioxide plus oxygen, in equilibrium with two sulfur trioxide.', cap: 'Take 2SO₂(g) + O₂(g) ⇌ 2SO₃(g).', gap: 0.5 },
+      { say: 'K c is sulfur trioxide squared, over sulfur dioxide squared, times oxygen.', cap: 'Kc = [SO₃]² / [SO₂]²[O₂]', gap: 0.4 },
+      { say: 'K p has the same exponents, written with partial pressures.', cap: 'Kp = (P_SO₃)² / (P_SO₂)²(P_O₂)', gap: 0.5 },
+      { say: 'The two usually have different values, so use the type of K the question gives, with matching data.', gap: 0.4 },
+      { say: "Converting between K c and K p isn't tested, but notice which one a question uses.", cap: "Converting between Kc and Kp isn't tested, but notice which one a question uses.", gap: 0.8 },
+    ] },
+    { id: 'solids', beats: [
+      { say: 'Next: what to leave out.' },
+      { say: "Solids and pure liquids don't appear in K or Q.", gap: 0.5 },
+      { say: "Their concentration doesn't change with amount.", gap: 0.4 },
+      { say: 'A bigger lump of calcium carbonate has more moles, but also more volume.', cap: 'A bigger lump of CaCO₃ has more moles, but also more volume.', gap: 0.4 },
+      { say: 'So its moles per liter stay the same, and that constant value is absorbed into K.', gap: 0.5 },
+      { say: 'When calcium carbonate breaks down into calcium oxide and carbon dioxide gas, both solids drop out.', cap: 'When CaCO₃(s) breaks down into CaO(s) and CO₂(g), both solids drop out.', gap: 0.4 },
+      { say: 'K p is just the pressure of carbon dioxide.', cap: 'Kp = P_CO₂', gap: 0.5 },
+      { say: "As long as some solid is present, its amount doesn't affect the equilibrium.", gap: 0.8 },
+    ] },
+    { id: 'water', beats: [
+      { say: 'Water as the solvent is treated the same way.' },
+      { say: 'Its concentration hardly changes in dilute solutions.', gap: 0.5 },
+      { say: 'Take ammonia plus water, in equilibrium with ammonium ions and hydroxide ions.', cap: 'Take NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq).', gap: 0.5 },
+      { say: 'K equals ammonium times hydroxide, over ammonia.', cap: 'K = [NH₄⁺][OH⁻] / [NH₃]', gap: 0.4 },
+      { say: 'No water!', gap: 0.8 },
+    ] },
+    { id: 'q', beats: [
+      { say: 'Now meet Q, the reaction quotient.' },
+      { say: 'Q uses the same expression as K, but with the current concentrations, at any moment.', gap: 0.4 },
+      { say: "Those concentrations don't have to be at equilibrium.", gap: 0.5 },
+      { say: 'As the reaction proceeds, Q moves toward K.', gap: 0.5 },
+      { say: 'At equilibrium, Q equals K.', gap: 0.5 },
+      { say: 'Same formula, different moment.', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Watch out for two traps.' },
+      { say: 'Trap one: coefficients become exponents, not multipliers.', gap: 0.4 },
+      { say: "For sulfur trioxide, the two goes up as a power. It doesn't go in front.", gap: 0.4 },
+      { say: 'And concentrations multiply. They are never added.', gap: 0.6 },
+      { say: 'Trap two: check the phase labels.', gap: 0.4 },
+      { say: 'Solid silver chloride dissolves into silver ions and chloride ions.', cap: 'AgCl(s) ⇌ Ag⁺(aq) + Cl⁻(aq)', gap: 0.4 },
+      { say: 'The solid drops out, so K is silver ion times chloride ion.', cap: 'The solid drops out, so K = [Ag⁺][Cl⁻].', gap: 0.4 },
+      { say: 'This one has a special name: K s p.', cap: 'This one has a special name: Ksp.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'What is K c for nitrogen plus three hydrogen, in equilibrium with two ammonia?', cap: 'What is Kc for N₂(g) + 3H₂(g) ⇌ 2NH₃(g)?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is B.', gap: 0.4 },
+      { say: 'Products over reactants: ammonia on top, nitrogen and hydrogen on the bottom.', gap: 0.3 },
+      { say: 'Each one is raised to its coefficient: ammonia squared, and hydrogen cubed.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'K is products over reactants, each raised to its coefficient.', gap: 0.5 },
+      { say: 'Leave out solids and pure liquids.', gap: 0.5 },
+      { say: 'Q has the same form at any moment. At equilibrium, Q equals K.', cap: 'Q has the same form at any moment. At equilibrium, Q = K.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

@@ -1,0 +1,98 @@
+// Narration for chem-3.11 "Spectroscopy & the EM Spectrum". Every fact comes from the lesson cards,
+// quick checks and diagram caption in app/src/content/chem/u3.ts and diagrams.tsx (the energy-level
+// spacing, fingerprint and UV-damage lines are from book.ts). One entry per sentence: the voice
+// reads `say`; captions show `cap` (or `say`). `gap` = seconds of silence after the sentence.
+export default {
+  id: 'chem-3.11',
+  title: 'Spectroscopy & the EM Spectrum',
+  course: 'AP® Chemistry',
+  unit: 'Unit 3 · Properties of Substances and Mixtures',
+  unitId: 'chem-u3',
+  unitTitle: 'Properties of Substances and Mixtures',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Spectroscopy and the electromagnetic spectrum.', cap: 'Spectroscopy & the EM spectrum.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn which kinds of light make molecules spin, which make them vibrate, and which make their electrons jump.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Here's something you see every day.", gap: 0.4 },
+      { say: 'A microwave oven heats food by making water molecules spin.', gap: 0.5 },
+      { say: 'An infrared lamp makes molecules vibrate.', gap: 0.5 },
+      { say: 'And sunlight can excite electrons, and give you a sunburn.', gap: 0.6 },
+      { say: 'Different light does different things to molecules.', gap: 0.9 },
+    ] },
+    { id: 'spectrum', beats: [
+      { say: 'All of these are part of the electromagnetic spectrum.', gap: 0.4 },
+      { say: 'From left to right: radio waves, microwaves, infrared, visible light, ultraviolet, and X-rays.', gap: 0.5 },
+      { say: 'As you move to the right, the frequency gets higher, and the wavelength gets shorter.', gap: 0.4 },
+      { say: 'Higher frequency means more energy per photon.', gap: 0.5 },
+      { say: 'So the energy order is microwave, then infrared, then visible, then ultraviolet.', gap: 0.5 },
+      { say: 'And more energetic light makes a bigger change in a molecule.', gap: 0.9 },
+    ] },
+    { id: 'rotation', beats: [
+      { say: 'Start with the lowest energy of the three: microwaves.', gap: 0.4 },
+      { say: "Microwaves cause changes in a molecule's rotational energy levels.", gap: 0.4 },
+      { say: 'In plain words, they make molecules spin.', gap: 0.5 },
+      { say: "That's how a microwave oven heats food: it makes the water molecules spin.", gap: 0.5 },
+      { say: 'Rotational levels are very close together, so a low energy microwave photon is enough to change them.', gap: 0.9 },
+    ] },
+    { id: 'vibration', beats: [
+      { say: 'Next up in energy: infrared, or I R.', cap: 'Next up in energy: infrared, or IR.', gap: 0.4 },
+      { say: 'Infrared radiation causes changes in vibrational energy levels.', gap: 0.4 },
+      { say: 'The bonds stretch, and the bonds bend.', gap: 0.6 },
+      { say: 'Vibrational levels are farther apart than rotational levels, so they need an infrared photon.', gap: 0.9 },
+    ] },
+    { id: 'electronic', beats: [
+      { say: 'Higher still: ultraviolet and visible light, called U V vis for short.', cap: 'Higher still: ultraviolet and visible light, called UV-vis for short.', gap: 0.4 },
+      { say: 'These cause electronic transitions.', gap: 0.4 },
+      { say: 'An electron absorbs the light and jumps to a higher energy level.', gap: 0.5 },
+      { say: 'Electronic levels are farther apart still, so they need visible or ultraviolet photons.', gap: 0.6 },
+      { say: 'This is where color comes from.', gap: 0.3 },
+      { say: 'A solution looks blue because its molecules absorb some visible light, and that absorption is an electronic transition.', gap: 0.6 },
+      { say: 'Ultraviolet photons can even carry enough energy to break chemical bonds. That is why U V light can damage skin.', cap: 'Ultraviolet photons can even carry enough energy to break chemical bonds. That is why UV light can damage skin.', gap: 0.9 },
+    ] },
+    { id: 'ladder', beats: [
+      { say: "Let's put all three on one energy ladder.", gap: 0.4 },
+      { say: 'Rotational levels are packed close together.', gap: 0.3 },
+      { say: 'Vibrational levels are farther apart.', gap: 0.3 },
+      { say: 'And electronic levels are the farthest apart of all.', gap: 0.5 },
+      { say: 'A molecule can only absorb a photon whose energy matches the gap between two of its allowed levels.', gap: 0.5 },
+      { say: 'Small gap, low energy light. Big gap, high energy light.', gap: 0.4 },
+      { say: 'So the size of the change goes: rotation, less than vibration, less than electronic.', cap: 'So the size of the change goes: rotation < vibration < electronic.', gap: 0.9 },
+    ] },
+    { id: 'fingerprint', beats: [
+      { say: 'This is what makes spectroscopy so useful.', gap: 0.4 },
+      { say: 'Each substance has its own energy levels, so it absorbs its own set of wavelengths.', gap: 0.5 },
+      { say: 'An infrared spectrum shows which bonds are present, because different bonds vibrate at different frequencies.', gap: 0.5 },
+      { say: 'A U V visible spectrum shows electronic transitions, and the colors of substances.', cap: 'A UV-visible spectrum shows electronic transitions, and the colors of substances.', gap: 0.5 },
+      { say: 'Together, a spectrum works like a fingerprint. It identifies a substance without any chemical reaction.', gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a trick to keep the three straight.", gap: 0.4 },
+      { say: 'My Insides Vibrate, Electrons Ultra-jump.', cap: '“My Insides Vibrate, Electrons Ultra-jump.”', gap: 0.6 },
+      { say: 'M is for microwave, which means rotation. Think of food rotating in the microwave.', gap: 0.5 },
+      { say: 'I is for infrared, and V is for vibration.', gap: 0.4 },
+      { say: 'U is for U V and visible, and E is for electrons.', cap: 'U is for UV and visible, and E is for electrons.', gap: 0.5 },
+      { say: 'And keep the energy order: microwave, less than infrared, less than visible, less than U V.', cap: 'And keep the energy order: microwave < IR < visible < UV.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Which type of radiation causes transitions between vibrational energy levels of a molecule? Microwave, infrared, ultraviolet, or radio?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is infrared.', gap: 0.4 },
+      { say: 'Infrared radiation matches the energy of molecular vibrations: bonds stretching and bending.', gap: 0.4 },
+      { say: 'Microwaves change rotation, and ultraviolet causes electronic transitions.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Microwaves change rotation, and infrared changes vibration.', gap: 0.5 },
+      { say: 'Ultraviolet and visible light cause electronic transitions.', gap: 0.5 },
+      { say: 'And the energy order is microwave, less than infrared, less than visible, less than U V.', cap: 'And the energy order is microwave < IR < visible < UV.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

@@ -1,0 +1,86 @@
+// Narration for chem-5.9 "Pre-Equilibrium Approximation". Every fact comes from the lesson cards,
+// quick checks and flashcards in app/src/content/chem/u5.ts (and book.ts for the full derivation and
+// for why the first step stays at equilibrium). One entry per sentence: the voice reads `say`;
+// captions show `cap` (or `say`). Formulas are spelled for the voice ("N two O two").
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-5.9',
+  title: 'Pre-Equilibrium Approximation',
+  course: 'AP® Chemistry',
+  unit: 'Unit 5 · Kinetics',
+  unitId: 'chem-u5',
+  unitTitle: 'Kinetics',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'The pre-equilibrium approximation.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn what to do when the slow step comes second, and how one clever substitution gives you the rate law.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: 'Here is a puzzle.', gap: 0.4 },
+      { say: 'What if the slow step comes second, and it uses an intermediate made in a fast first step?', gap: 0.5 },
+      { say: 'The slow step sets the rate, so you would write its rate law.', gap: 0.4 },
+      { say: 'But that rate law would contain the intermediate.', gap: 0.6 },
+      { say: 'And a final rate law can never contain an intermediate.', gap: 0.5 },
+      { say: 'Why not? Intermediates exist only briefly.', gap: 0.4 },
+      { say: "They can't be controlled or measured as starting conditions.", gap: 0.5 },
+      { say: 'Rate laws are written in terms of species you can set and measure: the reactants, and sometimes a catalyst.', gap: 0.9 },
+    ] },
+    { id: 'idea', beats: [
+      { say: "So here's the idea.", gap: 0.4 },
+      { say: 'Say a fast, reversible first step comes before a slow step.', gap: 0.5 },
+      { say: 'The first step goes back and forth much faster than the slow step uses up its product.', gap: 0.5 },
+      { say: 'Most of the intermediate that forms simply falls apart, back into the reactants, long before it can react in the slow step.', gap: 0.5 },
+      { say: 'The small amount drawn off by the slow step hardly disturbs that balance.', gap: 0.5 },
+      { say: 'So we treat the first step as being at equilibrium.', gap: 0.6 },
+      { say: "That's the pre-equilibrium approximation.", gap: 0.9 },
+    ] },
+    { id: 'example', beats: [
+      { say: "Let's try a real one: two N O plus O two gives two N O two.", cap: "Let's try a real one: 2NO + O₂ → 2NO₂.", gap: 0.5 },
+      { say: 'Step one is fast and reversible: two N O form N two O two, and N two O two falls back apart.', cap: 'Step 1 is fast and reversible: 2NO ⇌ N₂O₂.', gap: 0.5 },
+      { say: 'Step two is slow: N two O two plus O two gives two N O two.', cap: 'Step 2 is slow: N₂O₂ + O₂ → 2NO₂.', gap: 0.6 },
+      { say: 'Start with the slow step. Its rate law is: rate equals k two, times N two O two, times O two.', cap: 'Start with the slow step. Its rate law is: rate = k₂[N₂O₂][O₂].', gap: 0.5 },
+      { say: 'But N two O two is an intermediate. It is made in step one, and used in step two.', cap: 'But N₂O₂ is an intermediate. It is made in step 1, and used in step 2.', gap: 0.4 },
+      { say: "So it can't stay in the rate law. We have to replace it.", gap: 0.9 },
+    ] },
+    { id: 'derive', beats: [
+      { say: 'Use the equilibrium in step one.', gap: 0.4 },
+      { say: 'At equilibrium, the forward rate equals the reverse rate.', gap: 0.5 },
+      { say: 'So k one, times N O squared, equals k minus one, times N two O two.', cap: 'So k₁[NO]² = k₋₁[N₂O₂].', gap: 0.5 },
+      { say: 'Solve for the intermediate: N two O two equals k one over k minus one, times N O squared.', cap: 'Solve for the intermediate: [N₂O₂] = (k₁/k₋₁)[NO]².', gap: 0.6 },
+      { say: 'Now substitute that into the slow step.', gap: 0.4 },
+      { say: 'Rate equals k two, times k one over k minus one, times N O squared, times O two.', cap: 'rate = k₂(k₁/k₋₁)[NO]²[O₂]', gap: 0.5 },
+      { say: 'Combine the constants into one k.', gap: 0.4 },
+      { say: 'The rate law is: rate equals k, times N O squared, times O two.', cap: 'The rate law is: rate = k[NO]²[O₂].', gap: 0.5 },
+      { say: 'Only reactants from the overall reaction. No intermediate.', gap: 0.4 },
+      { say: "It's third order overall, even though no step involves three molecules colliding at once.", gap: 0.9 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's a shortcut that usually works.", gap: 0.4 },
+      { say: 'With a fast pre-equilibrium followed by a slow step, the rate law usually equals all the reactants that went into making the slow step, counted from the start.', cap: "With a fast pre-equilibrium followed by a slow step, the rate law usually equals all the reactants that went into making the slow step's species, counted from the start.", gap: 0.5 },
+      { say: 'The slow step needs N two O two and O two.', cap: 'The slow step needs N₂O₂ and O₂.', gap: 0.4 },
+      { say: 'N two O two was made from two N O.', cap: 'N₂O₂ was made from 2NO.', gap: 0.4 },
+      { say: 'So count two N O and one O two: rate equals k, times N O squared, times O two.', cap: 'So count 2NO and one O₂: rate = k[NO]²[O₂].', gap: 0.6 },
+      { say: 'But on free response questions, still write out the substitution for full credit.', cap: 'But on free-response questions, still write out the substitution for full credit.', gap: 0.9 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'Step one, fast and reversible: N O plus B R two forms N O B R two. Step two, slow: N O B R two plus N O gives two N O B R.', cap: 'Step 1 (fast, reversible): NO + Br₂ ⇌ NOBr₂. Step 2 (slow): NOBr₂ + NO → 2NOBr.', gap: 0.4 },
+      { say: 'What rate law does this predict?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is C: rate equals k, times N O squared, times B R two.', cap: 'The answer is C: rate = k[NO]²[Br₂].', gap: 0.4 },
+      { say: 'The slow step gives: rate equals k two, times N O B R two, times N O.', cap: 'The slow step gives: rate = k₂[NOBr₂][NO].', gap: 0.3 },
+      { say: 'Replace N O B R two with K, times N O, times B R two, and you get N O squared, times B R two.', cap: 'Replace [NOBr₂] with K[NO][Br₂], and you get [NO]²[Br₂].', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'A fast reversible step before a slow step: treat it as being at equilibrium.', gap: 0.5 },
+      { say: 'Solve for the intermediate using k forward times its reactants equals k reverse times the intermediate. Then substitute.', cap: 'Solve for the intermediate using k_forward[…] = k_reverse[…], then substitute.', gap: 0.5 },
+      { say: 'And the final rate law has no intermediates.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

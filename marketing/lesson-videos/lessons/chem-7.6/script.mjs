@@ -1,0 +1,90 @@
+// Narration for chem-7.6 "Manipulating K". Every fact comes from the lesson cards, quick checks and
+// flashcards in app/src/content/chem/u7.ts (plus the lesson's prose in chem/book.ts: applying the
+// rules to the ammonia equation, and why K values multiply). One entry per sentence: the voice reads
+// `say`; captions show `cap` (or `say`). `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-7.6',
+  title: 'Manipulating K',
+  course: 'AP® Chemistry',
+  unit: 'Unit 7 · Equilibrium',
+  unitId: 'chem-u7',
+  unitTitle: 'Equilibrium',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Manipulating K.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn three rules for finding K when you reverse, multiply, or add chemical equations.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "You already know Hess's law." },
+      { say: 'Reverse a reaction, and delta H flips its sign.', cap: 'Reverse a reaction, and ΔH flips its sign.', gap: 0.4 },
+      { say: 'Add reactions, and you add their delta H values.', cap: 'Add reactions, and you add their ΔH values.', gap: 0.5 },
+      { say: 'Equilibrium constants follow rules like these too.', gap: 0.4 },
+      { say: 'When an equation is reversed, multiplied, or combined with others, its K changes in predictable ways.', gap: 0.5 },
+      { say: "But there's a twist.", gap: 0.5 },
+      { say: 'K values multiply, instead of add.', gap: 0.8 },
+    ] },
+    { id: 'reverse', beats: [
+      { say: 'Rule one: reverse the equation.' },
+      { say: 'Take nitrogen plus three hydrogen, making two ammonia.', cap: 'Take N₂(g) + 3H₂(g) ⇌ 2NH₃(g).', gap: 0.4 },
+      { say: 'Its K expression has ammonia on top, and nitrogen and hydrogen on the bottom.', cap: 'K = [NH₃]² / ([N₂][H₂]³)', gap: 0.5 },
+      { say: 'Now reverse it: two ammonia, making nitrogen and three hydrogen.', cap: 'Now reverse it: 2NH₃(g) ⇌ N₂(g) + 3H₂(g).', gap: 0.4 },
+      { say: 'Products and reactants swap places, so the whole expression flips upside down.', gap: 0.5 },
+      { say: 'The new K is one over K.', cap: 'The new K is 1/K.', gap: 0.5 },
+      { say: 'A large K becomes small, and a small K becomes large.', gap: 0.8 },
+    ] },
+    { id: 'multiply', beats: [
+      { say: 'Rule two: multiply the coefficients by a number, c.' },
+      { say: 'Then raise K to the power c.', cap: 'Then raise K to the power c: K_new = K^c.', gap: 0.5 },
+      { say: 'In the K expression, the coefficients are the exponents. Multiply them all by c, and the whole expression is raised to the power c.', gap: 0.6 },
+      { say: 'Here is an example. For two nitrogen dioxide making dinitrogen tetroxide, K is six point zero.', cap: 'Here is an example. For 2NO₂(g) ⇌ N₂O₄(g), K = 6.0.', gap: 0.4 },
+      { say: 'Now multiply by one half: one nitrogen dioxide, making one half dinitrogen tetroxide.', cap: 'Now multiply by ½: NO₂(g) ⇌ ½N₂O₄(g).', gap: 0.5 },
+      { say: 'K to the one half power is the square root of K.', cap: 'K^(1/2) is the square root of K.', gap: 0.4 },
+      { say: 'The square root of six point zero is two point four.', cap: '√6.0 = 2.4', gap: 0.5 },
+      { say: 'So remember: multiply by one half, take the square root.', cap: 'So remember: multiply by ½, take the square root.', gap: 0.8 },
+    ] },
+    { id: 'add', beats: [
+      { say: 'Rule three: add two equations.' },
+      { say: 'Then multiply their K values.', cap: 'Then multiply their K values: K_new = K₁ × K₂.', gap: 0.5 },
+      { say: 'Here is why. Say A makes B, and B makes C.', gap: 0.4 },
+      { say: 'B is a product in the first equation, and a reactant in the second.', gap: 0.4 },
+      { say: 'Multiply the two K expressions, and B sits on the top of one and the bottom of the other. So it cancels.', gap: 0.5 },
+      { say: 'What is left is the K expression for the sum: A making C.', gap: 0.6 },
+      { say: 'So if reaction one has K one equal to three point zero, and reaction two has K two equal to five point zero, the overall K is three times five: fifteen.', cap: 'So if K₁ = 3.0 and K₂ = 5.0, the overall K = 3.0 × 5.0 = 15.', gap: 0.8 },
+    ] },
+    { id: 'combo', beats: [
+      { say: 'You can use the rules together.' },
+      { say: 'Back to the ammonia equation, with its K.', gap: 0.4 },
+      { say: 'Reverse it and double it: four ammonia, making two nitrogen plus six hydrogen.', cap: 'Reverse it and double it: 4NH₃ ⇌ 2N₂ + 6H₂.', gap: 0.4 },
+      { say: 'Reversing gives one over K. Doubling squares that.', cap: 'Reversing gives 1/K. Doubling squares that.', gap: 0.4 },
+      { say: 'So the new K is one over K squared.', cap: 'So the new K is (1/K)² = 1/K².', gap: 0.6 },
+      { say: 'Or multiply the original by one half: one half nitrogen plus three halves hydrogen, making one ammonia. The new K is the square root of K.', cap: 'Or multiply the original by ½: ½N₂ + ³⁄₂H₂ ⇌ NH₃. The new K is √K.', gap: 0.6 },
+      { say: 'And the same rules apply to Q, since it has the same form as K.', gap: 0.8 },
+    ] },
+    { id: 'hack', beats: [
+      { say: "Here's an easy way to remember it all: line the rules up with Hess's law." },
+      { say: 'Reverse: delta H becomes negative delta H. K becomes one over K.', cap: 'Reverse: ΔH becomes −ΔH. K becomes 1/K.', gap: 0.5 },
+      { say: 'Multiply by c: delta H times c. K to the power c.', cap: 'Multiply by c: c·ΔH. K^c.', gap: 0.5 },
+      { say: 'Add: delta H one plus delta H two. K one times K two.', cap: 'Add: ΔH₁ + ΔH₂. K₁ × K₂.', gap: 0.6 },
+      { say: 'In short: delta H adds, K multiplies.', cap: 'In short: ΔH adds, K multiplies.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'For nitrogen plus three hydrogen making two ammonia, K is four point zero times ten to the second. What is K for two ammonia making nitrogen and three hydrogen?', cap: 'For N₂(g) + 3H₂(g) ⇌ 2NH₃(g), K = 4.0 × 10². What is K for 2NH₃(g) ⇌ N₂(g) + 3H₂(g)?', gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is two point five times ten to the minus three.', cap: 'The answer is 2.5 × 10⁻³.', gap: 0.4 },
+      { say: 'The reaction is reversed, so the new K is one over K.', cap: 'The reaction is reversed, so the new K is 1/K.', gap: 0.3 },
+      { say: 'One over four point zero times ten to the second is two point five times ten to the minus three.', cap: '1 / (4.0 × 10²) = 2.5 × 10⁻³', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: 'Reverse an equation, and the new K is one over K.', cap: 'Reverse an equation → the new K is 1/K.', gap: 0.5 },
+      { say: 'Multiply it by c, and the new K is K to the c. For one half, take the square root.', cap: 'Multiply by c → K^c. For ½, take the square root.', gap: 0.5 },
+      { say: 'Add equations, and multiply the K values.', cap: 'Add equations → multiply the Ks.', gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

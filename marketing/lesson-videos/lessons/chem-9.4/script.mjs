@@ -1,0 +1,101 @@
+// Narration for chem-9.4 "Thermodynamic vs. Kinetic Control". Every fact comes from the lesson cards, quick checks
+// and flashcards in app/src/content/chem/u9.ts plus the lesson's book.ts prose: dG says whether, not how fast;
+// favored but unmeasurably slow = kinetic control, usually a high Ea; diamond -> graphite (many strong C-C bonds,
+// huge Ea) and wood + O2 (needs a match); an energy profile shows both (products vs reactants = favorability,
+// barrier height = rate); a catalyst lowers Ea but not dG (a higher temperature also helps); the trap (slow is not
+// equilibrium); the dG = -200 kJ try; the three summary points. The hook drops the card's slogan quote (a brand line).
+// One entry per sentence: the voice reads `say`; captions show `cap` (or `say`).
+// `gap` = seconds of silence after the sentence (default 0.35).
+export default {
+  id: 'chem-9.4',
+  title: 'Thermodynamic vs. Kinetic Control',
+  course: 'AP® Chemistry',
+  unit: 'Unit 9 · Thermodynamics and Electrochemistry',
+  unitId: 'chem-u9',
+  unitTitle: 'Thermodynamics and Electrochemistry',
+  voice: 'am_michael',
+  speed: 1.0,
+  scenes: [
+    { id: 'intro', lead: 1.6, beats: [
+      { say: 'Thermodynamic versus Kinetic Control.', cap: 'Thermodynamic vs. Kinetic Control.', gap: 0.5 },
+      { say: "In the next few minutes, you'll learn why a favored reaction can still be too slow to see, what kinetic control means, and the trap of mixing up slow with equilibrium.", gap: 0.8 },
+    ] },
+    { id: 'hook', beats: [
+      { say: "Here's a surprising fact about diamond.", gap: 0.4 },
+      { say: 'At room conditions, diamond turning into graphite is thermodynamically favored.', gap: 0.4 },
+      { say: 'So diamond should slowly turn into graphite.', gap: 0.4 },
+      { say: "It just happens so slowly that you'll never see it.", gap: 0.5 },
+      { say: 'Favored, but far too slow to notice.', gap: 0.4 },
+      { say: "That's called kinetic control.", gap: 0.8 },
+    ] },
+    { id: 'favored', beats: [
+      { say: 'You can ask two different questions about any reaction.', gap: 0.4 },
+      { say: 'First, is it favored? That is thermodynamics.', gap: 0.4 },
+      { say: 'Delta G tells you whether a reaction is favored.', cap: 'ΔG tells you whether a reaction is favored.', gap: 0.4 },
+      { say: 'But it says nothing about how fast the reaction goes.', gap: 0.5 },
+      { say: 'Second, how fast does it go? That is kinetics.', gap: 0.4 },
+      { say: 'The two answers are separate, so a reaction can be strongly favored and still be extremely slow.', gap: 0.5 },
+      { say: 'Favored does not mean fast.', gap: 0.8 },
+    ] },
+    { id: 'barrier', beats: [
+      { say: 'An energy profile shows both kinds of information on one diagram.', gap: 0.4 },
+      { say: 'The difference between the reactants and the products determines thermodynamic favorability.', gap: 0.4 },
+      { say: 'Here the products sit far below the reactants, so the reaction is strongly favored.', gap: 0.5 },
+      { say: 'The height of the barrier between them is the activation energy.', cap: 'The height of the barrier between them is the activation energy, Ea.', gap: 0.4 },
+      { say: 'And the activation energy determines the rate.', gap: 0.5 },
+      { say: 'If the barrier is very high, almost no collisions have enough energy to cross it at room temperature.', gap: 0.4 },
+      { say: "So the reaction barely moves, even though it's strongly favored.", gap: 0.5 },
+      { say: 'Products far below, and a barrier very high. That pairing is the heart of this lesson.', gap: 0.8 },
+    ] },
+    { id: 'control', beats: [
+      { say: 'Now we can name it.', gap: 0.4 },
+      { say: "A thermodynamically favored process that doesn't occur at a measurable rate is under kinetic control.", gap: 0.4 },
+      { say: 'The usual reason is a high activation energy.', gap: 0.5 },
+      { say: 'Diamond turning into graphite is one example.', gap: 0.4 },
+      { say: 'The conversion requires breaking many strong carbon carbon bonds.', cap: 'The conversion requires breaking many strong C–C bonds.', gap: 0.4 },
+      { say: "That's a huge activation energy, so the rate is effectively zero.", gap: 0.5 },
+      { say: 'Wood reacting with oxygen is another example.', cap: 'Wood + O₂ is another example.', gap: 0.4 },
+      { say: 'That reaction is very favored.', gap: 0.4 },
+      { say: 'But it needs a match to get it over the activation energy.', gap: 0.5 },
+      { say: 'In both cases the reaction is favored. What is missing is a way over the barrier.', gap: 0.8 },
+    ] },
+    { id: 'speed', beats: [
+      { say: 'So how do you get a kinetically controlled reaction going?', gap: 0.4 },
+      { say: 'Add a catalyst.', gap: 0.4 },
+      { say: 'A catalyst lowers the activation energy, so the favored reaction can proceed faster.', gap: 0.4 },
+      { say: 'A higher temperature would also help.', gap: 0.5 },
+      { say: 'But a catalyst does not change delta G naught.', cap: 'But a catalyst does not change ΔG°.', gap: 0.4 },
+      { say: 'It does not change the energies of the reactants or the products.', gap: 0.4 },
+      { say: 'So a catalyst can never make an unfavored reaction favored.', gap: 0.4 },
+      { say: 'It only helps a favored reaction reach equilibrium sooner.', gap: 0.5 },
+      { say: 'It changes the path over the hill, not where the reaction starts or ends.', gap: 0.8 },
+    ] },
+    { id: 'trap', beats: [
+      { say: 'Now, the trap.', gap: 0.4 },
+      { say: "If a favored reaction isn't happening, it is not at equilibrium.", gap: 0.4 },
+      { say: "It's just slow.", gap: 0.5 },
+      { say: 'No visible change can look a lot like equilibrium.', gap: 0.4 },
+      { say: "Don't confuse the two here.", gap: 0.5 },
+      { say: 'Diamond is a good reminder. A diamond that lasts is not at equilibrium with graphite. It is just converting far too slowly to see.', gap: 0.8 },
+    ] },
+    { id: 'try', beats: [
+      { say: 'Your turn.' },
+      { say: 'A reaction has delta G naught equal to negative two hundred kilojoules, but no product forms after weeks at room temperature.', cap: 'A reaction has ΔG° = −200 kJ, but no product forms after weeks at room temperature.', gap: 0.3 },
+      { say: "What's the best explanation? A, the reaction is at equilibrium. B, delta G naught is actually positive. C, the reaction has a very high activation energy. D, the products are less stable.", cap: "What's the best explanation? A) The reaction is at equilibrium B) ΔG° is actually positive C) The reaction has a very high activation energy D) The products are less stable", gap: 0.4 },
+      { say: 'Pause the video if you need a moment.', gap: 3.6 },
+      { say: 'The answer is C.', gap: 0.4 },
+      { say: "The reaction is favored, but unobservably slow. That's kinetic control, most likely because of a large activation energy.", gap: 0.4 },
+      { say: "It is not at equilibrium. It's just slow.", gap: 0.4 },
+      { say: 'And it is not B. Delta G naught is negative, so the reaction is favored.', cap: 'And it is not B. ΔG° is negative, so the reaction is favored.', gap: 0.9 },
+    ] },
+    { id: 'recap', beats: [
+      { say: "Let's recap." },
+      { say: "Thermodynamics tells you whether it's favored. Kinetics tells you how fast.", gap: 0.5 },
+      { say: 'Favored but slow is kinetic control, usually because of a high activation energy.', gap: 0.5 },
+      { say: "And a slow reaction isn't necessarily at equilibrium.", gap: 0.9 },
+    ] },
+    { id: 'outro', tail: 2.2, beats: [
+      { say: 'Ready to practice? Find this lesson, with flashcards and quick checks, at easy I Q dot app.', cap: 'Ready to practice? Find this lesson, with flashcards and quick checks, at eziq.app.' },
+    ] },
+  ],
+}

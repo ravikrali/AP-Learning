@@ -33,6 +33,10 @@ before writing a new one and match its format.
   needs a value the lesson does not give, show it without a number ("shorter", "stronger").
 - Keep the lesson's wording for definitions and rules. Simplify sentences, not the science.
 - Say "AP®" only as the course name. No score promises. Do not name or imitate other creators.
+  Wherever "AP" is written (on screen or in a caption) it carries the mark: "AP®". The voice
+  line cannot, so a `say` that contains "AP" needs a `cap` with "AP®". `audit.mjs` checks this.
+- Name no brands, products or characters (a lesson card that says "Mickey Mouse head" becomes
+  "a tiny head with two ears" in the video). Keep the teaching idea, drop the name.
 - Sizes of atoms and ions: right order, and say nothing that claims exact scale.
 
 ## Steps for each lesson
@@ -56,7 +60,9 @@ before writing a new one and match its format.
    with the `f-…` classes or `style="fill:…"`, not a `fill` attribute; a dashed "drawing" line
    needs a gap longer than the path. Reuse a diagram the app already has for the lesson
    (`app/src/content/diagrams.tsx`) as the starting point for the main picture.
-5. **Check stills before rendering.** `node render.mjs <id> --stills <t1,t2,…>` with one time
+5. **Run `node audit.mjs <id>` and fix everything it lists** (a reserved class redefined, a
+   `<sup>`/`<sub>` that would not be raised, a page error). It must print `ok` before you go on.
+   Then **check stills before rendering.** `node render.mjs <id> --stills <t1,t2,…>` with one time
    near the end of every scene and one mid-motion in each animated scene; open every JPG in
    `stills/<id>/` and fix what you see: text running off a card or the frame, labels over
    curves or over each other, wrapped lines, something showing before its sentence. Repeat
@@ -72,6 +78,32 @@ before writing a new one and match its format.
 9. **Report:** lesson id, length, the R2 folder, and anything you could not verify. You cannot
    hear the voice: list any word whose pronunciation is a risk (names, formulas, unusual terms)
    so the owner can listen for it.
+
+## Keep it lean
+
+- `player/player.css` already has the SVG text colours (`f-pri`, `f-teal`, `f-warm`, `f-bad`,
+  `f-good`, `f-gold`, `f-muted`, `f-dark`). The quiz tiles, countdown ring, note cards and recap
+  cards are per lesson: copy them from the `<style>` block and the `try` / `recap` scenes of
+  `lessons/chem-2.2/scenes.js` (or `lessons/stats-1.1/scenes.js` for sentence-length answer
+  choices in a 2×2 grid) instead of designing them again.
+- Long intro titles shrink by themselves; do not restyle the title.
+- Write formula subscripts and charges with `<sub>`/`<sup>` (HTML) or `sup()` and a lowered
+  `<tspan>` (SVG), not Unicode characters like ₂ ³ ⁺: the font draws those small but not lowered
+  or raised, so "C₃H₈" reads like "C3H8". Captions (`cap`) may use the Unicode characters.
+- File size follows motion. A picture that keeps moving for a whole scene (a rotating 3-D
+  lattice, dozens of jittering particles) doubles the size of the video. Animate to make a
+  point, then let the picture settle; keep constant motion to a few small elements. Most
+  lessons come out at 10 to 16 MB.
+- The engine's class names are reserved. Never define or restyle them in a lesson's own
+  `<style>`: `pill`, `title`, `chips`, `tm`, `url`, `brandcol`, `biglogo`, `mark`, `kicker`,
+  `h1`, `card`, `banner`, `arr`, `scene`, `full`, `tick`, `fill`, `crumb`, `name`, and the
+  colour classes `pri`, `teal`, `warm`, `gold`, `good`, `bad`, `muted`. Give your own classes
+  a short lesson prefix (for example `x-tile`). A lesson that defined its own `.pill` pushed
+  the intro's course label off-centre and turned its coloured labels grey.
+- One of your stills must be the intro (about 3 seconds before it ends): check the logo, the
+  course label and the title are centred and nothing sits behind them.
+- Read only the lesson you are making and the two reference lessons; do not explore the app.
+- Two rounds of stills are normally enough: one after the first draft, one after fixes.
 
 ## Limits
 
