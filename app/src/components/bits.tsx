@@ -246,6 +246,24 @@ export interface VideoEntry {
   captions?: string
   /** length in seconds, shown on the lesson's first screen */
   seconds?: number
+  /** the same video narrated by other voices: voice id -> file. `src` is the default voice (Michael). */
+  voices?: Record<string, string>
+}
+
+/** Narrator voices a lesson video can come in. The first is the original narration in `src`. */
+export const VIDEO_VOICES: { id: string; name: string; about: string }[] = [
+  { id: 'michael', name: 'Michael', about: 'American, male' },
+  { id: 'heart', name: 'Heart', about: 'American, female' },
+  { id: 'fenrir', name: 'Fenrir', about: 'American, male' },
+  { id: 'kore', name: 'Kore', about: 'American, female' },
+]
+const VOICE_KEY = 'eziq.voice'
+function savedVoice(): string {
+  try {
+    return localStorage.getItem(VOICE_KEY) || 'michael'
+  } catch {
+    return 'michael'
+  }
 }
 
 let videoCache: Promise<Record<string, VideoEntry>> | null = null
@@ -288,12 +306,36 @@ function youtubeEmbed(url: string): string | null {
 
 export function VideoPlayer({ video, autoPlay }: { video: VideoEntry; autoPlay?: boolean }) {
   const file = (p?: string) => (p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, '')}` : undefined)
-  const src = file(video.src)
+  const [voice, setVoice] = useState(savedVoice)
+  const ref = useRef<HTMLVideoElement>(null)
+  const resume = useRef<{ t: number; play: boolean } | null>(null)
+  const offered = video.src && video.voices ? VIDEO_VOICES.filter((v) => v.id === 'michael' || video.voices?.[v.id]) : []
+  const current = video.voices?.[voice] ? voice : 'michael'
+  const src = file(current === 'michael' ? video.src : video.voices?.[current])
   const yt = video.url ? youtubeEmbed(video.url) : null
-  return (
+  const pick = (id: string) => {
+    const el = ref.current
+    if (el) resume.current = { t: el.currentTime, play: !el.paused }
+    setVoice(id)
+    try {
+      localStorage.setItem(VOICE_KEY, id)
+    } catch {
+      /* private mode: the choice lasts for this page only */
+    }
+  }
+  // after a voice switch, carry on from the same moment (the pictures are identical in every voice)
+  const onLoaded = () => {
+    const el = ref.current
+    const r = resume.current
+    if (!el || !r) return
+    resume.current = null
+    el.currentTime = r.t
+    if (r.play) void el.play().catch(() => {})
+  }
+  const player = (
     <div className="video-wrap">
       {src ? (
-        <video src={src} poster={file(video.poster)} controls playsInline preload="metadata" autoPlay={autoPlay}>
+        <video ref={ref} src={src} poster={file(video.poster)} controls playsInline preload="metadata" autoPlay={autoPlay} onLoadedMetadata={onLoaded}>
           {video.captions && <track kind="captions" src={file(video.captions)} srcLang="en" label="English" />}
         </video>
       ) : (
@@ -304,6 +346,19 @@ export function VideoPlayer({ video, autoPlay }: { video: VideoEntry; autoPlay?:
           allowFullScreen
         />
       )}
+    </div>
+  )
+  if (offered.length < 2) return player
+  return (
+    <div>
+      {player}
+      <div className="seg voice-pick" role="radiogroup" aria-label="Narrator voice">
+        {offered.map((v) => (
+          <button key={v.id} role="radio" aria-checked={v.id === current} className={v.id === current ? 'on' : ''} title={v.about} onClick={() => pick(v.id)}>
+            {v.name}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
