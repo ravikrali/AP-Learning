@@ -23,7 +23,11 @@
     "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/poster.jpg",
     "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/captions.vtt",
     "title": "What Can We Learn from Data?",
-    "seconds": 276
+    "seconds": 276,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/stats-1.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.1-what-can-we-learn-from-data/stats-1.1.kokoro-am-fenrir.mp4"
+    }
   },
   "chem-2.3": {
     "src": "media/videos/chem-u2-compound-structure-and-properties/chem-2.3-structure-of-ionic-solids/chem-2.3.mp4",
@@ -696,5 +700,687 @@
     "captions": "media/videos/chem-u9-thermodynamics-and-electrochemistry/chem-9.10-cell-potential-under-nonstandard-conditions/captions.vtt",
     "title": "Cell Potential Under Nonstandard Conditions",
     "seconds": 275
+  },
+  "stats-1.2": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.2-variables-parameters-and-statistics/stats-1.2.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.2-variables-parameters-and-statistics/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.2-variables-parameters-and-statistics/captions.vtt",
+    "title": "Variables, Parameters & Statistics",
+    "seconds": 248,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.2-variables-parameters-and-statistics/stats-1.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.2-variables-parameters-and-statistics/stats-1.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.3": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.3-one-categorical-variable-tables-and-graphs/stats-1.3.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.3-one-categorical-variable-tables-and-graphs/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.3-one-categorical-variable-tables-and-graphs/captions.vtt",
+    "title": "One Categorical Variable: Tables & Graphs",
+    "seconds": 220,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.3-one-categorical-variable-tables-and-graphs/stats-1.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.3-one-categorical-variable-tables-and-graphs/stats-1.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.4": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.4-graphing-one-quantitative-variable/stats-1.4.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.4-graphing-one-quantitative-variable/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.4-graphing-one-quantitative-variable/captions.vtt",
+    "title": "Graphing One Quantitative Variable",
+    "seconds": 184,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.4-graphing-one-quantitative-variable/stats-1.4.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.4-graphing-one-quantitative-variable/stats-1.4.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.5": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.5-describing-a-distribution/stats-1.5.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.5-describing-a-distribution/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.5-describing-a-distribution/captions.vtt",
+    "title": "Describing a Distribution",
+    "seconds": 231,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.5-describing-a-distribution/stats-1.5.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.5-describing-a-distribution/stats-1.5.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.6": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.6-investigative-questions-and-types-of-studies/stats-1.6.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.6-investigative-questions-and-types-of-studies/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.6-investigative-questions-and-types-of-studies/captions.vtt",
+    "title": "Investigative Questions & Types of Studies",
+    "seconds": 287,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.6-investigative-questions-and-types-of-studies/stats-1.6.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.6-investigative-questions-and-types-of-studies/stats-1.6.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.7": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.7-center-and-position-mean-median-quartiles/stats-1.7.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.7-center-and-position-mean-median-quartiles/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.7-center-and-position-mean-median-quartiles/captions.vtt",
+    "title": "Center & Position: Mean, Median, Quartiles",
+    "seconds": 210,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.7-center-and-position-mean-median-quartiles/stats-1.7.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.7-center-and-position-mean-median-quartiles/stats-1.7.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.8": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.8-measuring-spread-range-iqr-and-sd/stats-1.8.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.8-measuring-spread-range-iqr-and-sd/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.8-measuring-spread-range-iqr-and-sd/captions.vtt",
+    "title": "Measuring Spread: Range, IQR & SD",
+    "seconds": 202,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.8-measuring-spread-range-iqr-and-sd/stats-1.8.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.8-measuring-spread-range-iqr-and-sd/stats-1.8.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.9": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.9-outliers-resistance-and-changing-units/stats-1.9.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.9-outliers-resistance-and-changing-units/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.9-outliers-resistance-and-changing-units/captions.vtt",
+    "title": "Outliers, Resistance & Changing Units",
+    "seconds": 254,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.9-outliers-resistance-and-changing-units/stats-1.9.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.9-outliers-resistance-and-changing-units/stats-1.9.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.10": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.10-boxplots-mean-vs.-median-and-skew/stats-1.10.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.10-boxplots-mean-vs.-median-and-skew/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.10-boxplots-mean-vs.-median-and-skew/captions.vtt",
+    "title": "Boxplots, Mean vs. Median & Skew",
+    "seconds": 213,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.10-boxplots-mean-vs.-median-and-skew/stats-1.10.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.10-boxplots-mean-vs.-median-and-skew/stats-1.10.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.11": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.11-comparing-distributions/stats-1.11.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.11-comparing-distributions/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.11-comparing-distributions/captions.vtt",
+    "title": "Comparing Distributions",
+    "seconds": 202,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.11-comparing-distributions/stats-1.11.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.11-comparing-distributions/stats-1.11.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.12": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.12-random-sampling-methods/stats-1.12.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.12-random-sampling-methods/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.12-random-sampling-methods/captions.vtt",
+    "title": "Random Sampling Methods",
+    "seconds": 233,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.12-random-sampling-methods/stats-1.12.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.12-random-sampling-methods/stats-1.12.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.13": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.13-bias-in-sampling/stats-1.13.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.13-bias-in-sampling/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.13-bias-in-sampling/captions.vtt",
+    "title": "Bias in Sampling",
+    "seconds": 217,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.13-bias-in-sampling/stats-1.13.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.13-bias-in-sampling/stats-1.13.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.14": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.14-well-designed-experiments/stats-1.14.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.14-well-designed-experiments/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.14-well-designed-experiments/captions.vtt",
+    "title": "Well-Designed Experiments",
+    "seconds": 245,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.14-well-designed-experiments/stats-1.14.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.14-well-designed-experiments/stats-1.14.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.15": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.15-z-scores-and-relative-position/stats-1.15.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.15-z-scores-and-relative-position/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.15-z-scores-and-relative-position/captions.vtt",
+    "title": "z-Scores & Relative Position",
+    "seconds": 188,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.15-z-scores-and-relative-position/stats-1.15.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.15-z-scores-and-relative-position/stats-1.15.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.16": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.16-generalizing-and-confounding/stats-1.16.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.16-generalizing-and-confounding/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.16-generalizing-and-confounding/captions.vtt",
+    "title": "Generalizing & Confounding",
+    "seconds": 204,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.16-generalizing-and-confounding/stats-1.16.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.16-generalizing-and-confounding/stats-1.16.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-1.17": {
+    "src": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.17-experimental-designs-blocks-and-matched-pairs/stats-1.17.mp4",
+    "poster": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.17-experimental-designs-blocks-and-matched-pairs/poster.jpg",
+    "captions": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.17-experimental-designs-blocks-and-matched-pairs/captions.vtt",
+    "title": "Experimental Designs: Blocks & Matched Pairs",
+    "seconds": 204,
+    "voices": {
+      "heart": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.17-experimental-designs-blocks-and-matched-pairs/stats-1.17.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u1-exploring-one-variable-data-and-collecting-data/stats-1.17-experimental-designs-blocks-and-matched-pairs/stats-1.17.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-0.1": {
+    "src": "media/videos/stats-u0-statistics-toolkit/stats-0.1-percents-proportions-and-rounding/stats-0.1.mp4",
+    "poster": "media/videos/stats-u0-statistics-toolkit/stats-0.1-percents-proportions-and-rounding/poster.jpg",
+    "captions": "media/videos/stats-u0-statistics-toolkit/stats-0.1-percents-proportions-and-rounding/captions.vtt",
+    "title": "Percents, Proportions & Rounding",
+    "seconds": 185,
+    "voices": {
+      "heart": "media/videos/stats-u0-statistics-toolkit/stats-0.1-percents-proportions-and-rounding/stats-0.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u0-statistics-toolkit/stats-0.1-percents-proportions-and-rounding/stats-0.1.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-0.2": {
+    "src": "media/videos/stats-u0-statistics-toolkit/stats-0.2-square-roots-order-of-operations-and/stats-0.2.mp4",
+    "poster": "media/videos/stats-u0-statistics-toolkit/stats-0.2-square-roots-order-of-operations-and/poster.jpg",
+    "captions": "media/videos/stats-u0-statistics-toolkit/stats-0.2-square-roots-order-of-operations-and/captions.vtt",
+    "title": "Square Roots, Order of Operations & Σ",
+    "seconds": 200,
+    "voices": {
+      "heart": "media/videos/stats-u0-statistics-toolkit/stats-0.2-square-roots-order-of-operations-and/stats-0.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u0-statistics-toolkit/stats-0.2-square-roots-order-of-operations-and/stats-0.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-0.3": {
+    "src": "media/videos/stats-u0-statistics-toolkit/stats-0.3-lines-slope-and-intercept/stats-0.3.mp4",
+    "poster": "media/videos/stats-u0-statistics-toolkit/stats-0.3-lines-slope-and-intercept/poster.jpg",
+    "captions": "media/videos/stats-u0-statistics-toolkit/stats-0.3-lines-slope-and-intercept/captions.vtt",
+    "title": "Lines: Slope & Intercept",
+    "seconds": 177,
+    "voices": {
+      "heart": "media/videos/stats-u0-statistics-toolkit/stats-0.3-lines-slope-and-intercept/stats-0.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u0-statistics-toolkit/stats-0.3-lines-slope-and-intercept/stats-0.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.1": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.1-two-way-tables-and-graphs/stats-2.1.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.1-two-way-tables-and-graphs/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.1-two-way-tables-and-graphs/captions.vtt",
+    "title": "Two-Way Tables & Graphs",
+    "seconds": 195,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.1-two-way-tables-and-graphs/stats-2.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.1-two-way-tables-and-graphs/stats-2.1.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.2": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.2-joint-marginal-and-conditional/stats-2.2.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.2-joint-marginal-and-conditional/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.2-joint-marginal-and-conditional/captions.vtt",
+    "title": "Joint, Marginal & Conditional",
+    "seconds": 176,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.2-joint-marginal-and-conditional/stats-2.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.2-joint-marginal-and-conditional/stats-2.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.3": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.3-simulation-and-the-law-of-large-numbers/stats-2.3.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.3-simulation-and-the-law-of-large-numbers/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.3-simulation-and-the-law-of-large-numbers/captions.vtt",
+    "title": "Simulation & the Law of Large Numbers",
+    "seconds": 199,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.3-simulation-and-the-law-of-large-numbers/stats-2.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.3-simulation-and-the-law-of-large-numbers/stats-2.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.4": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.4-probability-basics-and-complements/stats-2.4.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.4-probability-basics-and-complements/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.4-probability-basics-and-complements/captions.vtt",
+    "title": "Probability Basics & Complements",
+    "seconds": 178,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.4-probability-basics-and-complements/stats-2.4.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.4-probability-basics-and-complements/stats-2.4.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.5": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.5-mutually-exclusive-events/stats-2.5.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.5-mutually-exclusive-events/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.5-mutually-exclusive-events/captions.vtt",
+    "title": "Mutually Exclusive Events",
+    "seconds": 166,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.5-mutually-exclusive-events/stats-2.5.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.5-mutually-exclusive-events/stats-2.5.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.6": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.6-conditional-probability/stats-2.6.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.6-conditional-probability/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.6-conditional-probability/captions.vtt",
+    "title": "Conditional Probability",
+    "seconds": 207,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.6-conditional-probability/stats-2.6.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.6-conditional-probability/stats-2.6.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.7": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.7-independence-and-or/stats-2.7.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.7-independence-and-or/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.7-independence-and-or/captions.vtt",
+    "title": "Independence & \"Or\"",
+    "seconds": 207,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.7-independence-and-or/stats-2.7.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.7-independence-and-or/stats-2.7.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.8": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.8-random-variables-and-distributions/stats-2.8.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.8-random-variables-and-distributions/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.8-random-variables-and-distributions/captions.vtt",
+    "title": "Random Variables & Distributions",
+    "seconds": 160,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.8-random-variables-and-distributions/stats-2.8.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.8-random-variables-and-distributions/stats-2.8.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.9": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.9-mean-and-sd-of-a-random-variable/stats-2.9.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.9-mean-and-sd-of-a-random-variable/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.9-mean-and-sd-of-a-random-variable/captions.vtt",
+    "title": "Mean & SD of a Random Variable",
+    "seconds": 191,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.9-mean-and-sd-of-a-random-variable/stats-2.9.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.9-mean-and-sd-of-a-random-variable/stats-2.9.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.10": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.10-binomial-setting-mean-and-sd/stats-2.10.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.10-binomial-setting-mean-and-sd/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.10-binomial-setting-mean-and-sd/captions.vtt",
+    "title": "Binomial Setting, Mean & SD",
+    "seconds": 201,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.10-binomial-setting-mean-and-sd/stats-2.10.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.10-binomial-setting-mean-and-sd/stats-2.10.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.11": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.11-binomial-probabilities/stats-2.11.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.11-binomial-probabilities/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.11-binomial-probabilities/captions.vtt",
+    "title": "Binomial Probabilities",
+    "seconds": 210,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.11-binomial-probabilities/stats-2.11.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.11-binomial-probabilities/stats-2.11.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.12": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.12-the-normal-curve-and-the-empirical-rule/stats-2.12.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.12-the-normal-curve-and-the-empirical-rule/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.12-the-normal-curve-and-the-empirical-rule/captions.vtt",
+    "title": "The Normal Curve & the Empirical Rule",
+    "seconds": 187,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.12-the-normal-curve-and-the-empirical-rule/stats-2.12.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.12-the-normal-curve-and-the-empirical-rule/stats-2.12.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.13": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.13-normal-calculations-areas-and-cutoffs/stats-2.13.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.13-normal-calculations-areas-and-cutoffs/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.13-normal-calculations-areas-and-cutoffs/captions.vtt",
+    "title": "Normal Calculations: Areas & Cutoffs",
+    "seconds": 218,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.13-normal-calculations-areas-and-cutoffs/stats-2.13.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.13-normal-calculations-areas-and-cutoffs/stats-2.13.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-2.14": {
+    "src": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.14-sampling-distributions-and-the-clt/stats-2.14.mp4",
+    "poster": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.14-sampling-distributions-and-the-clt/poster.jpg",
+    "captions": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.14-sampling-distributions-and-the-clt/captions.vtt",
+    "title": "Sampling Distributions & the CLT",
+    "seconds": 216,
+    "voices": {
+      "heart": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.14-sampling-distributions-and-the-clt/stats-2.14.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u2-probability-random-variables-and-probability-distributions/stats-2.14-sampling-distributions-and-the-clt/stats-2.14.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.1": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.1-estimators-and-bias/stats-3.1.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.1-estimators-and-bias/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.1-estimators-and-bias/captions.vtt",
+    "title": "Estimators & Bias",
+    "seconds": 180,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.1-estimators-and-bias/stats-3.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.1-estimators-and-bias/stats-3.1.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.2": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.2-the-sampling-distribution-of-p/stats-3.2.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.2-the-sampling-distribution-of-p/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.2-the-sampling-distribution-of-p/captions.vtt",
+    "title": "The Sampling Distribution of p̂",
+    "seconds": 220,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.2-the-sampling-distribution-of-p/stats-3.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.2-the-sampling-distribution-of-p/stats-3.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.3": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.3-confidence-intervals-for-p-setup/stats-3.3.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.3-confidence-intervals-for-p-setup/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.3-confidence-intervals-for-p-setup/captions.vtt",
+    "title": "Confidence Intervals for p: Setup",
+    "seconds": 210,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.3-confidence-intervals-for-p-setup/stats-3.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.3-confidence-intervals-for-p-setup/stats-3.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.4": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.4-building-the-interval-se-and-sample-size/stats-3.4.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.4-building-the-interval-se-and-sample-size/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.4-building-the-interval-se-and-sample-size/captions.vtt",
+    "title": "Building the Interval, SE & Sample Size",
+    "seconds": 268,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.4-building-the-interval-se-and-sample-size/stats-3.4.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.4-building-the-interval-se-and-sample-size/stats-3.4.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.5": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.5-interpreting-confidence-intervals/stats-3.5.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.5-interpreting-confidence-intervals/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.5-interpreting-confidence-intervals/captions.vtt",
+    "title": "Interpreting Confidence Intervals",
+    "seconds": 217,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.5-interpreting-confidence-intervals/stats-3.5.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.5-interpreting-confidence-intervals/stats-3.5.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.6": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.6-setting-up-a-test-for-p/stats-3.6.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.6-setting-up-a-test-for-p/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.6-setting-up-a-test-for-p/captions.vtt",
+    "title": "Setting Up a Test for p",
+    "seconds": 234,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.6-setting-up-a-test-for-p/stats-3.6.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.6-setting-up-a-test-for-p/stats-3.6.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.7": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.7-what-a-p-value-means/stats-3.7.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.7-what-a-p-value-means/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.7-what-a-p-value-means/captions.vtt",
+    "title": "What a p-Value Means",
+    "seconds": 220,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.7-what-a-p-value-means/stats-3.7.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.7-what-a-p-value-means/stats-3.7.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.8": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.8-carrying-out-a-one-proportion-z-test/stats-3.8.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.8-carrying-out-a-one-proportion-z-test/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.8-carrying-out-a-one-proportion-z-test/captions.vtt",
+    "title": "Carrying Out a One-Proportion z-Test",
+    "seconds": 280,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.8-carrying-out-a-one-proportion-z-test/stats-3.8.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.8-carrying-out-a-one-proportion-z-test/stats-3.8.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.9": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.9-type-i-and-type-ii-errors-power/stats-3.9.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.9-type-i-and-type-ii-errors-power/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.9-type-i-and-type-ii-errors-power/captions.vtt",
+    "title": "Type I & Type II Errors, Power",
+    "seconds": 242,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.9-type-i-and-type-ii-errors-power/stats-3.9.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.9-type-i-and-type-ii-errors-power/stats-3.9.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.10": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.10-sampling-distribution-of-p-p/stats-3.10.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.10-sampling-distribution-of-p-p/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.10-sampling-distribution-of-p-p/captions.vtt",
+    "title": "Sampling Distribution of p̂₁ − p̂₂",
+    "seconds": 252,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.10-sampling-distribution-of-p-p/stats-3.10.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.10-sampling-distribution-of-p-p/stats-3.10.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.11": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.11-two-proportion-z-interval/stats-3.11.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.11-two-proportion-z-interval/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.11-two-proportion-z-interval/captions.vtt",
+    "title": "Two-Proportion z-Interval",
+    "seconds": 271,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.11-two-proportion-z-interval/stats-3.11.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.11-two-proportion-z-interval/stats-3.11.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.12": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.12-two-proportion-z-test/stats-3.12.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.12-two-proportion-z-test/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.12-two-proportion-z-test/captions.vtt",
+    "title": "Two-Proportion z-Test",
+    "seconds": 265,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.12-two-proportion-z-test/stats-3.12.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.12-two-proportion-z-test/stats-3.12.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.13": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.13-chi-square-homogeneity-or-independence/stats-3.13.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.13-chi-square-homogeneity-or-independence/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.13-chi-square-homogeneity-or-independence/captions.vtt",
+    "title": "Chi-Square: Homogeneity or Independence?",
+    "seconds": 222,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.13-chi-square-homogeneity-or-independence/stats-3.13.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.13-chi-square-homogeneity-or-independence/stats-3.13.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-3.14": {
+    "src": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.14-carrying-out-a-chi-square-test/stats-3.14.mp4",
+    "poster": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.14-carrying-out-a-chi-square-test/poster.jpg",
+    "captions": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.14-carrying-out-a-chi-square-test/captions.vtt",
+    "title": "Carrying Out a Chi-Square Test",
+    "seconds": 235,
+    "voices": {
+      "heart": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.14-carrying-out-a-chi-square-test/stats-3.14.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u3-inference-for-categorical-data-proportions/stats-3.14-carrying-out-a-chi-square-test/stats-3.14.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.1": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.1-the-sampling-distribution-of-x/stats-4.1.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.1-the-sampling-distribution-of-x/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.1-the-sampling-distribution-of-x/captions.vtt",
+    "title": "The Sampling Distribution of x̄",
+    "seconds": 208,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.1-the-sampling-distribution-of-x/stats-4.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.1-the-sampling-distribution-of-x/stats-4.1.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.2": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.2-t-distributions-and-the-one-sample-t-interval/stats-4.2.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.2-t-distributions-and-the-one-sample-t-interval/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.2-t-distributions-and-the-one-sample-t-interval/captions.vtt",
+    "title": "t-Distributions & the One-Sample t-Interval",
+    "seconds": 264,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.2-t-distributions-and-the-one-sample-t-interval/stats-4.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.2-t-distributions-and-the-one-sample-t-interval/stats-4.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.3": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.3-matched-pairs-intervals/stats-4.3.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.3-matched-pairs-intervals/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.3-matched-pairs-intervals/captions.vtt",
+    "title": "Matched Pairs Intervals",
+    "seconds": 225,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.3-matched-pairs-intervals/stats-4.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.3-matched-pairs-intervals/stats-4.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.4": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.4-interpreting-t-intervals/stats-4.4.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.4-interpreting-t-intervals/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.4-interpreting-t-intervals/captions.vtt",
+    "title": "Interpreting t-Intervals",
+    "seconds": 220,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.4-interpreting-t-intervals/stats-4.4.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.4-interpreting-t-intervals/stats-4.4.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.5": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.5-setting-up-a-t-test/stats-4.5.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.5-setting-up-a-t-test/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.5-setting-up-a-t-test/captions.vtt",
+    "title": "Setting Up a t-Test",
+    "seconds": 215,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.5-setting-up-a-t-test/stats-4.5.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.5-setting-up-a-t-test/stats-4.5.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.6": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.6-carrying-out-a-t-test/stats-4.6.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.6-carrying-out-a-t-test/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.6-carrying-out-a-t-test/captions.vtt",
+    "title": "Carrying Out a t-Test",
+    "seconds": 229,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.6-carrying-out-a-t-test/stats-4.6.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.6-carrying-out-a-t-test/stats-4.6.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.7": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.7-sampling-distribution-of-x-x/stats-4.7.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.7-sampling-distribution-of-x-x/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.7-sampling-distribution-of-x-x/captions.vtt",
+    "title": "Sampling Distribution of x̄₁ − x̄₂",
+    "seconds": 215,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.7-sampling-distribution-of-x-x/stats-4.7.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.7-sampling-distribution-of-x-x/stats-4.7.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.8": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.8-two-sample-t-interval/stats-4.8.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.8-two-sample-t-interval/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.8-two-sample-t-interval/captions.vtt",
+    "title": "Two-Sample t-Interval",
+    "seconds": 263,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.8-two-sample-t-interval/stats-4.8.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.8-two-sample-t-interval/stats-4.8.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.9": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.9-two-sample-t-test/stats-4.9.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.9-two-sample-t-test/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.9-two-sample-t-test/captions.vtt",
+    "title": "Two-Sample t-Test",
+    "seconds": 247,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.9-two-sample-t-test/stats-4.9.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.9-two-sample-t-test/stats-4.9.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-4.10": {
+    "src": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.10-which-procedure/stats-4.10.mp4",
+    "poster": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.10-which-procedure/poster.jpg",
+    "captions": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.10-which-procedure/captions.vtt",
+    "title": "Which Procedure?",
+    "seconds": 210,
+    "voices": {
+      "heart": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.10-which-procedure/stats-4.10.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u4-inference-for-quantitative-data-means/stats-4.10-which-procedure/stats-4.10.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-5.1": {
+    "src": "media/videos/stats-u5-regression-analysis/stats-5.1-scatterplots/stats-5.1.mp4",
+    "poster": "media/videos/stats-u5-regression-analysis/stats-5.1-scatterplots/poster.jpg",
+    "captions": "media/videos/stats-u5-regression-analysis/stats-5.1-scatterplots/captions.vtt",
+    "title": "Scatterplots",
+    "seconds": 189,
+    "voices": {
+      "heart": "media/videos/stats-u5-regression-analysis/stats-5.1-scatterplots/stats-5.1.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u5-regression-analysis/stats-5.1-scatterplots/stats-5.1.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-5.2": {
+    "src": "media/videos/stats-u5-regression-analysis/stats-5.2-correlation/stats-5.2.mp4",
+    "poster": "media/videos/stats-u5-regression-analysis/stats-5.2-correlation/poster.jpg",
+    "captions": "media/videos/stats-u5-regression-analysis/stats-5.2-correlation/captions.vtt",
+    "title": "Correlation",
+    "seconds": 203,
+    "voices": {
+      "heart": "media/videos/stats-u5-regression-analysis/stats-5.2-correlation/stats-5.2.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u5-regression-analysis/stats-5.2-correlation/stats-5.2.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-5.3": {
+    "src": "media/videos/stats-u5-regression-analysis/stats-5.3-linear-models-and-extrapolation/stats-5.3.mp4",
+    "poster": "media/videos/stats-u5-regression-analysis/stats-5.3-linear-models-and-extrapolation/poster.jpg",
+    "captions": "media/videos/stats-u5-regression-analysis/stats-5.3-linear-models-and-extrapolation/captions.vtt",
+    "title": "Linear Models & Extrapolation",
+    "seconds": 183,
+    "voices": {
+      "heart": "media/videos/stats-u5-regression-analysis/stats-5.3-linear-models-and-extrapolation/stats-5.3.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u5-regression-analysis/stats-5.3-linear-models-and-extrapolation/stats-5.3.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-5.4": {
+    "src": "media/videos/stats-u5-regression-analysis/stats-5.4-residuals-and-residual-plots/stats-5.4.mp4",
+    "poster": "media/videos/stats-u5-regression-analysis/stats-5.4-residuals-and-residual-plots/poster.jpg",
+    "captions": "media/videos/stats-u5-regression-analysis/stats-5.4-residuals-and-residual-plots/captions.vtt",
+    "title": "Residuals & Residual Plots",
+    "seconds": 198,
+    "voices": {
+      "heart": "media/videos/stats-u5-regression-analysis/stats-5.4-residuals-and-residual-plots/stats-5.4.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u5-regression-analysis/stats-5.4-residuals-and-residual-plots/stats-5.4.kokoro-am-fenrir.mp4"
+    }
+  },
+  "stats-5.5": {
+    "src": "media/videos/stats-u5-regression-analysis/stats-5.5-least-squares-regression-and-r/stats-5.5.mp4",
+    "poster": "media/videos/stats-u5-regression-analysis/stats-5.5-least-squares-regression-and-r/poster.jpg",
+    "captions": "media/videos/stats-u5-regression-analysis/stats-5.5-least-squares-regression-and-r/captions.vtt",
+    "title": "Least-Squares Regression & r²",
+    "seconds": 298,
+    "voices": {
+      "heart": "media/videos/stats-u5-regression-analysis/stats-5.5-least-squares-regression-and-r/stats-5.5.kokoro-af-heart.mp4",
+      "fenrir": "media/videos/stats-u5-regression-analysis/stats-5.5-least-squares-regression-and-r/stats-5.5.kokoro-am-fenrir.mp4"
+    }
   }
 }
